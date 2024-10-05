@@ -1,0 +1,18 @@
+{
+  "name": "tecnopro-admin-api",
+  "version": "0.0.1",
+  "description": "Admin products manager",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "admin",
+    "products",
+    "manager",
+    "inventory",
+    "sales"
+  ],
+  "author": "Esaú Gómez",
+  "license": "ISC"
+}
