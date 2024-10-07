@@ -17,9 +17,13 @@
   "license": "ISC",
   "devDependencies": {
     "@types/express": "github:types/express",
+    "standard": "^17.1.2",
     "typescript": "^5.6.2"
   },
   "dependencies": {
     "express": "^4.21.0"
+  },
+  "eslintConfig": {
+    "extends": "./node_modules/standard/eslintrc.json"
   }
 }
