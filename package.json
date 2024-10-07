@@ -4,6 +4,8 @@
   "description": "Admin products manager",
   "main": "index.js",
   "scripts": {
+    "build:dev": "tsc && node --env-file=.env.development ./build",
+    "start:dev": "node --watch -r ts-node/register --env-file=.env.development ./src",
     "lint": "eslint . --ext .ts"
   },
   "keywords": [
@@ -16,11 +18,14 @@
   "author": "Esaú Gómez",
   "license": "ISC",
   "devDependencies": {
+    "ts-node": "^10.9.2",
     "ts-standard": "^12.0.2",
     "typescript": "^5.6.2"
   },
   "dependencies": {
     "@types/express": "^4.17.21",
-    "express": "^4.21.0"
+    "express": "^4.21.0",
+    "pino": "^9.4.0",
+    "pino-pretty": "^11.2.2"
   }
 }
