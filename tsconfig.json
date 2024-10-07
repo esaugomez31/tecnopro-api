@@ -6,7 +6,8 @@
     "moduleResolution": "node",
     "sourceMap": true,
 		"rootDir": "./src",
-    "outDir": "build"
+    "outDir": "build",
+		"strict": true
   },
   "lib": ["es2015"]
 }
