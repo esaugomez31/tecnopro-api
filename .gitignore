@@ -1,5 +1,5 @@
 # app settings
 /node_modules/
-/build
-./package-lock.json
+/build/
+package-lock.json
 .env
