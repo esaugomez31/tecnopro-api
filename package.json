@@ -6,6 +6,7 @@
   "scripts": {
     "build:dev": "tsc && node --env-file=.env.development ./build",
     "start:dev": "node --watch -r ts-node/register --env-file=.env.development ./src",
+    "start:prod": "node --watch -r ts-node/register --env-file=.env.production ./src",
     "lint": "eslint . --ext .ts"
   },
   "keywords": [
