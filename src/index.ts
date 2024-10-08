@@ -1,4 +1,5 @@
 import express from 'express'
+import cors from 'cors'
 import routes from './routes'
 import envs from './config/environment.config'
 
@@ -6,6 +7,7 @@ const app = express()
 const port = envs.app.port
 
 app.use(express.json())
+app.use(cors())
 app.use(routes)
 
 // Starting res API....
