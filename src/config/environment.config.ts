@@ -1,5 +1,5 @@
 import { logger } from '../helpers'
-import { iEnvs } from './interfaces/environment.interface'
+import { iEnvs } from '../interfaces/config/environment.interface'
 
 const retrieveEnv = (variableName: string): string => {
   const variable: string = process.env[variableName] ?? ''
