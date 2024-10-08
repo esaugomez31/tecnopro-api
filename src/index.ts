@@ -1,16 +1,24 @@
-import express from 'express'
-import cors from 'cors'
-import routes from './routes'
 import envs from './config/environment.config'
+import { AppDataSource } from './config/conection'
+import { logger } from './helpers/logger'
+import app from './app'
 
-const app = express()
-const port = envs.app.port
+const main = async (): Promise<void> => {
+  try {
+    const port = envs.app.port
+    await AppDataSource.initialize()
 
-app.use(express.json())
-app.use(cors())
-app.use(routes)
+    // Starting server....
+    app.listen(port, () => {
+      logger.info(`Tecnopro API is listening at ${port} port...`)
+    })
+  } catch (error) {
+    if (error instanceof Error) {
+      logger.error(error.message)
+    }
+  }
+}
 
-// Starting res API....
-app.listen(port, () => {
-  return console.log(`Tecnopro API is listening at ${port} port...`)
+main().catch((error) => {
+  logger.error('Unknow error: ', error)
 })

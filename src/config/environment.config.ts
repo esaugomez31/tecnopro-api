@@ -12,7 +12,14 @@ const retrieveEnv = (variableName: string): string => {
 
 const envs: iEnvs = {
   app: {
-    port: retrieveEnv('PORT')
+    port: retrieveEnv('PORT'),
+    db: {
+      host: retrieveEnv('DB_HOST'),
+      database: retrieveEnv('DB_NAME'),
+      port: Number(retrieveEnv('DB_PORT')),
+      username: retrieveEnv('DB_USER'),
+      password: retrieveEnv('DB_PASSWORD')
+    }
   }
 }
 
