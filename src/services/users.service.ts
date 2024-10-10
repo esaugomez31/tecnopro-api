@@ -1,5 +1,5 @@
 import { v4 as uuidv4 } from 'uuid'
-import { logger, hashPassword } from '../helpers'
+import { logger, hashPassword, getDateTimeNowUTC } from '../helpers'
 import { UserModel } from '../models'
 import {
   InvalidUserCredentialsError,
@@ -14,14 +14,18 @@ export const userLogin = async (usernameOrEmail: string, password: string): Prom
     // Searching for credential matches
     const user = await UserModel.findOne({
       where: [
-        { username: usernameOrEmail, password: hashedPassword },
-        { email: usernameOrEmail, password: hashedPassword }
+        { username: usernameOrEmail, password: hashedPassword, status: true },
+        { email: usernameOrEmail, password: hashedPassword, status: true }
       ]
     })
 
     if (user === null) {
       throw new InvalidUserCredentialsError()
     }
+
+    // Update last login datetime
+    user.last_login = new Date(getDateTimeNowUTC())
+    await UserModel.save(user)
 
     return user
   } catch (error) {
