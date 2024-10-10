@@ -23,11 +23,11 @@ export const validateUserCreation = (): any => {
       .matches(/(?=.*[\W_])/).withMessage('password must contain at least one special character'),
 
     body('email')
-      .isEmail().withMessage('must be a valid email')
+      .isEmail().withMessage('email must be a valid email')
       .notEmpty().withMessage('email is required'),
 
     body('phone_number')
-      .optional().isString().withMessage('phone number must be a string')
+      .optional().isString().withMessage('phone_number must be a string')
       .matches(/^\+\d{1,3} \d{6,12}$/).withMessage('phone_number must be in the format (+503 12345678)'),
 
     body('whatsapp_number')

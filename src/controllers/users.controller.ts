@@ -15,10 +15,10 @@ export const userCreateController = async (req: Request, res: Response): Promise
     return res.json(users)
   } catch (error) {
     if (error instanceof UsernameExistsError || error instanceof EmailExistsError) {
-      return res.status(409).json({ message: error.name })
+      return res.status(409).json({ error: error.name })
     }
     // Default error message
-    return res.status(500).json({ message: 'Internal Server Error' })
+    return res.status(500).json({ error: 'Internal Server Error' })
   }
 }
 
@@ -31,9 +31,9 @@ export const userLoginController = async (req: Request, res: Response): Promise<
     return res.json(users)
   } catch (error) {
     if (error instanceof InvalidUserCredentialsError) {
-      return res.status(401).json({ message: error.name })
+      return res.status(401).json({ error: error.name })
     }
     // Default error message
-    return res.status(500).json({ message: 'Internal Server Error' })
+    return res.status(500).json({ error: 'Internal Server Error' })
   }
 }
