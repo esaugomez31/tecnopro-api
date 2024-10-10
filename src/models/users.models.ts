@@ -38,6 +38,9 @@ export class UserModel extends BaseEntity {
   @Column({ type: 'datetime', nullable: true })
     last_login: Date | null
 
+  @Column({ type: 'varchar', default: 'America/El_Salvador' })
+    time_zone: string | null
+
   @Column({ type: 'int', nullable: true })
     id_rol: number | null
 }

@@ -1,5 +1,5 @@
 import { v4 as uuidv4 } from 'uuid'
-import { logger, hashPassword, getDateTimeNowUTC } from '../helpers'
+import { logger, hashPassword, getLocalDateTimeNow } from '../helpers'
 import { UserModel } from '../models'
 import {
   InvalidUserCredentialsError,
@@ -24,7 +24,7 @@ export const userLogin = async (usernameOrEmail: string, password: string): Prom
     }
 
     // Update last login datetime
-    user.last_login = new Date(getDateTimeNowUTC())
+    user.last_login = new Date(getLocalDateTimeNow())
     await UserModel.save(user)
 
     return user
