@@ -4,7 +4,7 @@ import {
   InvalidUserCredentialsError
 } from '../errors/user.error'
 
-export const userController = async (req: Request, res: Response): Promise<Response> => {
+export const userLoginController = async (req: Request, res: Response): Promise<Response> => {
   try {
     // Receiving the body parameters
     const { username, password } = req.body
