@@ -1,5 +1,6 @@
 import { v4 as uuidv4 } from 'uuid'
 import { logger, hashPassword, comparePassword, getLocalDateTimeNow } from '../helpers'
+import { iUserPublicResponse } from '../interfaces/user.interfaces'
 import { UserModel } from '../models'
 import {
   InvalidUserCredentialsError,
@@ -8,7 +9,7 @@ import {
   EmailExistsError
 } from '../errors/user.error'
 
-export const userLogin = async (usernameOrEmail: string, password: string): Promise<UserModel | Error> => {
+export const userLogin = async (usernameOrEmail: string, password: string): Promise<iUserPublicResponse | Error> => {
   try {
     // Searching for credential matches
     const user = await UserModel.findOne({
@@ -21,7 +22,7 @@ export const userLogin = async (usernameOrEmail: string, password: string): Prom
     if (user === null) {
       throw new UserNotFoundError()
     }
-
+    // comparing encrypted password with bcrypt
     if (!comparePassword(password, user.password)) {
       throw new InvalidUserCredentialsError()
     }
@@ -30,7 +31,19 @@ export const userLogin = async (usernameOrEmail: string, password: string): Prom
     user.last_login = new Date(getLocalDateTimeNow())
     await UserModel.save(user)
 
-    return user
+    return {
+      uuid: user.uuid,
+      name: user.name,
+      username: user.username,
+      phone_number: user.phone_number,
+      whatsapp_number: user.whatsapp_number,
+      email: user.email,
+      owner: user.owner,
+      notifications: user.notifications,
+      last_login: user.last_login,
+      time_zone: user.time_zone,
+      id_rol: user.id_rol
+    }
   } catch (error) {
     logger.error(error)
     throw error
