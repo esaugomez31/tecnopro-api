@@ -58,7 +58,8 @@ export const userCreate = async (user: any): Promise<UserModel | Error> => {
       whatsapp_number: user.whatsapp_number ?? null,
       email: user.email,
       notifications: user.notifications !== undefined ? Boolean(user.notifications) : false,
-      last_login: null
+      last_login: null,
+      id_rol: user.id_rol ?? null
     }
 
     // Create user

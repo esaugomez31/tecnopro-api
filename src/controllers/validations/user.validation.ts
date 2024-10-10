@@ -23,7 +23,7 @@ export const validateUserCreation = (): any => {
       .matches(/(?=.*[\W_])/).withMessage('password must contain at least one special character'),
 
     body('email')
-      .optional().isEmail().withMessage('must be a valid email')
+      .isEmail().withMessage('must be a valid email')
       .notEmpty().withMessage('email is required'),
 
     body('phone_number')
@@ -35,7 +35,13 @@ export const validateUserCreation = (): any => {
       .matches(/^\+\d{1,3} \d{6,12}$/).withMessage('whatsapp_number must be in the format (+503 12345678)'),
 
     body('notifications')
-      .optional().isBoolean().withMessage('notifications must be a boolean'),
+      .optional().isBoolean().withMessage('notifications must be a boolean')
+      .custom((value: boolean, { req }) => {
+        if (value && req.body?.whatsapp_number === undefined) {
+          throw new Error('whatsapp_number is required when notifications is true')
+        }
+        return true
+      }),
 
     body('id_rol')
       .optional()
