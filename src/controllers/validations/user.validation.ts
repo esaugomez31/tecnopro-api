@@ -55,3 +55,17 @@ export const validateUserCreation = (): any => {
     handleValidationErrors
   ]
 }
+
+export const validateUserLogin = (): any => {
+  return [
+    body('usernameOrEmail')
+      .isString().withMessage('usernameOrEmail must be a string')
+      .notEmpty().withMessage('usernameOrEmail is required'),
+
+    body('password')
+      .isString().withMessage('password must be a string')
+      .notEmpty().withMessage('password is required'),
+
+    handleValidationErrors
+  ]
+}
