@@ -8,10 +8,10 @@ export class UserModel extends BaseEntity {
   @Column({ type: 'varchar', length: 36, nullable: true })
     uuid: string | null
 
-  @Column({ type: 'varchar', length: 85 })
+  @Column({ type: 'varchar', length: 40 })
     name: string
 
-  @Column({ type: 'varchar', length: 85 })
+  @Column({ type: 'varchar', length: 20 })
     username: string
 
   @Column({ type: 'varchar', length: 70 })

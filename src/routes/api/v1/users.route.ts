@@ -1,5 +1,4 @@
 import express, { RequestHandler } from 'express'
-import { body } from 'express-validator'
 import {
   userLoginController,
   userCreateController
@@ -10,7 +9,7 @@ import {
 
 const routes = express.Router()
 
-routes.post('/register', body('email2').isInt(), validateUserCreation, userCreateController as RequestHandler)
+routes.post('/register', validateUserCreation(), userCreateController as RequestHandler)
 routes.post('/login', userLoginController as RequestHandler)
 routes.post('/logout')
 
