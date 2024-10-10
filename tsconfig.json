@@ -9,6 +9,7 @@
     "noImplicitReturns": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
+    "strictPropertyInitialization": false,
     "sourceMap": true,
 		"rootDir": "./src",
     "outDir": "build",

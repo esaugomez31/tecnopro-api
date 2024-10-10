@@ -1,17 +1,10 @@
-import express from 'express'
+import express, { RequestHandler } from 'express'
+import { userController } from '../../../controllers'
 
 const routes = express.Router()
 
-routes.post('/register', (_, res) => {
-  res.send('register')
-})
-
-routes.post('/login', (_, res) => {
-  res.send('Login')
-})
-
-routes.post('/logout', (_, res) => {
-  res.send('logout')
-})
+routes.post('/register')
+routes.post('/login', userController as RequestHandler)
+routes.post('/logout')
 
 export default routes

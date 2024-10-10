@@ -1,5 +1,6 @@
 import { DataSource } from 'typeorm'
 import envs from './environment.config'
+import { UserModel } from '../models'
 
 const { host, username, password, database, port } = envs.app.db
 
@@ -10,9 +11,9 @@ export const AppDataSource = new DataSource({
   username,
   password,
   database,
-  synchronize: true,
+  synchronize: false,
   logging: true,
-  entities: [],
+  entities: [UserModel],
   subscribers: [],
   migrations: []
 })
