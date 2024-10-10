@@ -1,25 +1,28 @@
 import { v4 as uuidv4 } from 'uuid'
-import { logger, hashPassword, getLocalDateTimeNow } from '../helpers'
+import { logger, hashPassword, comparePassword, getLocalDateTimeNow } from '../helpers'
 import { UserModel } from '../models'
 import {
   InvalidUserCredentialsError,
   UsernameExistsError,
+  UserNotFoundError,
   EmailExistsError
 } from '../errors/user.error'
 
 export const userLogin = async (usernameOrEmail: string, password: string): Promise<UserModel | Error> => {
   try {
-    // Hash password to sha256
-    const hashedPassword = hashPassword(password)
     // Searching for credential matches
     const user = await UserModel.findOne({
       where: [
-        { username: usernameOrEmail, password: hashedPassword, status: true },
-        { email: usernameOrEmail, password: hashedPassword, status: true }
+        { username: usernameOrEmail, status: true },
+        { email: usernameOrEmail, status: true }
       ]
     })
 
     if (user === null) {
+      throw new UserNotFoundError()
+    }
+
+    if (!comparePassword(password, user.password)) {
       throw new InvalidUserCredentialsError()
     }
 
@@ -54,7 +57,7 @@ export const userCreate = async (user: any): Promise<UserModel | Error> => {
         throw new EmailExistsError()
       }
     }
-    // Hash password to sha256
+    // Hash password
     const hashedPassword = hashPassword(user.password)
     // Generate UUID
     const generatedUuid: string = uuidv4()

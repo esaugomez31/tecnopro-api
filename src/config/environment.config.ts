@@ -13,6 +13,7 @@ const retrieveEnv = (variableName: string): string => {
 const envs: iEnvs = {
   app: {
     port: retrieveEnv('PORT'),
+    password_salt: Number(retrieveEnv('PASS_SALT_ROUNDS')),
     db: {
       host: retrieveEnv('DB_HOST'),
       database: retrieveEnv('DB_NAME'),

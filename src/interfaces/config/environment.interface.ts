@@ -4,6 +4,7 @@ export interface iEnvs {
 
 interface iApp {
   port: string
+  password_salt: number
   db: iDB
 }
 

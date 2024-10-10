@@ -3,6 +3,7 @@ import * as userService from '../services/users.service'
 import {
   InvalidUserCredentialsError,
   UsernameExistsError,
+  UserNotFoundError,
   EmailExistsError
 } from '../errors/user.error'
 
@@ -32,6 +33,10 @@ export const userLoginController = async (req: Request, res: Response): Promise<
   } catch (error) {
     if (error instanceof InvalidUserCredentialsError) {
       return res.status(401).json({ error: error.name })
+    }
+
+    if (error instanceof UserNotFoundError) {
+      return res.status(404).json({ error: error.name })
     }
     // Default error message
     return res.status(500).json({ error: 'Internal Server Error' })
