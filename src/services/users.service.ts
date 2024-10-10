@@ -7,12 +7,18 @@ import {
   EmailExistsError
 } from '../errors/user.error'
 
-export const userLogin = async (username: string, password: string): Promise<UserModel | Error> => {
+export const userLogin = async (usernameOrEmail: string, password: string): Promise<UserModel | Error> => {
   try {
     // Hash password to sha256
     const hashedPassword = hashPassword(password)
     // Searching for credential matches
-    const user = await UserModel.findOne({ where: { username, password: hashedPassword } })
+    const user = await UserModel.findOne({
+      where: [
+        { username: usernameOrEmail, password: hashedPassword },
+        { email: usernameOrEmail, password: hashedPassword }
+      ]
+    })
+
     if (user === null) {
       throw new InvalidUserCredentialsError()
     }

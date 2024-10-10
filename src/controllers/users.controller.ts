@@ -25,8 +25,8 @@ export const userCreateController = async (req: Request, res: Response): Promise
 export const userLoginController = async (req: Request, res: Response): Promise<Response> => {
   try {
     // Receiving the body parameters
-    const { username, password } = req.body
-    const users = await userService.userLogin(username, password)
+    const { usernameOrEmail, password } = req.body
+    const users = await userService.userLogin(usernameOrEmail, password)
 
     return res.json(users)
   } catch (error) {
