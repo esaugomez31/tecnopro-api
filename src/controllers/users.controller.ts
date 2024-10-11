@@ -67,3 +67,9 @@ export const userLoginController = async (req: Request, res: Response): Promise<
     res.status(500).json({ error: 'Internal Server Error' })
   }
 }
+
+export const userLogoutController = async (_: Request, res: Response): Promise<void> => {
+  res.clearCookie('access_token').send({
+    message: 'Successful Logout'
+  })
+}
