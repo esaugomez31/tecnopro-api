@@ -3,9 +3,11 @@ export interface iEnvs {
 }
 
 interface iApp {
+  node_env: TNode_env
   port: string
   password_salt: number
   db: iDB
+  secret_jwt_key: string
 }
 
 interface iDB {
@@ -15,3 +17,5 @@ interface iDB {
   username: string
   password: string
 }
+
+export type TNode_env = 'production' | 'development' | 'production-local'

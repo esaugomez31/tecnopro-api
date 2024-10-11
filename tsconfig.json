@@ -13,7 +13,11 @@
     "sourceMap": true,
 		"rootDir": "./src",
     "outDir": "build",
-		"strict": true
+		"strict": true,
+    "typeRoots": [
+      "./node_module/@types",
+      "./src/types"
+    ],
   },
   "lib": ["es2015"]
 }

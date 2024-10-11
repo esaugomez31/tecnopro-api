@@ -12,6 +12,7 @@ export interface iCreateUserDto {
 }
 
 export interface iUserPublicResponse {
+  id_user: number
   uuid: string | null
   name: string
   username: string
@@ -23,4 +24,11 @@ export interface iUserPublicResponse {
   last_login: Date | null
   time_zone: string | null
   id_rol?: number | null
+  access_token: string | null
+}
+
+export interface iUserJWT {
+  id_user: number
+  uuid: string | null
+  username: string
 }

@@ -1,4 +1,4 @@
-import express, { RequestHandler } from 'express'
+import express from 'express'
 import {
   userLoginController,
   userCreateController
@@ -7,11 +7,12 @@ import {
   validateUserCreation,
   validateUserLogin
 } from '../../../controllers/validations'
+import { authenticationJWT } from '../../../middlewares/authenticationjwt'
 
 const routes = express.Router()
 
-routes.post('/register', validateUserCreation(), userCreateController as RequestHandler)
-routes.post('/login', validateUserLogin(), userLoginController as RequestHandler)
+routes.post('/register', authenticationJWT, validateUserCreation(), userCreateController)
+routes.post('/login', validateUserLogin(), userLoginController)
 routes.post('/logout')
 
 export default routes

@@ -9,7 +9,7 @@ import {
   EmailExistsError
 } from '../errors/user.error'
 
-export const userLogin = async (usernameOrEmail: string, password: string): Promise<iUserPublicResponse | Error> => {
+export const userLogin = async (usernameOrEmail: string, password: string): Promise<iUserPublicResponse> => {
   try {
     // Searching for credential matches
     const user = await UserModel.findOne({
@@ -32,6 +32,7 @@ export const userLogin = async (usernameOrEmail: string, password: string): Prom
     await UserModel.save(user)
 
     return {
+      id_user: user.id_user,
       uuid: user.uuid,
       name: user.name,
       username: user.username,
@@ -42,7 +43,8 @@ export const userLogin = async (usernameOrEmail: string, password: string): Prom
       notifications: user.notifications,
       last_login: user.last_login,
       time_zone: user.time_zone,
-      id_rol: user.id_rol
+      id_rol: user.id_rol,
+      access_token: null
     }
   } catch (error) {
     logger.error(error)
