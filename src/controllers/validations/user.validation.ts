@@ -1,4 +1,4 @@
-import { body } from 'express-validator'
+import { body, query } from 'express-validator'
 import { handleValidationErrors } from '../../helpers'
 
 export const validateUserCreation = (): any => {
@@ -26,30 +26,30 @@ export const validateUserCreation = (): any => {
       .isEmail().withMessage('email must be a valid email')
       .notEmpty().withMessage('email is required'),
 
-    body('phone_number')
-      .optional().isString().withMessage('phone_number must be a string')
-      .matches(/^\+\d{1,3} \d{6,12}$/).withMessage('phone_number must be in the format (+503 12345678)'),
+    body('phoneNumber')
+      .optional().isString().withMessage('phoneNumber must be a string')
+      .matches(/^\+\d{1,3} \d{6,12}$/).withMessage('phoneNumber must be in the format (+503 12345678)'),
 
-    body('whatsapp_number')
-      .optional().isString().withMessage('whatsapp_number must be a string')
-      .matches(/^\+\d{1,3} \d{6,12}$/).withMessage('whatsapp_number must be in the format (+503 12345678)'),
+    body('whatsappNumber')
+      .optional().isString().withMessage('whatsappNumber must be a string')
+      .matches(/^\+\d{1,3} \d{6,12}$/).withMessage('whatsappNumber must be in the format (+503 12345678)'),
 
     body('notifications')
       .optional().isBoolean().withMessage('notifications must be a boolean')
       .custom((value: boolean, { req }) => {
-        if (value && req.body?.whatsapp_number === undefined) {
-          throw new Error('whatsapp_number is required when notifications is true')
+        if (value && req.body?.whatsappNumber === undefined) {
+          throw new Error('whatsappNumber is required when notifications is true')
         }
         return true
       }),
 
-    body('id_rol')
+    body('idRol')
       .optional()
       .custom(value => {
         if (value === null || typeof value === 'number') {
           return true
         }
-        throw new Error('id_rol must be a number or null')
+        throw new Error('idRol must be a number or null')
       }),
 
     handleValidationErrors
@@ -65,6 +65,32 @@ export const validateUserLogin = (): any => {
     body('password')
       .isString().withMessage('password must be a string')
       .notEmpty().withMessage('password is required'),
+
+    handleValidationErrors
+  ]
+}
+
+export const validateGetUsers = (): any => {
+  return [
+    query('page')
+      .isInt({ min: 1 }).withMessage('page must be an integer greater than or equal to 1')
+      .notEmpty().withMessage('page is required'),
+
+    query('limit')
+      .isInt({ min: 1, max: 100 }).withMessage('limit must be a integer between 1 and 100')
+      .notEmpty().withMessage('limit is required'),
+
+    query('username')
+      .optional().isString().withMessage('username must be a string'),
+
+    query('name')
+      .optional().isString().withMessage('name must be a string'),
+
+    query('email')
+      .optional().isString().withMessage('email must be a string'),
+
+    query('rol')
+      .optional().isInt().withMessage('rol must be an integer'),
 
     handleValidationErrors
   ]

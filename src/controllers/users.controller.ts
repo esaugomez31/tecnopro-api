@@ -2,7 +2,7 @@ import { Request, Response } from 'express'
 import jwt from 'jsonwebtoken'
 import envs from '../config/environment.config'
 import * as userService from '../services/users.service'
-import { iUserJWT } from '../interfaces/user.interfaces'
+import { iUserJWT, iUserFilterParams } from '../interfaces/user.interfaces'
 import {
   InvalidUserCredentialsError,
   UsernameExistsError,
@@ -34,21 +34,21 @@ export const userLoginController = async (req: Request, res: Response): Promise<
     const user = await userService.userLogin(usernameOrEmail, password)
     // Create JWT token
     const jwtPayload: iUserJWT = {
-      id_user: user.id_user, uuid: user.uuid, username: user.username
+      idUser: user.idUser, uuid: user.uuid, username: user.username
     }
     const token = jwt.sign(
       jwtPayload,
-      envs.app.secret_jwt_key,
+      envs.app.secretJwtKey,
       {
         expiresIn: '1h'
       }
     )
 
     // Sending cookie access token to client
-    user.access_token = token
-    res.cookie('access_token', token, {
+    user.accessToken = token
+    res.cookie('accessToken', token, {
       httpOnly: true,
-      secure: envs.app.node_env === 'production', // true only in production
+      secure: envs.app.nodeEnv === 'production', // true only in production
       sameSite: true,
       maxAge: 1000 * 60 * 60 * 1 // 1h duration
     })
@@ -69,7 +69,26 @@ export const userLoginController = async (req: Request, res: Response): Promise<
 }
 
 export const userLogoutController = async (_: Request, res: Response): Promise<void> => {
-  res.clearCookie('access_token').send({
+  res.clearCookie('accessToken').send({
     message: 'Successful Logout'
   })
+}
+
+export const userGetAll = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const params: iUserFilterParams = {
+      page: Number(req.query.page),
+      limit: Number(req.query.limit),
+      username: req.query.username as string | undefined,
+      name: req.query.name as string | undefined,
+      email: req.query.email as string | undefined,
+      idRol: req.query.idRol as number | undefined
+    }
+    const users = await userService.userGetAll(params)
+
+    res.json(users)
+  } catch (error) {
+    // Default error message
+    res.status(500).json({ error: 'Internal Server Error' })
+  }
 }

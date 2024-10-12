@@ -1,6 +1,7 @@
 import { v4 as uuidv4 } from 'uuid'
+import { Like } from 'typeorm'
 import { logger, hashPassword, comparePassword, getLocalDateTimeNow } from '../helpers'
-import { iUserPublicResponse } from '../interfaces/user.interfaces'
+import { iUserPublicResponse, iUserFilterParams, iUserQueryParams } from '../interfaces/user.interfaces'
 import { UserModel } from '../models'
 import {
   InvalidUserCredentialsError,
@@ -28,23 +29,23 @@ export const userLogin = async (usernameOrEmail: string, password: string): Prom
     }
 
     // Update last login datetime
-    user.last_login = new Date(getLocalDateTimeNow())
+    user.lastLogin = new Date(getLocalDateTimeNow())
     await UserModel.save(user)
 
     return {
-      id_user: user.id_user,
+      idUser: user.idUser,
       uuid: user.uuid,
       name: user.name,
       username: user.username,
-      phone_number: user.phone_number,
-      whatsapp_number: user.whatsapp_number,
+      phoneNumber: user.phoneNumber,
+      whatsappNumber: user.whatsappNumber,
       email: user.email,
       owner: user.owner,
       notifications: user.notifications,
-      last_login: user.last_login,
-      time_zone: user.time_zone,
-      id_rol: user.id_rol,
-      access_token: null
+      lastLogin: user.lastLogin,
+      timeZone: user.timeZone,
+      idRol: user.idRol,
+      accessToken: null
     }
   } catch (error) {
     logger.error(error)
@@ -82,12 +83,12 @@ export const userCreate = async (user: any): Promise<UserModel | Error> => {
       name: user.name,
       username: user.username,
       password: hashedPassword,
-      phone_number: user.phone_number ?? null,
-      whatsapp_number: user.whatsapp_number ?? null,
+      phoneNumber: user.phoneNumber ?? null,
+      whatsappNumber: user.whatsappNumber ?? null,
       email: user.email,
       notifications: user.notifications !== undefined ? Boolean(user.notifications) : false,
-      last_login: null,
-      id_rol: user.id_rol ?? null
+      lastLogin: null,
+      idRol: user.idRol ?? null
     }
 
     // Create user
@@ -95,6 +96,40 @@ export const userCreate = async (user: any): Promise<UserModel | Error> => {
     return createdUser
   } catch (error) {
     logger.error('Create user error:', error)
+    throw error
+  }
+}
+
+export const userGetAll = async (filterParams: iUserFilterParams): Promise<UserModel[] | Error> => {
+  try {
+    const filters: iUserQueryParams = {}
+    const { limit, page, username, name, email, idRol } = filterParams
+
+    if (username !== undefined) {
+      filters.username = Like(`%${username}%`)
+    }
+
+    if (name !== undefined) {
+      filters.name = Like(`%${name}%`)
+    }
+
+    if (email !== undefined) {
+      filters.email = Like(`%${email}%`)
+    }
+
+    if (idRol !== undefined) {
+      filters.idRol = idRol
+    }
+
+    // Pagination settings
+    const validPage = page > 0 ? page : 1
+    const skip = (validPage - 1) * limit
+
+    const users = await UserModel.find({ where: filters, take: limit, skip })
+
+    return users
+  } catch (error) {
+    logger.error('Get users error:', error)
     throw error
   }
 }

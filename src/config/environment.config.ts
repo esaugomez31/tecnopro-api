@@ -1,6 +1,6 @@
 import dotenv from 'dotenv'
 import { logger } from '../helpers'
-import { iEnvs, TNode_env } from '../interfaces/config/environment.interface'
+import { iEnvs, TypeNodeEnv } from '../interfaces/config/environment.interface'
 
 // Loading environment vars
 const env: string = process.env.NODE_ENV as string
@@ -20,10 +20,10 @@ const retrieveEnv = (variableName: string): string => {
 
 const envs: iEnvs = {
   app: {
-    node_env: retrieveEnv('NODE_ENV') as TNode_env,
+    nodeEnv: retrieveEnv('NODE_ENV') as TypeNodeEnv,
     port: retrieveEnv('PORT'),
-    password_salt: Number(retrieveEnv('PASS_SALT_ROUNDS')),
-    secret_jwt_key: retrieveEnv('SECRET_JWT_KEY'),
+    passwordSalt: Number(retrieveEnv('PASS_SALT_ROUNDS')),
+    secretJwtKey: retrieveEnv('SECRET_JWT_KEY'),
     db: {
       host: retrieveEnv('DB_HOST'),
       database: retrieveEnv('DB_NAME'),

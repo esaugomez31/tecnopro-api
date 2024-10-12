@@ -5,7 +5,7 @@ import envs from '../config/environment.config'
 import { iUserJWT } from '../interfaces/user.interfaces'
 
 export const authenticationJWT = (req: Request, res: Response, next: NextFunction): void => {
-  const token = req.cookies.access_token
+  const token = req.cookies.accessToken
 
   if (token === undefined) {
     res.status(403).json({ error: 'Access Not Authorized' })
@@ -13,8 +13,8 @@ export const authenticationJWT = (req: Request, res: Response, next: NextFunctio
   }
 
   try {
-    const data = jwt.verify(token, envs.app.secret_jwt_key) as iUserJWT
-    if (data?.id_user === undefined || data?.uuid === undefined || data?.username === undefined) {
+    const data = jwt.verify(token, envs.app.secretJwtKey) as iUserJWT
+    if (data?.idUser === undefined || data?.uuid === undefined || data?.username === undefined) {
       res.status(406).json({ error: 'Access Not Authorized' })
       return
     }

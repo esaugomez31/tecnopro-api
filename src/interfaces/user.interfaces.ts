@@ -1,34 +1,51 @@
-// src/interfaces/user.interfaces.ts
+import { iFilterParams } from './filter.interfaces'
+import { FindOperator } from 'typeorm'
 
 export interface iCreateUserDto {
   name: string
   username: string
   password: string
   email?: string
-  phone_number?: string
-  whatsapp_number?: string
+  phoneNumber?: string
+  whatsappNumber?: string
   notifications?: boolean
-  id_rol?: number | null
+  idRol?: number | null
 }
 
 export interface iUserPublicResponse {
-  id_user: number
+  idUser: number
   uuid: string | null
   name: string
   username: string
   email: string | null
   owner: boolean
-  phone_number: string | null
-  whatsapp_number: string | null
+  phoneNumber: string | null
+  whatsappNumber: string | null
   notifications?: boolean
-  last_login: Date | null
-  time_zone: string | null
-  id_rol?: number | null
-  access_token: string | null
+  lastLogin: Date | null
+  timeZone: string | null
+  idRol?: number | null
+  accessToken: string | null
 }
 
 export interface iUserJWT {
-  id_user: number
+  idUser: number
   uuid: string | null
   username: string
 }
+
+export interface iUserFilters {
+  username?: string
+  name?: string
+  email?: string
+  idRol?: number
+}
+
+export interface iUserQueryParams {
+  username?: FindOperator<string> | string
+  name?: FindOperator<string> | string
+  email?: FindOperator<string> | string
+  idRol?: number
+}
+
+export interface iUserFilterParams extends iFilterParams, iUserFilters {}
