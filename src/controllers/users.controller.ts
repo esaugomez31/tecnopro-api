@@ -40,7 +40,7 @@ export const userLoginController = async (req: Request, res: Response): Promise<
       jwtPayload,
       envs.app.secret_jwt_key,
       {
-        expiresIn: '10h'
+        expiresIn: '1h'
       }
     )
 
@@ -50,7 +50,7 @@ export const userLoginController = async (req: Request, res: Response): Promise<
       httpOnly: true,
       secure: envs.app.node_env === 'production', // true only in production
       sameSite: true,
-      maxAge: 1000 * 60 * 60 * 8 // 8h duration
+      maxAge: 1000 * 60 * 60 * 1 // 1h duration
     })
     res.json(user)
   } catch (error) {
