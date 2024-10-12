@@ -1,6 +1,5 @@
-import { iFilterParams } from './filter.interfaces'
 import { FindOperator } from 'typeorm'
-
+import { UserModel } from '../models'
 export interface iCreateUserDto {
   name: string
   username: string
@@ -48,4 +47,9 @@ export interface iUserQueryParams {
   idRol?: number
 }
 
-export interface iUserFilterParams extends iFilterParams, iUserFilters {}
+export interface iGetUsersResponse {
+  data: UserModel[]
+  total: number
+  page: number
+  totalPages: number
+}

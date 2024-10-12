@@ -1,5 +1,6 @@
 import { body, query } from 'express-validator'
 import { handleValidationErrors } from '../../helpers'
+import { validateFilterParams } from './filter.validation'
 
 export const validateUserCreation = (): any => {
   return [
@@ -72,13 +73,7 @@ export const validateUserLogin = (): any => {
 
 export const validateGetUsers = (): any => {
   return [
-    query('page')
-      .isInt({ min: 1 }).withMessage('page must be an integer greater than or equal to 1')
-      .notEmpty().withMessage('page is required'),
-
-    query('limit')
-      .isInt({ min: 1, max: 100 }).withMessage('limit must be a integer between 1 and 100')
-      .notEmpty().withMessage('limit is required'),
+    ...validateFilterParams(),
 
     query('username')
       .optional().isString().withMessage('username must be a string'),

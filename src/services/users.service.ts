@@ -1,8 +1,14 @@
 import { v4 as uuidv4 } from 'uuid'
 import { Like } from 'typeorm'
-import { logger, hashPassword, comparePassword, getLocalDateTimeNow } from '../helpers'
-import { iUserPublicResponse, iUserFilterParams, iUserQueryParams } from '../interfaces/user.interfaces'
 import { UserModel } from '../models'
+import { logger, hashPassword, comparePassword, getLocalDateTimeNow } from '../helpers'
+import { iFilterSettings } from '../interfaces/filter.interfaces'
+import {
+  iUserPublicResponse,
+  iUserFilters,
+  iUserQueryParams,
+  iGetUsersResponse
+} from '../interfaces/user.interfaces'
 import {
   InvalidUserCredentialsError,
   UsernameExistsError,
@@ -100,36 +106,63 @@ export const userCreate = async (user: any): Promise<UserModel | Error> => {
   }
 }
 
-export const userGetAll = async (filterParams: iUserFilterParams): Promise<UserModel[] | Error> => {
+export const userGetAll = async (filterParams: iUserFilters, settings: iFilterSettings): Promise<iGetUsersResponse | Error> => {
   try {
-    const filters: iUserQueryParams = {}
-    const { limit, page, username, name, email, idRol } = filterParams
+    const filters = getFilters(filterParams)
+    const publicSelect: Array<keyof UserModel> = [
+      'idUser',
+      'uuid',
+      'name',
+      'username',
+      'email',
+      'phoneNumber',
+      'whatsappNumber',
+      'owner',
+      'notifications',
+      'status',
+      'lastLogin',
+      'timeZone',
+      'idRol'
+    ]
+    const [users, totalCount] = await Promise.all([
+      UserModel.find({
+        select: publicSelect,
+        where: filters,
+        take: settings.limit,
+        skip: settings.skip,
+        order: settings.order
+      }),
+      UserModel.count({ where: filters })
+    ])
+    // Total pages calc
+    const totalPages = Math.ceil(totalCount / settings.limit)
 
-    if (username !== undefined) {
-      filters.username = Like(`%${username}%`)
-    }
-
-    if (name !== undefined) {
-      filters.name = Like(`%${name}%`)
-    }
-
-    if (email !== undefined) {
-      filters.email = Like(`%${email}%`)
-    }
-
-    if (idRol !== undefined) {
-      filters.idRol = idRol
-    }
-
-    // Pagination settings
-    const validPage = page > 0 ? page : 1
-    const skip = (validPage - 1) * limit
-
-    const users = await UserModel.find({ where: filters, take: limit, skip })
-
-    return users
+    return { data: users, total: totalCount, page: settings.page, totalPages }
   } catch (error) {
     logger.error('Get users error:', error)
     throw error
   }
+}
+
+const getFilters = (filterParams: iUserFilters): iUserQueryParams => {
+  const filters: iUserQueryParams = {}
+  const { username, name, email, idRol } = filterParams
+
+  if (username !== undefined) {
+    filters.username = Like(`%${username}%`)
+  }
+
+  if (name !== undefined) {
+    filters.name = Like(`%${name}%`)
+  }
+
+  if (email !== undefined) {
+    filters.email = Like(`%${email}%`)
+  }
+
+  if (idRol !== undefined) {
+    filters.idRol = idRol
+  }
+
+  return filters
 }

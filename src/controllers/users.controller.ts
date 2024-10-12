@@ -2,7 +2,8 @@ import { Request, Response } from 'express'
 import jwt from 'jsonwebtoken'
 import envs from '../config/environment.config'
 import * as userService from '../services/users.service'
-import { iUserJWT, iUserFilterParams } from '../interfaces/user.interfaces'
+import { iUserJWT, iUserFilters } from '../interfaces/user.interfaces'
+import { filtersettings } from '../helpers/pagination'
 import {
   InvalidUserCredentialsError,
   UsernameExistsError,
@@ -76,15 +77,15 @@ export const userLogoutController = async (_: Request, res: Response): Promise<v
 
 export const userGetAll = async (req: Request, res: Response): Promise<void> => {
   try {
-    const params: iUserFilterParams = {
-      page: Number(req.query.page),
-      limit: Number(req.query.limit),
+    const settings = filtersettings(req.query)
+
+    const params: iUserFilters = {
       username: req.query.username as string | undefined,
       name: req.query.name as string | undefined,
       email: req.query.email as string | undefined,
       idRol: req.query.idRol as number | undefined
     }
-    const users = await userService.userGetAll(params)
+    const users = await userService.userGetAll(params, settings)
 
     res.json(users)
   } catch (error) {
