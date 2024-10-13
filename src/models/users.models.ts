@@ -3,7 +3,7 @@ import { Entity, Column, PrimaryGeneratedColumn, BaseEntity } from 'typeorm'
 @Entity('users')
 export class UserModel extends BaseEntity {
   @PrimaryGeneratedColumn({ type: 'int', name: 'id_user' })
-    idUser: number
+    idUser?: number
 
   @Column({ type: 'varchar', length: 36, nullable: true })
     uuid: string | null
@@ -24,7 +24,7 @@ export class UserModel extends BaseEntity {
     whatsappNumber: string | null
 
   @Column({ type: 'varchar', length: 85, nullable: true })
-    email: string | null
+    email: string
 
   @Column({ type: 'tinyint', default: 0 })
     owner: boolean
@@ -39,7 +39,7 @@ export class UserModel extends BaseEntity {
     lastLogin: Date | null
 
   @Column({ type: 'varchar', default: 'America/El_Salvador', name: 'time_zone' })
-    timeZone: string | null
+    timeZone?: string | null
 
   @Column({ type: 'int', nullable: true, name: 'id_rol' })
     idRol: number | null

@@ -1,5 +1,5 @@
 import { body, query } from 'express-validator'
-import { handleValidationErrors } from '../../helpers'
+import { handleValidationErrors, stringToBoolean } from '../../helpers'
 import { validateFilterParams } from './filter.validation'
 
 export const validateUserCreation = (): any => {
@@ -29,11 +29,13 @@ export const validateUserCreation = (): any => {
 
     body('phoneNumber')
       .optional().isString().withMessage('phoneNumber must be a string')
-      .matches(/^\+\d{1,3} \d{6,12}$/).withMessage('phoneNumber must be in the format (+503 12345678)'),
+      .matches(/^\+\d{1,3} \d{6,12}$/).withMessage('phoneNumber must be in the format (+503 12345678)')
+      .customSanitizer(value => value ?? null),
 
     body('whatsappNumber')
       .optional().isString().withMessage('whatsappNumber must be a string')
-      .matches(/^\+\d{1,3} \d{6,12}$/).withMessage('whatsappNumber must be in the format (+503 12345678)'),
+      .matches(/^\+\d{1,3} \d{6,12}$/).withMessage('whatsappNumber must be in the format (+503 12345678)')
+      .customSanitizer(value => value ?? null),
 
     body('notifications')
       .optional().isBoolean().withMessage('notifications must be a boolean')
@@ -42,7 +44,8 @@ export const validateUserCreation = (): any => {
           throw new Error('whatsappNumber is required when notifications is true')
         }
         return true
-      }),
+      })
+      .customSanitizer(value => stringToBoolean(value) === true),
 
     body('idRol')
       .optional()
@@ -51,7 +54,8 @@ export const validateUserCreation = (): any => {
           return true
         }
         throw new Error('idRol must be a number or null')
-      }),
+      })
+      .customSanitizer(value => value ?? null),
 
     handleValidationErrors
   ]
@@ -76,16 +80,28 @@ export const validateGetUsers = (): any => {
     ...validateFilterParams(),
 
     query('username')
-      .optional().isString().withMessage('username must be a string'),
+      .optional().isString().withMessage('username must be a string')
+      .customSanitizer(value => value as string | undefined),
 
     query('name')
-      .optional().isString().withMessage('name must be a string'),
+      .optional().isString().withMessage('name must be a string')
+      .customSanitizer(value => value as string | undefined),
 
     query('email')
-      .optional().isString().withMessage('email must be a string'),
+      .optional().isString().withMessage('email must be a string')
+      .customSanitizer(value => value as string | undefined),
+
+    query('phoneNumber')
+      .optional().isString().withMessage('phoneNumber must be a string')
+      .customSanitizer(value => value as string | undefined),
+
+    query('status')
+      .optional().isBoolean().withMessage('status must be a boolean')
+      .customSanitizer(stringToBoolean),
 
     query('rol')
-      .optional().isInt().withMessage('rol must be an integer'),
+      .optional().isInt().withMessage('rol must be an integer')
+      .customSanitizer(value => value as number | undefined),
 
     handleValidationErrors
   ]

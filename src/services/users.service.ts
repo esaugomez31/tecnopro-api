@@ -54,12 +54,12 @@ export const userLogin = async (usernameOrEmail: string, password: string): Prom
       accessToken: null
     }
   } catch (error) {
-    logger.error(error)
+    logger.error('Login user error: ' + (error as Error).name)
     throw error
   }
 }
 
-export const userCreate = async (user: any): Promise<UserModel | Error> => {
+export const userCreate = async (user: UserModel): Promise<UserModel | Error> => {
   try {
     // Searching for username or email matches
     const existUser = await UserModel.findOne({
@@ -79,29 +79,16 @@ export const userCreate = async (user: any): Promise<UserModel | Error> => {
         throw new EmailExistsError()
       }
     }
-    // Hash password
-    const hashedPassword = hashPassword(user.password)
     // Generate UUID
-    const generatedUuid: string = uuidv4()
-    // Create a user object with all required properties
-    const newUser = {
-      uuid: generatedUuid,
-      name: user.name,
-      username: user.username,
-      password: hashedPassword,
-      phoneNumber: user.phoneNumber ?? null,
-      whatsappNumber: user.whatsappNumber ?? null,
-      email: user.email,
-      notifications: user.notifications !== undefined ? Boolean(user.notifications) : false,
-      lastLogin: null,
-      idRol: user.idRol ?? null
-    }
+    user.uuid = uuidv4()
+    // Hash password
+    user.password = hashPassword(user.password)
 
     // Create user
-    const createdUser = await UserModel.save(newUser)
+    const createdUser = await UserModel.save(user)
     return createdUser
   } catch (error) {
-    logger.error('Create user error:', error)
+    logger.error('Create user error: ' + (error as Error).name)
     throw error
   }
 }
@@ -137,16 +124,21 @@ export const userGetAll = async (filterParams: iUserFilters, settings: iFilterSe
     // Total pages calc
     const totalPages = Math.ceil(totalCount / settings.limit)
 
-    return { data: users, total: totalCount, page: settings.page, totalPages }
+    return {
+      data: users,
+      total: totalCount,
+      page: totalPages > 0 ? settings.page : 0,
+      totalPages
+    }
   } catch (error) {
-    logger.error('Get users error:', error)
+    logger.error('Get users error: ' + (error as Error).name)
     throw error
   }
 }
 
 const getFilters = (filterParams: iUserFilters): iUserQueryParams => {
   const filters: iUserQueryParams = {}
-  const { username, name, email, idRol } = filterParams
+  const { username, name, email, idRol, phoneNumber, status } = filterParams
 
   if (username !== undefined) {
     filters.username = Like(`%${username}%`)
@@ -158,6 +150,14 @@ const getFilters = (filterParams: iUserFilters): iUserQueryParams => {
 
   if (email !== undefined) {
     filters.email = Like(`%${email}%`)
+  }
+
+  if (phoneNumber !== undefined) {
+    filters.phoneNumber = Like(`%${phoneNumber}%`)
+  }
+
+  if (status !== undefined) {
+    filters.status = status
   }
 
   if (idRol !== undefined) {

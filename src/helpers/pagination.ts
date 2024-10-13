@@ -1,10 +1,10 @@
 import { iFilterSettings } from '../interfaces/filter.interfaces'
 
 export const filtersettings = (params: any): iFilterSettings => {
-  const page = Number(params.page)
-  const limit = Number(params.limit)
-  const orderBy = params.orderBy as string
-  const orderDirection = params.orderDirection as string
+  const page = params.page
+  const limit = params.limit
+  const orderBy = params.orderBy
+  const orderDirection = params.orderDirection
 
   // Sorting settings
   const order: { [key: string]: 'ASC' | 'DESC' } = {}

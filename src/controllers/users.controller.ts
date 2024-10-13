@@ -2,8 +2,14 @@ import { Request, Response } from 'express'
 import jwt from 'jsonwebtoken'
 import envs from '../config/environment.config'
 import * as userService from '../services/users.service'
-import { iUserJWT, iUserFilters } from '../interfaces/user.interfaces'
-import { filtersettings } from '../helpers/pagination'
+import {
+  iUserJWT,
+  iUserFilters,
+  iUserGetCustomRequest,
+  iUserCreateCustomRequest
+} from '../interfaces/user.interfaces'
+import { UserModel } from '../models'
+import { filtersettings } from '../helpers'
 import {
   InvalidUserCredentialsError,
   UsernameExistsError,
@@ -11,31 +17,41 @@ import {
   EmailExistsError
 } from '../errors/user.error'
 
-export const userCreateController = async (req: Request, res: Response): Promise<void> => {
+export const userCreateController = async (req: iUserCreateCustomRequest, res: Response): Promise<void> => {
   try {
-    // Receiving the body parameters
-    const data = req.body
-    const users = await userService.userCreate(data)
+    const body = req.body
+    // Model user object
+    const payload = new UserModel()
+    payload.name = body.name
+    payload.username = body.username
+    payload.password = body.password
+    payload.phoneNumber = body.phoneNumber
+    payload.whatsappNumber = body.whatsappNumber
+    payload.email = body.email
+    payload.notifications = body.notifications
+    payload.idRol = body.idRol
+    const users = await userService.userCreate(payload)
 
     res.json(users)
   } catch (error) {
     if (error instanceof UsernameExistsError || error instanceof EmailExistsError) {
-      res.status(409).json({ error: error.name })
+      res.status(409).json({ error: error.name, message: error.message })
       return
     }
     // Default error message
-    res.status(500).json({ error: 'Internal Server Error' })
+    res.status(500).json({ error: 'Internal server error' })
   }
 }
 
 export const userLoginController = async (req: Request, res: Response): Promise<void> => {
   try {
-    // Receiving the body parameters
     const { usernameOrEmail, password } = req.body
+    // Login user controller
     const user = await userService.userLogin(usernameOrEmail, password)
+
     // Create JWT token
     const jwtPayload: iUserJWT = {
-      idUser: user.idUser, uuid: user.uuid, username: user.username
+      idUser: user.idUser as number, uuid: user.uuid, username: user.username
     }
     const token = jwt.sign(
       jwtPayload,
@@ -45,51 +61,56 @@ export const userLoginController = async (req: Request, res: Response): Promise<
       }
     )
 
-    // Sending cookie access token to client
+    // Sending cookie accessToken to client
     user.accessToken = token
     res.cookie('accessToken', token, {
       httpOnly: true,
-      secure: envs.app.nodeEnv === 'production', // true only in production
+      secure: envs.app.nodeEnv === 'production', // Only in production
       sameSite: true,
       maxAge: 1000 * 60 * 60 * 1 // 1h duration
     })
     res.json(user)
   } catch (error) {
     if (error instanceof InvalidUserCredentialsError) {
-      res.status(401).json({ error: error.name })
+      res.status(401).json({ error: error.name, message: error.message })
       return
     }
 
     if (error instanceof UserNotFoundError) {
-      res.status(404).json({ error: error.name })
+      res.status(404).json({ error: error.name, message: error.message })
       return
     }
     // Default error message
-    res.status(500).json({ error: 'Internal Server Error' })
+    res.status(500).json({ error: 'Internal server error' })
   }
 }
 
 export const userLogoutController = async (_: Request, res: Response): Promise<void> => {
   res.clearCookie('accessToken').send({
-    message: 'Successful Logout'
+    message: 'Successful logout'
   })
 }
 
-export const userGetAll = async (req: Request, res: Response): Promise<void> => {
+export const userGetAll = async (req: iUserGetCustomRequest, res: Response): Promise<void> => {
   try {
-    const settings = filtersettings(req.query)
-
+    const query = req.query
+    // Filter params settings
+    const settings = filtersettings(query)
+    // Filter params user
     const params: iUserFilters = {
-      username: req.query.username as string | undefined,
-      name: req.query.name as string | undefined,
-      email: req.query.email as string | undefined,
-      idRol: req.query.idRol as number | undefined
+      username: query.username,
+      name: query.name,
+      email: query.email,
+      phoneNumber: query.phoneNumber,
+      status: query.status,
+      idRol: query.idRol
     }
+
     const users = await userService.userGetAll(params, settings)
 
     res.json(users)
   } catch (error) {
     // Default error message
-    res.status(500).json({ error: 'Internal Server Error' })
+    res.status(500).json({ error: 'Internal server error' })
   }
 }

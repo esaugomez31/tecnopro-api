@@ -9,7 +9,7 @@ import {
   validateUserCreation,
   validateUserLogin,
   validateGetUsers
-} from '../../../controllers/validations'
+} from '../../../middlewares/validations'
 import { authenticationJWT } from '../../../middlewares/authenticationjwt'
 
 const routes = express.Router()
