@@ -20,6 +20,7 @@ import {
 export const userCreateController = async (req: iUserCommonRequest, res: Response): Promise<void> => {
   try {
     const body = req.body
+
     // Model user object
     const payload = new UserModel()
     payload.name = body.name
@@ -30,6 +31,7 @@ export const userCreateController = async (req: iUserCommonRequest, res: Respons
     payload.email = body.email
     payload.notifications = body.notifications
     payload.idRol = body.idRol
+
     const { password: _, ...user } = await userService.userCreate(payload)
 
     res.json(user)
@@ -47,6 +49,7 @@ export const userUpdateController = async (req: iUserCommonRequest, res: Respons
   try {
     const body = req.body
     const idUser = Number(req.params.idUser)
+
     // Model user object
     const payload = new UserModel()
     payload.name = body.name
@@ -58,6 +61,7 @@ export const userUpdateController = async (req: iUserCommonRequest, res: Respons
     payload.email = body.email
     payload.notifications = body.notifications
     payload.idRol = body.idRol
+
     const { password: _, ...user } = await userService.userUpdate(payload, idUser)
 
     res.json(user)
