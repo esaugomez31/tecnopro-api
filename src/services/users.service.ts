@@ -146,7 +146,7 @@ export const userGetAll = async (filterParams: iUserFilters, settings: iFilterSe
 export const userGetbyId = async (idUser: number): Promise<iGetUserByIdResponse> => {
   try {
     const user = await UserModel.findOne({
-      where: { idUser, status: true }
+      where: { idUser }
     })
     return { data: user ?? {} }
   } catch (error) {
