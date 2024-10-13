@@ -3,16 +3,6 @@ import { Request } from 'express'
 import { ParsedQs } from 'qs'
 import { UserModel } from '../models'
 import { iFilterSettings } from './filter.interfaces'
-export interface iCreateUserDto {
-  name: string
-  username: string
-  password: string
-  email?: string
-  phoneNumber?: string
-  whatsappNumber?: string
-  notifications?: boolean
-  idRol?: number | null
-}
 export interface iUserCreateCustomRequest extends Request {
   body: UserModel & ParsedQs
 }
