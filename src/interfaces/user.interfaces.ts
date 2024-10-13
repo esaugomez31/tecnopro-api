@@ -51,6 +51,6 @@ export interface iUserGetCustomRequest extends Request {
   query: iUserFilters & iFilterSettings & ParsedQs
 }
 // Custom request to type users create controllers
-export interface iUserCreateCustomRequest extends Request {
-  body: UserModel & ParsedQs
+export interface iUserCommonRequest extends Request {
+  body: Omit<UserModel, OrmOperationAttributes> & ParsedQs
 }

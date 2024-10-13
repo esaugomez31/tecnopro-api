@@ -79,23 +79,7 @@ export const userLogin = async (usernameOrEmail: string, password: string): Prom
 export const userCreate = async (user: UserModel): Promise<UserModel> => {
   try {
     // Searching for username or email matches
-    const existUser = await UserModel.findOne({
-      where: [
-        { username: user.username },
-        { email: user.email }
-      ]
-    })
-
-    if (existUser !== null) {
-      // Searching for username matches
-      if (existUser.username === user.username) {
-        throw new UsernameExistsError()
-      }
-      // Searching for email matches
-      if (existUser.email === user.email) {
-        throw new EmailExistsError()
-      }
-    }
+    await userOrEmailExist(user.username, user.email)
     // Generate UUID
     user.uuid = uuidv4()
     // Hash password
@@ -106,6 +90,27 @@ export const userCreate = async (user: UserModel): Promise<UserModel> => {
     return createdUser
   } catch (error) {
     logger.error('Create user error: ' + (error as Error).name)
+    throw error
+  }
+}
+
+export const userUpdate = async (user: UserModel, idUser: number): Promise<UserModel> => {
+  try {
+    // Searching for username or email matches
+    await userOrEmailExist(user.username, user.email, idUser)
+
+    // Hash password
+    if (user.password !== undefined) {
+      user.password = hashPassword(user.password)
+    }
+
+    // update user
+    const updatedUser = await UserModel.save({
+      idUser, ...user
+    })
+    return updatedUser
+  } catch (error) {
+    logger.error('Update user error: ' + (error as Error).name)
     throw error
   }
 }
@@ -179,4 +184,34 @@ const getFilters = (filterParams: iUserFilters): iUserQueryParams => {
   }
 
   return filters
+}
+
+const userOrEmailExist = async (username: string | undefined, email: string | undefined, idUser: number | undefined = undefined): Promise<void> => {
+  if (username === undefined && email === undefined) return
+
+  const filters: iUserQueryParams[] = []
+
+  if (username !== undefined) {
+    filters.push({ username })
+  }
+
+  if (email !== undefined) {
+    filters.push({ email })
+  }
+
+  const existUser = await UserModel.findOne({
+    select: ['idUser', 'email', 'username'],
+    where: filters
+  })
+
+  if (existUser !== null) {
+    // Searching for username matches
+    if (existUser.username === username && existUser.idUser !== idUser) {
+      throw new UsernameExistsError()
+    }
+    // Searching for email matches
+    if (existUser.email === email && existUser.idUser !== idUser) {
+      throw new EmailExistsError()
+    }
+  }
 }

@@ -6,7 +6,7 @@ import {
   iUserJWT,
   iUserFilters,
   iUserGetCustomRequest,
-  iUserCreateCustomRequest
+  iUserCommonRequest
 } from '../interfaces/user.interfaces'
 import { UserModel } from '../models'
 import { filtersettings } from '../helpers'
@@ -17,7 +17,7 @@ import {
   EmailExistsError
 } from '../errors/user.error'
 
-export const userCreateController = async (req: iUserCreateCustomRequest, res: Response): Promise<void> => {
+export const userCreateController = async (req: iUserCommonRequest, res: Response): Promise<void> => {
   try {
     const body = req.body
     // Model user object
@@ -30,9 +30,37 @@ export const userCreateController = async (req: iUserCreateCustomRequest, res: R
     payload.email = body.email
     payload.notifications = body.notifications
     payload.idRol = body.idRol
-    const users = await userService.userCreate(payload)
+    const { password: _, ...user } = await userService.userCreate(payload)
 
-    res.json(users)
+    res.json(user)
+  } catch (error) {
+    if (error instanceof UsernameExistsError || error instanceof EmailExistsError) {
+      res.status(409).json({ error: error.name, message: error.message })
+      return
+    }
+    // Default error message
+    res.status(500).json({ error: 'Internal server error' })
+  }
+}
+
+export const userUpdateController = async (req: iUserCommonRequest, res: Response): Promise<void> => {
+  try {
+    const body = req.body
+    const idUser = Number(req.params.idUser)
+    // Model user object
+    const payload = new UserModel()
+    payload.name = body.name
+    payload.username = body.username
+    payload.password = body.password
+    payload.status = body.status
+    payload.phoneNumber = body.phoneNumber
+    payload.whatsappNumber = body.whatsappNumber
+    payload.email = body.email
+    payload.notifications = body.notifications
+    payload.idRol = body.idRol
+    const { password: _, ...user } = await userService.userUpdate(payload, idUser)
+
+    res.json(user)
   } catch (error) {
     if (error instanceof UsernameExistsError || error instanceof EmailExistsError) {
       res.status(409).json({ error: error.name, message: error.message })
