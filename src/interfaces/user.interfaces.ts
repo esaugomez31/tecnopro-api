@@ -33,12 +33,17 @@ export interface iUserQueryParams extends Omit<iUserFilters, 'username' | 'name'
   phoneNumber?: FindOperator<string> | string
 }
 
-// Interface for public information on user get data methods
+// Multi users response interface
 export interface iGetUsersResponse {
   data: UserModel[]
   total: number
   page: number
   totalPages: number
+}
+
+// Unique user response
+export interface iGetUserByIdResponse {
+  data: UserModel | {}
 }
 
 // Custom request to type users get controllers

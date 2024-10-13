@@ -3,14 +3,18 @@ import {
   userLoginController,
   userCreateController,
   userLogoutController,
-  userGetAll
+  userGetAll,
+  userGetById
 } from '../../../controllers/users.controller'
 import {
   validateUserCreation,
   validateUserLogin,
-  validateGetUsers
+  validateGetUsers,
+  validateGetById
 } from '../../../middlewares/validations'
-import { authenticationJWT } from '../../../middlewares/authenticationjwt'
+import {
+  authenticationJWT
+} from '../../../middlewares/authenticationjwt'
 
 const routes = express.Router()
 
@@ -19,7 +23,8 @@ routes.post('/login', validateUserLogin(), userLoginController)
 routes.post('/logout', authenticationJWT, userLogoutController)
 routes.post('/register', authenticationJWT, validateUserCreation(), userCreateController)
 
-// Get all users
+// Get users
 routes.get('/', authenticationJWT, validateGetUsers(), userGetAll)
+routes.get('/:idUser', authenticationJWT, validateGetById(), userGetById)
 
 export default routes

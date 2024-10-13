@@ -7,7 +7,8 @@ import {
   iUserPublicResponse,
   iUserFilters,
   iUserQueryParams,
-  iGetUsersResponse
+  iGetUsersResponse,
+  iGetUserByIdResponse
 } from '../interfaces/user.interfaces'
 import {
   InvalidUserCredentialsError,
@@ -15,6 +16,22 @@ import {
   UserNotFoundError,
   EmailExistsError
 } from '../errors/user.error'
+
+const publicSelect: Array<keyof UserModel> = [
+  'idUser',
+  'uuid',
+  'name',
+  'username',
+  'email',
+  'phoneNumber',
+  'whatsappNumber',
+  'owner',
+  'notifications',
+  'status',
+  'lastLogin',
+  'timeZone',
+  'idRol'
+]
 
 export const userLogin = async (usernameOrEmail: string, password: string): Promise<iUserPublicResponse> => {
   try {
@@ -59,7 +76,7 @@ export const userLogin = async (usernameOrEmail: string, password: string): Prom
   }
 }
 
-export const userCreate = async (user: UserModel): Promise<UserModel | Error> => {
+export const userCreate = async (user: UserModel): Promise<UserModel> => {
   try {
     // Searching for username or email matches
     const existUser = await UserModel.findOne({
@@ -93,24 +110,9 @@ export const userCreate = async (user: UserModel): Promise<UserModel | Error> =>
   }
 }
 
-export const userGetAll = async (filterParams: iUserFilters, settings: iFilterSettings): Promise<iGetUsersResponse | Error> => {
+export const userGetAll = async (filterParams: iUserFilters, settings: iFilterSettings): Promise<iGetUsersResponse> => {
   try {
     const filters = getFilters(filterParams)
-    const publicSelect: Array<keyof UserModel> = [
-      'idUser',
-      'uuid',
-      'name',
-      'username',
-      'email',
-      'phoneNumber',
-      'whatsappNumber',
-      'owner',
-      'notifications',
-      'status',
-      'lastLogin',
-      'timeZone',
-      'idRol'
-    ]
     const [users, totalCount] = await Promise.all([
       UserModel.find({
         select: publicSelect,
@@ -132,6 +134,18 @@ export const userGetAll = async (filterParams: iUserFilters, settings: iFilterSe
     }
   } catch (error) {
     logger.error('Get users error: ' + (error as Error).name)
+    throw error
+  }
+}
+
+export const userGetbyId = async (idUser: number): Promise<iGetUserByIdResponse> => {
+  try {
+    const user = await UserModel.findOne({
+      where: { idUser, status: true }
+    })
+    return { data: user ?? {} }
+  } catch (error) {
+    logger.error('Get user by id error: ' + (error as Error).name)
     throw error
   }
 }

@@ -114,3 +114,17 @@ export const userGetAll = async (req: iUserGetCustomRequest, res: Response): Pro
     res.status(500).json({ error: 'Internal server error' })
   }
 }
+
+export const userGetById = async (req: Request, res: Response): Promise<void> => {
+  try {
+    // Get user id param
+    const idUser: number = Number(req.params.idUser)
+
+    const users = await userService.userGetbyId(idUser)
+
+    res.json(users)
+  } catch (error) {
+    // Default error message
+    res.status(500).json({ error: 'Internal server error' })
+  }
+}

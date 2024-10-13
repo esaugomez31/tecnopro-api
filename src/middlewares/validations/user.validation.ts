@@ -1,4 +1,4 @@
-import { body, query } from 'express-validator'
+import { body, query, param } from 'express-validator'
 import { handleValidationErrors, stringToBoolean } from '../../helpers'
 import { validateFilterParams } from './filter.validation'
 
@@ -102,6 +102,16 @@ export const validateGetUsers = (): any => {
     query('rol')
       .optional().isInt().withMessage('rol must be an integer')
       .customSanitizer(value => value as number | undefined),
+
+    handleValidationErrors
+  ]
+}
+
+export const validateGetById = (): any => {
+  return [
+    param('idUser')
+      .isInt().withMessage('idUser must be an integer')
+      .customSanitizer(Number),
 
     handleValidationErrors
   ]
