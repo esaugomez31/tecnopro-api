@@ -1,4 +1,5 @@
-import { Entity, Column, PrimaryGeneratedColumn, BaseEntity } from 'typeorm'
+import { Entity, Column, PrimaryGeneratedColumn, BaseEntity, ManyToOne, JoinColumn } from 'typeorm'
+import { RoleModel } from './roles.models'
 
 @Entity('users')
 export class UserModel extends BaseEntity {
@@ -41,6 +42,7 @@ export class UserModel extends BaseEntity {
   @Column({ type: 'varchar', default: 'America/El_Salvador', name: 'time_zone' })
     timeZone?: string | null
 
-  @Column({ type: 'int', nullable: true, name: 'id_rol' })
-    idRol: number | null
+  @ManyToOne(() => RoleModel, role => role.idRole, { nullable: true })
+  @JoinColumn({ name: 'id_role' })
+    idRole?: number
 }

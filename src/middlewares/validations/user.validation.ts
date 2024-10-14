@@ -2,6 +2,8 @@ import { body, query, param } from 'express-validator'
 import { handleValidationErrors, stringToBoolean } from '../../helpers'
 import { validateFilterParams } from './filter.validation'
 
+const validSortFields = ['idUser', 'username', 'name', 'email', 'idRole']
+
 const userCommonValidations = (optional = false): any => [
   body('name')
     .optional(optional).isString().withMessage('name must be a string')
@@ -46,13 +48,13 @@ const userCommonValidations = (optional = false): any => [
     })
     .customSanitizer(value => stringToBoolean(value) === true),
 
-  body('idRol')
+  body('idRole')
     .optional()
     .custom(value => {
       if (value === null || typeof value === 'number') {
         return true
       }
-      throw new Error('idRol must be a number or null')
+      throw new Error('idRole must be a number or null')
     })
     .customSanitizer(value => value ?? null)
 ]
@@ -97,7 +99,7 @@ export const validateUserLogin = (): any => {
 
 export const validateGetUsers = (): any => {
   return [
-    ...validateFilterParams(),
+    ...validateFilterParams(validSortFields),
 
     query('username')
       .optional().isString().withMessage('username must be a string')
@@ -119,15 +121,15 @@ export const validateGetUsers = (): any => {
       .optional().isBoolean().withMessage('status must be a boolean')
       .customSanitizer(stringToBoolean),
 
-    query('rol')
-      .optional().isInt().withMessage('rol must be an integer')
+    query('idRole')
+      .optional().isInt().withMessage('idRole must be an integer')
       .customSanitizer(value => value as number | undefined),
 
     handleValidationErrors
   ]
 }
 
-export const validateGetById = (): any => {
+export const validateGetUserById = (): any => {
   return [
     param('idUser')
       .isInt().withMessage('idUser must be an integer')

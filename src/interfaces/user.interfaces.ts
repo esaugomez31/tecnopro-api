@@ -19,12 +19,14 @@ export interface iUserFilters {
   email?: string
   phoneNumber?: string
   status?: boolean
-  idRol?: number
+  idRole?: number
 }
+
 // User public info
 export interface iUserPublicResponse extends Omit<UserModel, 'password' | 'status' | OrmOperationAttributes> {
   accessToken: string | null
 }
+
 // Filter options to use in typeorm
 export interface iUserQueryParams extends Omit<iUserFilters, 'username' | 'name' | 'email' | 'phoneNumber'> {
   username?: FindOperator<string> | string
@@ -50,6 +52,7 @@ export interface iGetUserByIdResponse {
 export interface iUserGetCustomRequest extends Request {
   query: iUserFilters & iFilterSettings & ParsedQs
 }
+
 // Custom request to type users create controllers
 export interface iUserCommonRequest extends Request {
   body: Omit<UserModel, OrmOperationAttributes> & ParsedQs

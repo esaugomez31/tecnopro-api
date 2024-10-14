@@ -4,15 +4,15 @@ import {
   userCreateController,
   userUpdateController,
   userLogoutController,
-  userGetAll,
-  userGetById
+  userGetAllController,
+  userGetByIdController
 } from '../../../controllers/users.controller'
 import {
   validateUserCreation,
   validateUserUpdate,
   validateUserLogin,
   validateGetUsers,
-  validateGetById
+  validateGetUserById
 } from '../../../middlewares/validations'
 import {
   authenticationJWT
@@ -25,8 +25,8 @@ routes.post('/login', validateUserLogin(), userLoginController)
 routes.post('/logout', authenticationJWT, userLogoutController)
 
 // Get users
-routes.get('/', authenticationJWT, validateGetUsers(), userGetAll)
-routes.get('/:idUser', authenticationJWT, validateGetById(), userGetById)
+routes.get('/', authenticationJWT, validateGetUsers(), userGetAllController)
+routes.get('/:idUser', authenticationJWT, validateGetUserById(), userGetByIdController)
 
 // User actions
 routes.post('/register', authenticationJWT, validateUserCreation(), userCreateController)

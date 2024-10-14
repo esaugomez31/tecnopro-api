@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from 'uuid'
 import { Like } from 'typeorm'
-import { UserModel } from '../models'
+import { UserModel, RoleModel } from '../models'
 import { logger, hashPassword, comparePassword, getLocalDateTimeNow } from '../helpers'
 import { iFilterSettings } from '../interfaces/filter.interfaces'
 import {
@@ -16,6 +16,7 @@ import {
   UserNotFoundError,
   EmailExistsError
 } from '../errors/user.error'
+import { IDRoleNotFoundError } from '../errors/role.error'
 
 const publicSelect: Array<keyof UserModel> = [
   'idUser',
@@ -30,7 +31,7 @@ const publicSelect: Array<keyof UserModel> = [
   'status',
   'lastLogin',
   'timeZone',
-  'idRol'
+  'idRole'
 ]
 
 export const userLogin = async (usernameOrEmail: string, password: string): Promise<iUserPublicResponse> => {
@@ -67,7 +68,7 @@ export const userLogin = async (usernameOrEmail: string, password: string): Prom
       notifications: user.notifications,
       lastLogin: user.lastLogin,
       timeZone: user.timeZone,
-      idRol: user.idRol,
+      idRole: user.idRole,
       accessToken: null
     }
   } catch (error) {
@@ -79,7 +80,7 @@ export const userLogin = async (usernameOrEmail: string, password: string): Prom
 export const userCreate = async (user: UserModel): Promise<UserModel> => {
   try {
     // Searching for username or email matches
-    await userOrEmailExist(user.username, user.email)
+    await userRequitedValidations(user.username, user.email, user.idRole)
     // Generate UUID
     user.uuid = uuidv4()
     // Hash password
@@ -97,7 +98,7 @@ export const userCreate = async (user: UserModel): Promise<UserModel> => {
 export const userUpdate = async (user: UserModel, idUser: number): Promise<UserModel> => {
   try {
     // Searching for username or email matches
-    await userOrEmailExist(user.username, user.email, idUser)
+    await userRequitedValidations(user.username, user.email, user.idRole, idUser)
 
     // Hash password
     if (user.password !== undefined) {
@@ -143,7 +144,7 @@ export const userGetAll = async (filterParams: iUserFilters, settings: iFilterSe
   }
 }
 
-export const userGetbyId = async (idUser: number): Promise<iGetUserByIdResponse> => {
+export const userGetById = async (idUser: number): Promise<iGetUserByIdResponse> => {
   try {
     const user = await UserModel.findOne({
       where: { idUser }
@@ -157,7 +158,7 @@ export const userGetbyId = async (idUser: number): Promise<iGetUserByIdResponse>
 
 const getFilters = (filterParams: iUserFilters): iUserQueryParams => {
   const filters: iUserQueryParams = {}
-  const { username, name, email, idRol, phoneNumber, status } = filterParams
+  const { username, name, email, idRole, phoneNumber, status } = filterParams
 
   if (username !== undefined) {
     filters.username = Like(`%${username}%`)
@@ -179,31 +180,40 @@ const getFilters = (filterParams: iUserFilters): iUserQueryParams => {
     filters.status = status
   }
 
-  if (idRol !== undefined) {
-    filters.idRol = idRol
+  if (idRole !== undefined) {
+    filters.idRole = idRole
   }
 
   return filters
 }
 
-const userOrEmailExist = async (username: string | undefined, email: string | undefined, idUser: number | undefined = undefined): Promise<void> => {
-  if (username === undefined && email === undefined) return
+const userRequitedValidations = async (username?: string, email?: string, idRole?: number, idUser?: number): Promise<void> => {
+  if (username === undefined && email === undefined && idRole === undefined) return
 
-  const filters: iUserQueryParams[] = []
+  const userFilters: iUserQueryParams[] = []
 
   if (username !== undefined) {
-    filters.push({ username })
+    userFilters.push({ username })
   }
 
   if (email !== undefined) {
-    filters.push({ email })
+    userFilters.push({ email })
   }
 
-  const existUser = await UserModel.findOne({
-    select: ['idUser', 'email', 'username'],
-    where: filters
-  })
+  const [existUser, existRole]: [UserModel | null, RoleModel | null] = await Promise.all([
+    (username !== undefined || email !== undefined)
+      ? UserModel.findOne({
+        select: ['idUser', 'email', 'username'],
+        where: userFilters
+      })
+      : Promise.resolve(null),
 
+    (idRole !== undefined)
+      ? RoleModel.findOne({ where: { idRole } })
+      : Promise.resolve(null)
+  ])
+
+  // Conditions for user and email
   if (existUser !== null) {
     // Searching for username matches
     if (existUser.username === username && existUser.idUser !== idUser) {
@@ -213,5 +223,10 @@ const userOrEmailExist = async (username: string | undefined, email: string | un
     if (existUser.email === email && existUser.idUser !== idUser) {
       throw new EmailExistsError()
     }
+  }
+
+  // Conditions for roles
+  if (idRole !== undefined && existRole === null) {
+    throw new IDRoleNotFoundError()
   }
 }

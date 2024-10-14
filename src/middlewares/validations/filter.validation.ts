@@ -1,8 +1,6 @@
 import { query } from 'express-validator'
 
-const validSortFields = ['idUser', 'username', 'name', 'email', 'idRol']
-
-export const validateFilterParams = (): any => {
+export const validateFilterParams = (validSortFields: string[]): any => {
   return [
     query('page')
       .isInt({ min: 1 }).withMessage('page must be an integer greater than or equal to 1')

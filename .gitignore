@@ -1,6 +1,7 @@
 # app settings
 /node_modules/
 /build/
+.vscode
 package-lock.json
 .env.development
 .env.production

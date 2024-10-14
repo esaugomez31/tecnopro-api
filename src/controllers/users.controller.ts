@@ -10,6 +10,7 @@ import {
 } from '../interfaces/user.interfaces'
 import { UserModel } from '../models'
 import { filtersettings } from '../helpers'
+import { IDRoleNotFoundError } from '../errors/role.error'
 import {
   InvalidUserCredentialsError,
   UsernameExistsError,
@@ -30,7 +31,7 @@ export const userCreateController = async (req: iUserCommonRequest, res: Respons
     payload.whatsappNumber = body.whatsappNumber
     payload.email = body.email
     payload.notifications = body.notifications
-    payload.idRol = body.idRol
+    payload.idRole = body.idRole
 
     const { password: _, ...user } = await userService.userCreate(payload)
 
@@ -40,6 +41,12 @@ export const userCreateController = async (req: iUserCommonRequest, res: Respons
       res.status(409).json({ error: error.name, message: error.message })
       return
     }
+
+    if (error instanceof IDRoleNotFoundError) {
+      res.status(400).json({ error: error.name, message: error.message })
+      return
+    }
+
     // Default error message
     res.status(500).json({ error: 'Internal server error' })
   }
@@ -60,7 +67,7 @@ export const userUpdateController = async (req: iUserCommonRequest, res: Respons
     payload.whatsappNumber = body.whatsappNumber
     payload.email = body.email
     payload.notifications = body.notifications
-    payload.idRol = body.idRol
+    payload.idRole = body.idRole
 
     const { password: _, ...user } = await userService.userUpdate(payload, idUser)
 
@@ -70,6 +77,12 @@ export const userUpdateController = async (req: iUserCommonRequest, res: Respons
       res.status(409).json({ error: error.name, message: error.message })
       return
     }
+
+    if (error instanceof IDRoleNotFoundError) {
+      res.status(400).json({ error: error.name, message: error.message })
+      return
+    }
+
     // Default error message
     res.status(500).json({ error: 'Internal server error' })
   }
@@ -123,7 +136,7 @@ export const userLogoutController = async (_: Request, res: Response): Promise<v
   })
 }
 
-export const userGetAll = async (req: iUserGetCustomRequest, res: Response): Promise<void> => {
+export const userGetAllController = async (req: iUserGetCustomRequest, res: Response): Promise<void> => {
   try {
     const query = req.query
     // Filter params settings
@@ -135,7 +148,7 @@ export const userGetAll = async (req: iUserGetCustomRequest, res: Response): Pro
       email: query.email,
       phoneNumber: query.phoneNumber,
       status: query.status,
-      idRol: query.idRol
+      idRole: query.idRole
     }
 
     const users = await userService.userGetAll(params, settings)
@@ -147,12 +160,12 @@ export const userGetAll = async (req: iUserGetCustomRequest, res: Response): Pro
   }
 }
 
-export const userGetById = async (req: Request, res: Response): Promise<void> => {
+export const userGetByIdController = async (req: Request, res: Response): Promise<void> => {
   try {
     // Get user id param
     const idUser: number = Number(req.params.idUser)
 
-    const users = await userService.userGetbyId(idUser)
+    const users = await userService.userGetById(idUser)
 
     res.json(users)
   } catch (error) {
