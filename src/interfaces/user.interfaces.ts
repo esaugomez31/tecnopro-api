@@ -53,7 +53,7 @@ export interface iUserGetCustomRequest extends Request {
   query: iUserFilters & iFilterSettings & ParsedQs
 }
 
-// Custom request to type users create controllers
+// Custom request to type users signup controllers
 export interface iUserCommonRequest extends Request {
   body: Omit<UserModel, OrmOperationAttributes> & ParsedQs
 }

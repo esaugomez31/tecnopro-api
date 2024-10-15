@@ -1,14 +1,14 @@
 import express from 'express'
 import {
   userLoginController,
-  userCreateController,
+  userSignupController,
   userUpdateController,
   userLogoutController,
   userGetAllController,
   userGetByIdController
 } from '../../../controllers/users.controller'
 import {
-  validateUserCreation,
+  validateUserSignup,
   validateUserUpdate,
   validateUserLogin,
   validateGetUsers,
@@ -29,7 +29,7 @@ routes.get('/', authenticationJWT, validateGetUsers(), userGetAllController)
 routes.get('/:idUser', authenticationJWT, validateGetUserById(), userGetByIdController)
 
 // User actions
-routes.post('/register', authenticationJWT, validateUserCreation(), userCreateController)
+routes.post('/signup', authenticationJWT, validateUserSignup(), userSignupController)
 routes.put('/update/:idUser', authenticationJWT, validateUserUpdate(), userUpdateController)
 
 export default routes

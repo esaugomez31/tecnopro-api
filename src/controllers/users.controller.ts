@@ -18,7 +18,7 @@ import {
   EmailExistsError
 } from '../errors/user.error'
 
-export const userCreateController = async (req: iUserCommonRequest, res: Response): Promise<void> => {
+export const userSignupController = async (req: iUserCommonRequest, res: Response): Promise<void> => {
   try {
     const body = req.body
 
@@ -33,7 +33,7 @@ export const userCreateController = async (req: iUserCommonRequest, res: Respons
     payload.notifications = body.notifications
     payload.idRole = body.idRole
 
-    const { password: _, ...user } = await userService.userCreate(payload)
+    const { password: _, ...user } = await userService.userSignup(payload)
 
     res.json(user)
   } catch (error) {

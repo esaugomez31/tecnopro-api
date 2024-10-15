@@ -77,7 +77,7 @@ export const userLogin = async (usernameOrEmail: string, password: string): Prom
   }
 }
 
-export const userCreate = async (user: UserModel): Promise<UserModel> => {
+export const userSignup = async (user: UserModel): Promise<UserModel> => {
   try {
     // Searching for username or email matches
     await userRequitedValidations(user.username, user.email, user.idRole)
@@ -86,11 +86,11 @@ export const userCreate = async (user: UserModel): Promise<UserModel> => {
     // Hash password
     user.password = hashPassword(user.password)
 
-    // Create user
-    const createdUser = await UserModel.save(user)
-    return createdUser
+    // Signup user
+    const newUser = await UserModel.save(user)
+    return newUser
   } catch (error) {
-    logger.error('Create user error: ' + (error as Error).name)
+    logger.error('Signup user error: ' + (error as Error).name)
     throw error
   }
 }

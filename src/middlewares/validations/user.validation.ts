@@ -59,7 +59,7 @@ const userCommonValidations = (optional = false): any => [
     .customSanitizer(value => value ?? null)
 ]
 
-export const validateUserCreation = (): any => {
+export const validateUserSignup = (): any => {
   return [
     ...userCommonValidations(),
 
