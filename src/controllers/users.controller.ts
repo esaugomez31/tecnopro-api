@@ -102,7 +102,7 @@ export const userLoginController = async (req: Request, res: Response): Promise<
       jwtPayload,
       envs.app.secretJwtKey,
       {
-        expiresIn: '1h'
+        expiresIn: '1m'
       }
     )
 
