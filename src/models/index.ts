@@ -1,4 +1,4 @@
-export * from './users.models'
-export * from './roles.models'
+export * from './users.model'
+export * from './roles.model'
 export * from './permissions.model'
 export * from './role.permissions.model'
