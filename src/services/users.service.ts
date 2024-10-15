@@ -26,7 +26,7 @@ const publicSelect: Array<keyof UserModel> = [
   'email',
   'phoneNumber',
   'whatsappNumber',
-  'owner',
+  'type',
   'notifications',
   'status',
   'lastLogin',
@@ -64,7 +64,7 @@ export const userLogin = async (usernameOrEmail: string, password: string): Prom
       phoneNumber: user.phoneNumber,
       whatsappNumber: user.whatsappNumber,
       email: user.email,
-      owner: user.owner,
+      type: user.type,
       notifications: user.notifications,
       lastLogin: user.lastLogin,
       timeZone: user.timeZone,
@@ -226,7 +226,7 @@ const userRequitedValidations = async (username?: string, email?: string, idRole
   }
 
   // Conditions for roles
-  if (idRole !== undefined && existRole === null) {
+  if ((idRole !== undefined && idRole !== null) && existRole === null) {
     throw new IDRoleNotFoundError()
   }
 }

@@ -1,6 +1,11 @@
 import { Entity, Column, PrimaryGeneratedColumn, BaseEntity, ManyToOne, JoinColumn } from 'typeorm'
 import { RoleModel } from './roles.models'
 
+export enum UserRoleEnum {
+  ADMIN = 'admin',
+  SUB_ADMIN = 'sub_admin',
+  USER = 'user'
+}
 @Entity('users')
 export class UserModel extends BaseEntity {
   @PrimaryGeneratedColumn({ type: 'int', name: 'id_user' })
@@ -27,8 +32,8 @@ export class UserModel extends BaseEntity {
   @Column({ type: 'varchar', length: 85, nullable: true })
     email: string
 
-  @Column({ type: 'tinyint', default: 0 })
-    owner: boolean
+  @Column({ type: 'enum', enum: UserRoleEnum, default: UserRoleEnum.USER, nullable: true })
+    type?: UserRoleEnum
 
   @Column({ type: 'tinyint', default: 0 })
     notifications: boolean
