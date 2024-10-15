@@ -2,13 +2,7 @@ import { Request, Response } from 'express'
 import jwt from 'jsonwebtoken'
 import envs from '../config/environment.config'
 import * as userService from '../services/users.service'
-import {
-  iUserJWT,
-  iUserFilters,
-  iUserGetCustomRequest,
-  iUserCommonRequest
-} from '../interfaces/user.interfaces'
-import { UserModel } from '../models'
+import { UserModel, UserRoleEnum } from '../models'
 import { filtersettings } from '../helpers'
 import { IDRoleNotFoundError } from '../errors/role.error'
 import {
@@ -17,6 +11,12 @@ import {
   UserNotFoundError,
   EmailExistsError
 } from '../errors/user.error'
+import {
+  iUserJWT,
+  iUserFilters,
+  iUserGetCustomRequest,
+  iUserCommonRequest
+} from '../interfaces'
 
 export const userSignupController = async (req: iUserCommonRequest, res: Response): Promise<void> => {
   try {
@@ -96,7 +96,10 @@ export const userLoginController = async (req: Request, res: Response): Promise<
 
     // Create JWT token
     const jwtPayload: iUserJWT = {
-      idUser: user.idUser as number, uuid: user.uuid, username: user.username
+      idUser: user.idUser as number,
+      uuid: user.uuid,
+      idRole: user.idRole,
+      type: user.type as UserRoleEnum
     }
     const token = jwt.sign(
       jwtPayload,

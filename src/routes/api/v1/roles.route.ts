@@ -13,7 +13,7 @@ import {
 } from '../../../middlewares/validations'
 import {
   authenticationJWT
-} from '../../../middlewares/authenticationjwt'
+} from '../../../middlewares'
 
 const routes = express.Router()
 

@@ -2,21 +2,23 @@ import { v4 as uuidv4 } from 'uuid'
 import { Like } from 'typeorm'
 import { UserModel, RoleModel } from '../models'
 import { logger, hashPassword, comparePassword, getLocalDateTimeNow } from '../helpers'
-import { iFilterSettings } from '../interfaces/filter.interfaces'
 import {
+  iFilterSettings,
   iUserPublicResponse,
   iUserFilters,
   iUserQueryParams,
   iGetUsersResponse,
   iGetUserByIdResponse
-} from '../interfaces/user.interfaces'
+} from '../interfaces'
 import {
   InvalidUserCredentialsError,
   UsernameExistsError,
   UserNotFoundError,
   EmailExistsError
 } from '../errors/user.error'
-import { IDRoleNotFoundError } from '../errors/role.error'
+import {
+  IDRoleNotFoundError
+} from '../errors/role.error'
 
 const publicSelect: Array<keyof UserModel> = [
   'idUser',

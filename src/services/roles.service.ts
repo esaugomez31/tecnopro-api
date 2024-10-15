@@ -2,14 +2,12 @@ import { Like } from 'typeorm'
 import { RoleModel } from '../models'
 import { logger } from '../helpers'
 import {
-  iFilterSettings
-} from '../interfaces/filter.interfaces'
-import {
+  iFilterSettings,
   iGetRoleByIdResponse,
   iGetRolesResponse,
   iRoleQueryParams,
   iRoleFilters
-} from '../interfaces/role.interfaces'
+} from '../interfaces'
 import {
   NameExistsError
 } from '../errors/role.error'

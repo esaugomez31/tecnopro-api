@@ -1,5 +1,5 @@
-import { Entity, Column, PrimaryGeneratedColumn, BaseEntity, ManyToOne, JoinColumn } from 'typeorm'
-import { RoleModel } from './roles.models'
+import { Entity, Column, PrimaryGeneratedColumn, BaseEntity } from 'typeorm'
+// import { RoleModel } from './roles.models'
 
 export enum UserRoleEnum {
   ADMIN = 'admin',
@@ -47,7 +47,6 @@ export class UserModel extends BaseEntity {
   @Column({ type: 'varchar', default: 'America/El_Salvador', name: 'time_zone' })
     timeZone?: string | null
 
-  @ManyToOne(() => RoleModel, role => role.idRole, { nullable: true })
-  @JoinColumn({ name: 'id_role' })
+  @Column({ name: 'id_role', nullable: true })
     idRole?: number
 }

@@ -14,7 +14,7 @@ export const authenticationJWT = (req: Request, res: Response, next: NextFunctio
 
   try {
     const data = jwt.verify(token, envs.app.secretJwtKey) as iUserJWT
-    if (data?.idUser === undefined || data?.uuid === undefined || data?.username === undefined) {
+    if (data?.idUser === undefined || data?.uuid === undefined || data?.idRole === undefined) {
       res.status(400).json({ error: 'Invalid token' })
       return
     }

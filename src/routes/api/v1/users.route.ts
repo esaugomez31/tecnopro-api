@@ -15,8 +15,9 @@ import {
   validateGetUserById
 } from '../../../middlewares/validations'
 import {
-  authenticationJWT
-} from '../../../middlewares/authenticationjwt'
+  authenticationJWT,
+  checkPermission
+} from '../../../middlewares'
 
 const routes = express.Router()
 
@@ -25,7 +26,7 @@ routes.post('/login', validateUserLogin(), userLoginController)
 routes.post('/logout', authenticationJWT, userLogoutController)
 
 // Get users
-routes.get('/', authenticationJWT, validateGetUsers(), userGetAllController)
+routes.get('/', authenticationJWT, validateGetUsers(), checkPermission('users', 'view_list'), userGetAllController)
 routes.get('/:idUser', authenticationJWT, validateGetUserById(), userGetByIdController)
 
 // User actions

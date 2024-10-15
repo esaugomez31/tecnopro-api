@@ -1,7 +1,7 @@
 import { FindOperator } from 'typeorm'
 import { Request } from 'express'
 import { ParsedQs } from 'qs'
-import { UserModel } from '../models'
+import { UserModel, UserRoleEnum } from '../models'
 import { iFilterSettings } from './filter.interfaces'
 import { OrmOperationAttributes } from './orm.interfaces'
 
@@ -9,7 +9,8 @@ import { OrmOperationAttributes } from './orm.interfaces'
 export interface iUserJWT {
   idUser: number
   uuid: string | null
-  username: string
+  idRole?: number
+  type: UserRoleEnum
 }
 
 // Allow filter params from API

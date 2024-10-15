@@ -1,15 +1,15 @@
 import { Request, Response } from 'express'
 import * as roleService from '../services/roles.service'
-import {
-  iRoleGetCustomRequest,
-  iRoleCommonRequest,
-  iRoleFilters
-} from '../interfaces/role.interfaces'
 import { RoleModel } from '../models'
 import { filtersettings } from '../helpers'
 import {
   NameExistsError
-} from '../errors/role.error'
+} from '../errors'
+import {
+  iRoleGetCustomRequest,
+  iRoleCommonRequest,
+  iRoleFilters
+} from '../interfaces'
 
 export const roleCreateController = async (req: iRoleCommonRequest, res: Response): Promise<void> => {
   try {

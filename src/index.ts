@@ -1,5 +1,5 @@
 import envs from './config/environment.config'
-import { AppDataSource } from './config/conection'
+import { AppDataSource } from './config/conection.config'
 import { logger } from './helpers/logger'
 import app from './app'
 
