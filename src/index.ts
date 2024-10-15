@@ -1,6 +1,6 @@
 import envs from './config/environment.config'
 import { AppDataSource } from './config/conection.config'
-import { logger } from './helpers/logger'
+import { logger } from './helpers'
 import app from './app'
 
 const main = async (): Promise<void> => {
