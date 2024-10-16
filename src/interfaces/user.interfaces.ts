@@ -56,5 +56,5 @@ export interface iUserGetCustomRequest extends Request {
 
 // Custom request to type users signup controllers
 export interface iUserCommonRequest extends Request {
-  body: Omit<UserModel, OrmOperationAttributes> & ParsedQs
+  body: Omit<UserModel, 'status' | OrmOperationAttributes> & ParsedQs
 }

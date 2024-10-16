@@ -74,7 +74,7 @@ export const userLogin = async (usernameOrEmail: string, password: string): Prom
       accessToken: null
     }
   } catch (error) {
-    logger.error('Login user error: ' + (error as Error).name)
+    logger.error('Login user: ' + (error as Error).name)
     throw error
   }
 }
@@ -92,7 +92,7 @@ export const userSignup = async (user: UserModel): Promise<UserModel> => {
     const newUser = await UserModel.save(user)
     return newUser
   } catch (error) {
-    logger.error('Signup user error: ' + (error as Error).name)
+    logger.error('Signup user: ' + (error as Error).name)
     throw error
   }
 }
@@ -113,7 +113,20 @@ export const userUpdate = async (user: UserModel, idUser: number): Promise<UserM
     })
     return updatedUser
   } catch (error) {
-    logger.error('Update user error: ' + (error as Error).name)
+    logger.error('Update user: ' + (error as Error).name)
+    throw error
+  }
+}
+
+export const userUpdateStatus = async (idUser: number, status: boolean): Promise<UserModel> => {
+  try {
+    // update user status
+    const updatedUser = await UserModel.save({
+      idUser, status
+    })
+    return updatedUser
+  } catch (error) {
+    logger.error('Update user status: ' + (error as Error).name)
     throw error
   }
 }
@@ -141,7 +154,7 @@ export const userGetAll = async (filterParams: iUserFilters, settings: iFilterSe
       totalPages
     }
   } catch (error) {
-    logger.error('Get users error: ' + (error as Error).name)
+    logger.error('Get users: ' + (error as Error).name)
     throw error
   }
 }
@@ -153,7 +166,7 @@ export const userGetById = async (idUser: number): Promise<iGetUserByIdResponse>
     })
     return { data: user ?? {} }
   } catch (error) {
-    logger.error('Get user by id error: ' + (error as Error).name)
+    logger.error('Get user by id: ' + (error as Error).name)
     throw error
   }
 }

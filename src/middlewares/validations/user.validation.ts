@@ -73,11 +73,21 @@ export const validateUserUpdate = (): any => {
       .isInt().withMessage('idUser must be an integer')
       .customSanitizer(Number),
 
-    query('status')
-      .optional().isBoolean().withMessage('status must be a boolean')
-      .customSanitizer(stringToBoolean),
-
     ...userCommonValidations(true),
+
+    handleValidationErrors
+  ]
+}
+
+export const validateUserUpdateStatus = (): any => {
+  return [
+    param('idUser')
+      .isInt().withMessage('idUser must be an integer')
+      .customSanitizer(Number),
+
+    param('status')
+      .isBoolean().withMessage('status must be a boolean')
+      .customSanitizer(stringToBoolean),
 
     handleValidationErrors
   ]

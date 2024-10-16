@@ -62,7 +62,6 @@ export const userUpdateController = async (req: iUserCommonRequest, res: Respons
     payload.name = body.name
     payload.username = body.username
     payload.password = body.password
-    payload.status = body.status
     payload.phoneNumber = body.phoneNumber
     payload.whatsappNumber = body.whatsappNumber
     payload.email = body.email
@@ -80,6 +79,25 @@ export const userUpdateController = async (req: iUserCommonRequest, res: Respons
 
     if (error instanceof IDRoleNotFoundError) {
       res.status(400).json({ error: error.name, message: error.message })
+      return
+    }
+
+    // Default error message
+    res.status(500).json({ error: 'Internal server error' })
+  }
+}
+
+export const userUpdateStatusController = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const idUser = Number(req.params.idUser)
+    const status = Boolean(req.params.status)
+
+    const { password: _, ...user } = await userService.userUpdateStatus(idUser, status)
+
+    res.json(user)
+  } catch (error) {
+    if (error instanceof UsernameExistsError || error instanceof EmailExistsError) {
+      res.status(409).json({ error: error.name, message: error.message })
       return
     }
 
