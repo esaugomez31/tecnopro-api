@@ -3,6 +3,7 @@ import * as roleService from '../services/roles.service'
 import { RoleModel } from '../models'
 import { filtersettings } from '../helpers'
 import {
+  IDRoleNotFoundError,
   NameExistsError
 } from '../errors'
 import {
@@ -47,6 +48,11 @@ export const roleUpdateController = async (req: iRoleCommonRequest, res: Respons
 
     res.json(role)
   } catch (error) {
+    if (error instanceof IDRoleNotFoundError) {
+      res.status(404).json({ error: error.name, message: error.message })
+      return
+    }
+
     if (error instanceof NameExistsError) {
       res.status(409).json({ error: error.name, message: error.message })
       return
@@ -65,6 +71,11 @@ export const roleUpdateStatusController = async (req: Request, res: Response): P
 
     res.json(role)
   } catch (error) {
+    if (error instanceof IDRoleNotFoundError) {
+      res.status(404).json({ error: error.name, message: error.message })
+      return
+    }
+
     // Default error message
     res.status(500).json({ error: 'Internal server error' })
   }

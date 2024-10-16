@@ -9,6 +9,7 @@ import {
   iRoleFilters
 } from '../interfaces'
 import {
+  IDRoleNotFoundError,
   NameExistsError
 } from '../errors/role.error'
 
@@ -28,6 +29,13 @@ export const roleCreate = async (role: RoleModel): Promise<RoleModel> => {
 
 export const roleUpdate = async (role: RoleModel, idRole: number): Promise<RoleModel> => {
   try {
+    // Existing role
+    const existRole = await RoleModel.findOne({
+      select: ['idRole'], where: { idRole }
+    })
+
+    if (existRole === null) throw new IDRoleNotFoundError()
+
     // Searching for name matches
     await roleRequitedValidations(role.name, idRole)
 
@@ -44,6 +52,13 @@ export const roleUpdate = async (role: RoleModel, idRole: number): Promise<RoleM
 
 export const roleUpdateStatus = async (idRole: number, status: boolean): Promise<RoleModel> => {
   try {
+    // Existing role
+    const existRole = await RoleModel.findOne({
+      select: ['idRole'], where: { idRole }
+    })
+
+    if (existRole === null) throw new IDRoleNotFoundError()
+
     // update role status
     const updatedRole = await RoleModel.save({
       idRole, status
