@@ -7,7 +7,9 @@ import { filtersettings } from '../helpers'
 import { IDRoleNotFoundError } from '../errors/role.error'
 import {
   InvalidUserCredentialsError,
+  UserActionNotAllowedError,
   UsernameExistsError,
+  UserIDNotFoundError,
   UserNotFoundError,
   EmailExistsError
 } from '../errors/user.error'
@@ -56,6 +58,7 @@ export const userUpdateController = async (req: iUserCommonRequest, res: Respons
   try {
     const body = req.body
     const idUser = Number(req.params.idUser)
+    const jwtData = req.session as iUserJWT
 
     // Model user object
     const payload = new UserModel()
@@ -68,7 +71,7 @@ export const userUpdateController = async (req: iUserCommonRequest, res: Respons
     payload.notifications = body.notifications
     payload.idRole = body.idRole
 
-    const { password: _, ...user } = await userService.userUpdate(payload, idUser)
+    const { password: _, ...user } = await userService.userUpdate(payload, idUser, jwtData)
 
     res.json(user)
   } catch (error) {
@@ -77,8 +80,13 @@ export const userUpdateController = async (req: iUserCommonRequest, res: Respons
       return
     }
 
-    if (error instanceof IDRoleNotFoundError) {
+    if (error instanceof IDRoleNotFoundError || error instanceof UserIDNotFoundError) {
       res.status(400).json({ error: error.name, message: error.message })
+      return
+    }
+
+    if (error instanceof UserActionNotAllowedError) {
+      res.status(403).json({ error: error.name, message: error.message })
       return
     }
 
@@ -91,11 +99,22 @@ export const userUpdateStatusController = async (req: Request, res: Response): P
   try {
     const idUser = Number(req.params.idUser)
     const status = Boolean(req.params.status)
+    const jwtData = req.session as iUserJWT
     // update status service
-    const { password: _, ...user } = await userService.userUpdateStatus(idUser, status)
+    const { password: _, ...user } = await userService.userUpdateStatus(idUser, status, jwtData)
 
     res.json(user)
   } catch (error) {
+    if (error instanceof UserIDNotFoundError) {
+      res.status(400).json({ error: error.name, message: error.message })
+      return
+    }
+
+    if (error instanceof UserActionNotAllowedError) {
+      res.status(403).json({ error: error.name, message: error.message })
+      return
+    }
+
     // Default error message
     res.status(500).json({ error: 'Internal server error' })
   }

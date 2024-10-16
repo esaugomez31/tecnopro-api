@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from 'uuid'
 import { Like } from 'typeorm'
-import { UserModel, RoleModel } from '../models'
+import { UserModel, RoleModel, UserRoleEnum } from '../models'
 import { logger, hashPassword, comparePassword, getLocalDateTimeNow } from '../helpers'
 import {
   iFilterSettings,
@@ -8,11 +8,14 @@ import {
   iUserFilters,
   iUserQueryParams,
   iGetUsersResponse,
-  iGetUserByIdResponse
+  iGetUserByIdResponse,
+  iUserJWT
 } from '../interfaces'
 import {
   InvalidUserCredentialsError,
+  UserActionNotAllowedError,
   UsernameExistsError,
+  UserIDNotFoundError,
   UserNotFoundError,
   EmailExistsError
 } from '../errors/user.error'
@@ -97,8 +100,11 @@ export const userSignup = async (user: UserModel): Promise<UserModel> => {
   }
 }
 
-export const userUpdate = async (user: UserModel, idUser: number): Promise<UserModel> => {
+export const userUpdate = async (user: UserModel, idUser: number, jwtData: iUserJWT): Promise<UserModel> => {
   try {
+    // Evaluate hierarchy
+    if (jwtData.type !== UserRoleEnum.ADMIN) await evaluateUserHierarchy(jwtData, idUser)
+
     // Searching for username or email matches
     await userRequitedValidations(user.username, user.email, user.idRole, idUser)
 
@@ -118,8 +124,11 @@ export const userUpdate = async (user: UserModel, idUser: number): Promise<UserM
   }
 }
 
-export const userUpdateStatus = async (idUser: number, status: boolean): Promise<UserModel> => {
+export const userUpdateStatus = async (idUser: number, status: boolean, jwtData: iUserJWT): Promise<UserModel> => {
   try {
+    // Evaluate hierarchy
+    if (jwtData.type !== UserRoleEnum.ADMIN) await evaluateUserHierarchy(jwtData, idUser)
+
     // update user status
     const updatedUser = await UserModel.save({
       idUser, status
@@ -243,5 +252,27 @@ const userRequitedValidations = async (username?: string, email?: string, idRole
   // Conditions for roles
   if ((idRole !== undefined && idRole !== null) && existRole === null) {
     throw new IDRoleNotFoundError()
+  }
+}
+
+const evaluateUserHierarchy = async (currUser: iUserJWT, idUserTarget: number): Promise<void> => {
+  // allow own actions
+  if (currUser.idUser === idUserTarget) {
+    return
+  }
+
+  // Existing User
+  const userTarget = await userGetById(idUserTarget)
+  if ((userTarget.data as UserModel)?.idUser === undefined) {
+    throw new UserIDNotFoundError()
+  }
+
+  // evaluation hierarchy
+  if (currUser.type === UserRoleEnum.SUB_ADMIN) {
+    if ((userTarget.data as UserModel).type === UserRoleEnum.ADMIN) {
+      throw new UserActionNotAllowedError()
+    }
+  } else {
+    throw new UserActionNotAllowedError()
   }
 }
