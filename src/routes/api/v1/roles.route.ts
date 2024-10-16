@@ -14,18 +14,20 @@ import {
   validateRoleUpdateStatus
 } from '../../../middlewares/validations'
 import {
-  authenticationJWT
+  authenticationJWT,
+  checkPermission
 } from '../../../middlewares'
 
 const routes = express.Router()
+const page = 'roles'
 
 // Get roles
-routes.get('/', authenticationJWT, validateGetRoles(), roleGetAllController)
-routes.get('/:idRole', authenticationJWT, validateGetRoleById(), roleGetByIdController)
+routes.get('/', authenticationJWT, validateGetRoles(), checkPermission(page, 'view_list'), roleGetAllController)
+routes.get('/:idRole', authenticationJWT, validateGetRoleById(), checkPermission(page, 'view_list'), roleGetByIdController)
 
 // Role actions
-routes.post('/register', authenticationJWT, validateRoleCreation(), roleCreateController)
-routes.put('/update/:idRole', authenticationJWT, validateRoleUpdate(), roleUpdateController)
-routes.put('/:idRole/status/:status', authenticationJWT, validateRoleUpdateStatus(), roleUpdateStatusController)
+routes.post('/register', authenticationJWT, validateRoleCreation(), checkPermission(page, 'create'), roleCreateController)
+routes.put('/update/:idRole', authenticationJWT, validateRoleUpdate(), checkPermission(page, 'update'), roleUpdateController)
+routes.put('/:idRole/status/:status', authenticationJWT, validateRoleUpdateStatus(), checkPermission(page, 'update_status'), roleUpdateStatusController)
 
 export default routes

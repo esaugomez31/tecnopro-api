@@ -6,7 +6,8 @@ export enum systemPageEnum {
   SALES = 'sales',
   SALES_HISTORY = 'sales_history',
   CUSTOMERS = 'customers',
-  USERS = 'users'
+  USERS = 'users',
+  ROLES = 'roles'
 }
 
 @Entity('permissions')
