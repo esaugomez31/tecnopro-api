@@ -91,16 +91,11 @@ export const userUpdateStatusController = async (req: Request, res: Response): P
   try {
     const idUser = Number(req.params.idUser)
     const status = Boolean(req.params.status)
-
+    // update status service
     const { password: _, ...user } = await userService.userUpdateStatus(idUser, status)
 
     res.json(user)
   } catch (error) {
-    if (error instanceof UsernameExistsError || error instanceof EmailExistsError) {
-      res.status(409).json({ error: error.name, message: error.message })
-      return
-    }
-
     // Default error message
     res.status(500).json({ error: 'Internal server error' })
   }

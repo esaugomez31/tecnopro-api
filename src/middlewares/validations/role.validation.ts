@@ -35,6 +35,20 @@ export const validateRoleUpdate = (): any => {
   ]
 }
 
+export const validateRoleUpdateStatus = (): any => {
+  return [
+    param('idRole')
+      .isInt().withMessage('idRole must be an integer')
+      .customSanitizer(Number),
+
+    param('status')
+      .isBoolean().withMessage('status must be a boolean')
+      .customSanitizer(stringToBoolean),
+
+    handleValidationErrors
+  ]
+}
+
 export const validateGetRoles = (): any => {
   return [
     ...validateFilterParams(validSortFields),

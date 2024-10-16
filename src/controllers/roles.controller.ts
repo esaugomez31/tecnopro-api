@@ -56,6 +56,20 @@ export const roleUpdateController = async (req: iRoleCommonRequest, res: Respons
   }
 }
 
+export const roleUpdateStatusController = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const idRole = Number(req.params.idRole)
+    const status = Boolean(req.params.status)
+    // update status service
+    const role = await roleService.roleUpdateStatus(idRole, status)
+
+    res.json(role)
+  } catch (error) {
+    // Default error message
+    res.status(500).json({ error: 'Internal server error' })
+  }
+}
+
 export const roleGetAllController = async (req: iRoleGetCustomRequest, res: Response): Promise<void> => {
   try {
     const query = req.query

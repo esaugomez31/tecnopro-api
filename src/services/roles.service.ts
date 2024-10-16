@@ -42,6 +42,19 @@ export const roleUpdate = async (role: RoleModel, idRole: number): Promise<RoleM
   }
 }
 
+export const roleUpdateStatus = async (idRole: number, status: boolean): Promise<RoleModel> => {
+  try {
+    // update role status
+    const updatedRole = await RoleModel.save({
+      idRole, status
+    })
+    return updatedRole
+  } catch (error) {
+    logger.error('Update role status: ' + (error as Error).name)
+    throw error
+  }
+}
+
 export const roleGetAll = async (filterParams: iRoleFilters, settings: iFilterSettings): Promise<iGetRolesResponse> => {
   try {
     const filters = getFilters(filterParams)

@@ -3,13 +3,15 @@ import {
   roleCreateController,
   roleUpdateController,
   roleGetByIdController,
-  roleGetAllController
+  roleGetAllController,
+  roleUpdateStatusController
 } from '../../../controllers/roles.controller'
 import {
   validateRoleCreation,
   validateRoleUpdate,
   validateGetRoleById,
-  validateGetRoles
+  validateGetRoles,
+  validateRoleUpdateStatus
 } from '../../../middlewares/validations'
 import {
   authenticationJWT
@@ -24,5 +26,6 @@ routes.get('/:idRole', authenticationJWT, validateGetRoleById(), roleGetByIdCont
 // Role actions
 routes.post('/register', authenticationJWT, validateRoleCreation(), roleCreateController)
 routes.put('/update/:idRole', authenticationJWT, validateRoleUpdate(), roleUpdateController)
+routes.put('/:idRole/status/:status', authenticationJWT, validateRoleUpdateStatus(), roleUpdateStatusController)
 
 export default routes
