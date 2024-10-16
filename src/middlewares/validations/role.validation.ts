@@ -25,10 +25,6 @@ export const validateRoleUpdate = (): any => {
       .isInt().withMessage('idRole must be an integer')
       .customSanitizer(Number),
 
-    query('status')
-      .optional().isBoolean().withMessage('status must be a boolean')
-      .customSanitizer(stringToBoolean),
-
     ...roleCommonValidations(true),
 
     handleValidationErrors

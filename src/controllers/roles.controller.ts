@@ -42,7 +42,6 @@ export const roleUpdateController = async (req: iRoleCommonRequest, res: Respons
     // Model role object
     const payload = new RoleModel()
     payload.name = body.name
-    payload.status = body.status
 
     const role = await roleService.roleUpdate(payload, idRole)
 
