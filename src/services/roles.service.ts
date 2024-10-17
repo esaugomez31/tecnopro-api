@@ -45,7 +45,7 @@ export const roleUpdate = async (role: RoleModel, idRole: number): Promise<RoleM
     })
     return updatedRole
   } catch (error) {
-    logger.error('Update role error: ' + (error as Error).name)
+    logger.error('Update role: ' + (error as Error).name)
     throw error
   }
 }
@@ -92,7 +92,7 @@ export const roleGetAll = async (filterParams: iRoleFilters, settings: iFilterSe
       totalPages
     }
   } catch (error) {
-    logger.error('Get roles error: ' + (error as Error).name)
+    logger.error('Get roles: ' + (error as Error).name)
     throw error
   }
 }
@@ -104,7 +104,7 @@ export const roleGetById = async (idRole: number): Promise<iGetRoleByIdResponse>
     })
     return { data: role ?? {} }
   } catch (error) {
-    logger.error('Get role by id error: ' + (error as Error).name)
+    logger.error('Get role by id: ' + (error as Error).name)
     throw error
   }
 }
