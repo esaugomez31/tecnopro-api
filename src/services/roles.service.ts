@@ -22,7 +22,7 @@ export const roleCreate = async (role: RoleModel): Promise<RoleModel> => {
     const createdRole = await RoleModel.save(role)
     return createdRole
   } catch (error) {
-    logger.error('Create role error: ' + (error as Error).name)
+    logger.error('Create role: ' + (error as Error).name)
     throw error
   }
 }
