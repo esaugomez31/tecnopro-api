@@ -1,11 +1,13 @@
 
-import { RolePermissionModel, RoleModel } from '../models'
+import { RolePermissionModel, PermissionModel, RoleModel, systemPageEnum } from '../models'
 import { getLocalDateTimeNow, logger } from '../helpers'
 import {
   IDRoleNotFoundError
 } from '../errors/role.error'
 import {
-  iPermissionObject
+  iPermissionObject,
+  iRolePermissionJoin,
+  iGetRolePermissionByIdResponse
 } from '../interfaces/role.permission.interfaces'
 
 export const rolePermissionUpdate = async (permissions: iPermissionObject[], idRole: number): Promise<RolePermissionModel[]> => {
@@ -41,4 +43,39 @@ export const rolePermissionUpdate = async (permissions: iPermissionObject[], idR
     logger.error('Update role permission: ' + (error as Error).name)
     throw error
   }
+}
+
+export const rolePermissionGetById = async (idRole: number): Promise<iGetRolePermissionByIdResponse> => {
+  try {
+    const rolePermissions = await RolePermissionModel.find({
+      relations: ['permissionDetail'],
+      where: { idRole }
+    })
+
+    const formattedResult: iRolePermissionJoin[] = rolePermissions.map((rolePermission: RolePermissionModel) => ({
+      idRolePermission: rolePermission.idRolePermission,
+      idRole: rolePermission.idRole,
+      idPermission: rolePermission.idPermission,
+      systemPage: rolePermission.permissionDetail.systemPage,
+      permissionName: rolePermission.permissionDetail.permissionName,
+      creationDate: rolePermission.creationDate
+    }))
+    return { data: formattedResult ?? [] }
+  } catch (error) {
+    logger.error('Get role permission by idRole: ' + (error as Error).name)
+    throw error
+  }
+}
+
+export const getRolePermissionsByPage = async (idRole: number, systemPage: systemPageEnum): Promise<PermissionModel[]> => {
+  const rolePermissions = await RolePermissionModel.find({
+    where: { idRole, permissionDetail: { systemPage } },
+    relations: ['permissionDetail']
+  })
+
+  const permissions: PermissionModel[] = rolePermissions.map(rolePermission => {
+    return rolePermission.permissionDetail
+  }).filter(Boolean)
+
+  return permissions
 }

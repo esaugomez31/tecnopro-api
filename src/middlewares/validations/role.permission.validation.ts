@@ -17,3 +17,13 @@ export const validateRolePremissionUpdate = (): any => {
     handleValidationErrors
   ]
 }
+
+export const validateGetRolePermissionById = (): any => {
+  return [
+    param('idRole')
+      .isInt().withMessage('idRole must be an integer')
+      .customSanitizer(Number),
+
+    handleValidationErrors
+  ]
+}

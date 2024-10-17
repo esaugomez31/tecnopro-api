@@ -4,7 +4,7 @@ import { PermissionModel } from './permissions.model'
 @Entity('role_permissions')
 export class RolePermissionModel extends BaseEntity {
   @PrimaryGeneratedColumn({ name: 'id_role_permission' })
-    idRolePermission?: number
+    idRolePermission: number
 
   @Column({ name: 'id_role', nullable: true })
     idRole: number

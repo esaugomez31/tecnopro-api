@@ -1,10 +1,9 @@
 import { Request, Response, NextFunction } from 'express'
 import { iUserJWT } from '../interfaces/user.interfaces'
-import { getRolePermissions } from '../services'
+import { getRolePermissionsByPage } from '../services'
 import { hasPermission } from '../helpers'
 import {
   UserRoleEnum,
-  RolePermissionModel,
   PermissionModel,
   systemPageEnum
 } from '../models'
@@ -21,12 +20,11 @@ export const checkPermission = (systemPage?: string, permissionName: string = ''
       res.status(403).json({ error: 'Access denied' })
     }
 
-    // Get roles permissions
-    const rolePermissions: RolePermissionModel[] = await getRolePermissions(idRole as number, systemPage as systemPageEnum)
-    // Mapping permissions
-    const permissions: PermissionModel[] = rolePermissions.map(rolePermission => {
-      return rolePermission.permissionDetail
-    }).filter(Boolean)
+    // Get permissions
+    const permissions: PermissionModel[] = await getRolePermissionsByPage(
+      idRole as number,
+      systemPage as systemPageEnum
+    )
 
     if (hasPermission(permissions, permissionName)) {
       req.permissions = permissions

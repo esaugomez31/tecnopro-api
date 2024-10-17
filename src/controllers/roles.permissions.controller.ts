@@ -1,4 +1,4 @@
-import { Response } from 'express'
+import { Response, Request } from 'express'
 import * as rolePermissionService from '../services/role.permissions.service'
 import {
   IDRoleNotFoundError
@@ -21,6 +21,20 @@ export const rolePermissionUpdateController = async (req: iRolePermissionCommonR
       return
     }
 
+    // Default error message
+    res.status(500).json({ error: 'Internal server error' })
+  }
+}
+
+export const rolePermissionGetByIdController = async (req: Request, res: Response): Promise<void> => {
+  try {
+    // Get role permission by idRole param
+    const idRole: number = Number(req.params.idRole)
+
+    const roles = await rolePermissionService.rolePermissionGetById(idRole)
+
+    res.json(roles)
+  } catch (error) {
     // Default error message
     res.status(500).json({ error: 'Internal server error' })
   }
