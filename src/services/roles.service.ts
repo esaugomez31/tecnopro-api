@@ -29,15 +29,11 @@ export const roleCreate = async (role: RoleModel): Promise<RoleModel> => {
 
 export const roleUpdate = async (role: RoleModel, idRole: number): Promise<RoleModel> => {
   try {
-    // Existing role
-    const existRole = await RoleModel.findOne({
-      select: ['idRole'], where: { idRole }
-    })
-
-    if (existRole === null) throw new IDRoleNotFoundError()
-
-    // Searching for name matches
-    await roleRequitedValidations(role.name, idRole)
+    // Required validations to update
+    await Promise.all([
+      existIdValidation(idRole),
+      roleRequitedValidations(role.name, idRole)
+    ])
 
     // update role
     const updatedRole = await RoleModel.save({
@@ -53,11 +49,7 @@ export const roleUpdate = async (role: RoleModel, idRole: number): Promise<RoleM
 export const roleUpdateStatus = async (idRole: number, status: boolean): Promise<RoleModel> => {
   try {
     // Existing role
-    const existRole = await RoleModel.findOne({
-      select: ['idRole'], where: { idRole }
-    })
-
-    if (existRole === null) throw new IDRoleNotFoundError()
+    await existIdValidation(idRole)
 
     // update role status
     const updatedRole = await RoleModel.save({
@@ -140,4 +132,13 @@ const roleRequitedValidations = async (name: string | undefined, idRole: number 
       throw new NameExistsError()
     }
   }
+}
+
+const existIdValidation = async (idRole: number): Promise<void> => {
+  // Existing role
+  const existRole = await RoleModel.findOne({
+    select: ['idRole'], where: { idRole }
+  })
+
+  if (existRole === null) throw new IDRoleNotFoundError()
 }
