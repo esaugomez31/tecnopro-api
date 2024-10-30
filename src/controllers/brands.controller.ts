@@ -1,0 +1,118 @@
+import { Request, Response } from 'express'
+import * as brandService from '../services/brands.service'
+import { BrandModel } from '../models'
+import { filtersettings } from '../helpers'
+import {
+  NameExistsError,
+  IDBrandNotFoundError
+} from '../errors/brand.factory'
+import {
+  iBrandGetCustomRequest,
+  iBrandCommonRequest,
+  iBrandFilters
+} from '../interfaces'
+
+export const brandCreateController = async (req: iBrandCommonRequest, res: Response): Promise<void> => {
+  try {
+    const body = req.body
+
+    // Model brand object
+    const payload = new BrandModel()
+    payload.name = body.name
+    payload.description = body.description
+    payload.status = true
+
+    const brand = await brandService.brandCreate(payload)
+
+    res.json(brand)
+  } catch (error) {
+    if (error instanceof NameExistsError) {
+      res.status(409).json({ error: error.name, message: error.message })
+      return
+    }
+    // Default error message
+    res.status(500).json({ error: 'Internal server error' })
+  }
+}
+
+export const brandUpdateController = async (req: iBrandCommonRequest, res: Response): Promise<void> => {
+  try {
+    const body = req.body
+    const idBrand = Number(req.params.idBrand)
+
+    // Model brand object
+    const payload = new BrandModel()
+    payload.name = body.name
+    payload.description = body.description
+
+    const brand = await brandService.brandUpdate(payload, idBrand)
+
+    res.json(brand)
+  } catch (error) {
+    if (error instanceof IDBrandNotFoundError) {
+      res.status(404).json({ error: error.name, message: error.message })
+      return
+    }
+
+    if (error instanceof NameExistsError) {
+      res.status(409).json({ error: error.name, message: error.message })
+      return
+    }
+    // Default error message
+    res.status(500).json({ error: 'Internal server error' })
+  }
+}
+
+export const brandUpdateStatusController = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const idBrand = Number(req.params.idBrand)
+    const status = Boolean(req.params.status)
+    // update status service
+    const brand = await brandService.brandUpdateStatus(idBrand, status)
+
+    res.json(brand)
+  } catch (error) {
+    if (error instanceof IDBrandNotFoundError) {
+      res.status(404).json({ error: error.name, message: error.message })
+      return
+    }
+
+    // Default error message
+    res.status(500).json({ error: 'Internal server error' })
+  }
+}
+
+export const brandGetAllController = async (req: iBrandGetCustomRequest, res: Response): Promise<void> => {
+  try {
+    const query = req.query
+    // Filter params settings
+    const settings = filtersettings(query)
+    // Filter params brand
+    const params: iBrandFilters = {
+      name: query.name,
+      status: query.status,
+      description: query.description,
+      uuid: query.uuid
+    }
+
+    const brands = await brandService.brandGetAll(params, settings)
+    res.json(brands)
+  } catch (error) {
+    // Default error message
+    res.status(500).json({ error: 'Internal server error' })
+  }
+}
+
+export const brandGetByIdController = async (req: Request, res: Response): Promise<void> => {
+  try {
+    // Get brand id param
+    const idBrand: number = Number(req.params.idBrand)
+
+    const brand = await brandService.brandGetById(idBrand)
+
+    res.json(brand)
+  } catch (error) {
+    // Default error message
+    res.status(500).json({ error: 'Internal server error' })
+  }
+}

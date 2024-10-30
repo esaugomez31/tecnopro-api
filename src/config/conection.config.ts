@@ -3,6 +3,7 @@ import envs from './environment.config'
 import {
   UserModel,
   RoleModel,
+  BrandModel,
   CategoryModel,
   PermissionModel,
   RolePermissionModel
@@ -22,6 +23,7 @@ export const AppDataSource = new DataSource({
   entities: [
     UserModel,
     RoleModel,
+    BrandModel,
     CategoryModel,
     PermissionModel,
     RolePermissionModel
