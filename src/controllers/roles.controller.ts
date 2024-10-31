@@ -5,7 +5,7 @@ import { filtersettings } from '../helpers'
 import {
   IDRoleNotFoundError,
   NameExistsError
-} from '../errors'
+} from '../errors/role.error'
 import {
   iRoleGetCustomRequest,
   iRoleCommonRequest,

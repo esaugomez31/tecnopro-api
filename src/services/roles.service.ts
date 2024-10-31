@@ -116,7 +116,7 @@ const getFilters = (filterParams: iRoleFilters): iRoleQueryParams => {
   return filters
 }
 
-const roleRequitedValidations = async (name: string | undefined, idRole: number | undefined = undefined): Promise<void> => {
+const roleRequitedValidations = async (name?: string, idRole?: number): Promise<void> => {
   if (name === undefined) return
 
   const filters: iRoleQueryParams[] = [{ name }]

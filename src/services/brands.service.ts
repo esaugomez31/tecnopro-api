@@ -128,7 +128,7 @@ const getFilters = (filterParams: iBrandFilters): iBrandQueryParams => {
   return filters
 }
 
-const existNameValidations = async (name: string | undefined, idBrand: number | undefined = undefined): Promise<void> => {
+const existNameValidations = async (name?: string, idBrand?: number): Promise<void> => {
   if (name === undefined) return
 
   const filters: iBrandQueryParams[] = [{ name }]

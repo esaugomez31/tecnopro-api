@@ -6,6 +6,7 @@ import {
   BrandModel,
   CountryModel,
   DepartmentModel,
+  MunicipalityModel,
   CategoryModel,
   PermissionModel,
   RolePermissionModel
@@ -28,6 +29,7 @@ export const AppDataSource = new DataSource({
     BrandModel,
     CountryModel,
     DepartmentModel,
+    MunicipalityModel,
     CategoryModel,
     PermissionModel,
     RolePermissionModel

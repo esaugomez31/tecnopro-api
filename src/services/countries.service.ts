@@ -125,7 +125,7 @@ const getFilters = (filterParams: iCountryFilters): iCountryQueryParams => {
   return filters
 }
 
-const existValuesValidations = async (name: string | undefined, code: string | undefined, idCountry: number | undefined = undefined): Promise<void> => {
+const existValuesValidations = async (name?: string, code?: string, idCountry?: number): Promise<void> => {
   if (name === undefined && code === undefined) return
 
   const filters: iCountryQueryParams[] = [{ name }, { code }]

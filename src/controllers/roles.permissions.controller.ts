@@ -2,7 +2,7 @@ import { Response, Request } from 'express'
 import * as rolePermissionService from '../services/role.permissions.service'
 import {
   IDRoleNotFoundError
-} from '../errors'
+} from '../errors/role.error'
 import {
   iRolePermissionCommonRequest
 } from '../interfaces'

@@ -128,7 +128,7 @@ const getFilters = (filterParams: iCategoryFilters): iCategoryQueryParams => {
   return filters
 }
 
-const existNameValidations = async (name: string | undefined, idCategory: number | undefined = undefined): Promise<void> => {
+const existNameValidations = async (name?: string, idCategory?: number): Promise<void> => {
   if (name === undefined) return
 
   const filters: iCategoryQueryParams[] = [{ name }]

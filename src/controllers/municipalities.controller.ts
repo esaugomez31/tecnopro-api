@@ -1,0 +1,135 @@
+import { Request, Response } from 'express'
+import * as municipalityService from '../services/municipalities.service'
+import { MunicipalityModel } from '../models'
+import { filtersettings } from '../helpers'
+import {
+  IDMunicipalityNotFoundError,
+  MunicipalityCodeExistsError,
+  IDMuniCountryNotFoundError,
+  IDMuniDepartmentNotFoundError,
+  NameExistsError
+} from '../errors/municipality.factory'
+import {
+  iMunicipalityGetCustomRequest,
+  iMunicipalityCommonRequest,
+  iMunicipalityFilters
+} from '../interfaces'
+
+export const municipalityCreateController = async (req: iMunicipalityCommonRequest, res: Response): Promise<void> => {
+  try {
+    const body = req.body
+
+    // Model municipality object
+    const payload = new MunicipalityModel()
+    payload.name = body.name
+    payload.dteCode = body.dteCode
+    payload.zipCode = body.zipCode
+    payload.idCountry = body.idCountry
+    payload.idDepartment = body.idDepartment
+    payload.status = true
+
+    const municipality = await municipalityService.municipalityCreate(payload)
+
+    res.json(municipality)
+  } catch (error) {
+    if (error instanceof IDMuniCountryNotFoundError || error instanceof IDMuniDepartmentNotFoundError) {
+      res.status(404).json({ error: error.name, message: error.message })
+      return
+    }
+
+    if (error instanceof NameExistsError || error instanceof MunicipalityCodeExistsError) {
+      res.status(409).json({ error: error.name, message: error.message })
+      return
+    }
+
+    // Default error message
+    res.status(500).json({ error: 'Internal server error' })
+  }
+}
+
+export const municipalityUpdateController = async (req: iMunicipalityCommonRequest, res: Response): Promise<void> => {
+  try {
+    const body = req.body
+    const idMunicipality = Number(req.params.idMunicipality)
+
+    // Model municipality object
+    const payload = new MunicipalityModel()
+    payload.name = body.name
+    payload.dteCode = body.dteCode
+    payload.zipCode = body.zipCode
+    payload.idCountry = body.idCountry
+    payload.idDepartment = body.idDepartment
+
+    const municipality = await municipalityService.municipalityUpdate(payload, idMunicipality)
+
+    res.json(municipality)
+  } catch (error) {
+    if (error instanceof IDMunicipalityNotFoundError || error instanceof IDMuniCountryNotFoundError || error instanceof IDMuniDepartmentNotFoundError) {
+      res.status(404).json({ error: error.name, message: error.message })
+      return
+    }
+
+    if (error instanceof NameExistsError || error instanceof MunicipalityCodeExistsError) {
+      res.status(409).json({ error: error.name, message: error.message })
+      return
+    }
+    // Default error message
+    res.status(500).json({ error: 'Internal server error' })
+  }
+}
+
+export const municipalityUpdateStatusController = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const idMunicipality = Number(req.params.idMunicipality)
+    const status = Boolean(req.params.status)
+    // update status service
+    const municipality = await municipalityService.municipalityUpdateStatus(idMunicipality, status)
+
+    res.json(municipality)
+  } catch (error) {
+    if (error instanceof IDMunicipalityNotFoundError) {
+      res.status(404).json({ error: error.name, message: error.message })
+      return
+    }
+
+    // Default error message
+    res.status(500).json({ error: 'Internal server error' })
+  }
+}
+
+export const municipalityGetAllController = async (req: iMunicipalityGetCustomRequest, res: Response): Promise<void> => {
+  try {
+    const query = req.query
+    // Filter params settings
+    const settings = filtersettings(query)
+    // Filter params municipality
+    const params: iMunicipalityFilters = {
+      name: query.name,
+      status: query.status,
+      dteCode: query.dteCode,
+      zipCode: query.zipCode,
+      idCountry: query.idCountry,
+      idDepartment: query.idDepartment
+    }
+
+    const municipalities = await municipalityService.municipalityGetAll(params, settings)
+    res.json(municipalities)
+  } catch (error) {
+    // Default error message
+    res.status(500).json({ error: 'Internal server error' })
+  }
+}
+
+export const municipalityGetByIdController = async (req: Request, res: Response): Promise<void> => {
+  try {
+    // Get municipality id param
+    const idMunicipality: number = Number(req.params.idMunicipality)
+
+    const municipality = await municipalityService.municipalityGetById(idMunicipality)
+
+    res.json(municipality)
+  } catch (error) {
+    // Default error message
+    res.status(500).json({ error: 'Internal server error' })
+  }
+}

@@ -2,9 +2,9 @@ import { body, query, param } from 'express-validator'
 import { handleValidationErrors, stringToBoolean } from '../../helpers'
 import { validateFilterParams } from './filter.validation'
 
-const validSortFields = ['idDepartment', 'name', 'dteCode', 'zipCode', 'idCountry']
+const validSortFields = ['idMunicipality', 'name', 'dteCode', 'zipCode', 'idCountry', 'idDepartment']
 
-const departmentCommonValidations = (optional = false): any => [
+const municipalityCommonValidations = (optional = false): any => [
   body('name')
     .optional(optional).isString().withMessage('name must be a string')
     .notEmpty().withMessage('name is required')
@@ -22,33 +22,37 @@ const departmentCommonValidations = (optional = false): any => [
 
   body('idCountry')
     .optional(optional).isInt({ min: 1, max: 99999999999 }).withMessage('idCountry must be a integer between 1 and 99999999999')
-    .notEmpty().withMessage('idCountry is required')
+    .notEmpty().withMessage('idCountry is required'),
+
+  body('idDepartment')
+    .optional(optional).isInt({ min: 1, max: 99999999999 }).withMessage('idDepartment must be a integer between 1 and 99999999999')
+    .notEmpty().withMessage('idDepartment is required')
 ]
 
-export const validateDepartmentCreation = (): any => {
+export const validateMunicipalityCreation = (): any => {
   return [
-    ...departmentCommonValidations(),
+    ...municipalityCommonValidations(),
 
     handleValidationErrors
   ]
 }
 
-export const validateDepartmentUpdate = (): any => {
+export const validateMunicipalityUpdate = (): any => {
   return [
-    param('idDepartment')
-      .isInt().withMessage('idDepartment must be an integer')
+    param('idMunicipality')
+      .isInt().withMessage('idMunicipality must be an integer')
       .customSanitizer(Number),
 
-    ...departmentCommonValidations(true),
+    ...municipalityCommonValidations(true),
 
     handleValidationErrors
   ]
 }
 
-export const validateDepartmentUpdateStatus = (): any => {
+export const validateMunicipalityUpdateStatus = (): any => {
   return [
-    param('idDepartment')
-      .isInt().withMessage('idDepartment must be an integer')
+    param('idMunicipality')
+      .isInt().withMessage('idMunicipality must be an integer')
       .customSanitizer(Number),
 
     param('status')
@@ -59,7 +63,7 @@ export const validateDepartmentUpdateStatus = (): any => {
   ]
 }
 
-export const validateGetDepartments = (): any => {
+export const validateGetMunicipalities = (): any => {
   return [
     ...validateFilterParams(validSortFields),
 
@@ -83,14 +87,18 @@ export const validateGetDepartments = (): any => {
       .optional().isInt().withMessage('idCountry must be a integer')
       .customSanitizer(Number),
 
+    query('idDepartment')
+      .optional().isInt().withMessage('idDepartment must be a integer')
+      .customSanitizer(Number),
+
     handleValidationErrors
   ]
 }
 
-export const validateGetDepartmentById = (): any => {
+export const validateGetMunicipalityById = (): any => {
   return [
-    param('idDepartment')
-      .isInt().withMessage('idDepartment must be an integer')
+    param('idMunicipality')
+      .isInt().withMessage('idMunicipality must be an integer')
       .customSanitizer(Number),
 
     handleValidationErrors
