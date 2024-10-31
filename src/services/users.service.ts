@@ -268,7 +268,7 @@ const evaluateUserHierarchy = async (currUser: iUserJWT, idUserTarget: number): 
   }
 
   // evaluation hierarchy
-  if (currUser.type === UserRoleEnum.SUB_ADMIN) {
+  if (currUser.type === UserRoleEnum.SUBADMIN) {
     if ((userTarget.data as UserModel).type === UserRoleEnum.ADMIN) {
       throw new UserActionNotAllowedError()
     }

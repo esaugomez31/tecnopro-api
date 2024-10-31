@@ -13,7 +13,7 @@ export const checkPermission = (systemPage?: string, permissionName: string = ''
     const { type, idRole } = req.session as iUserJWT
 
     // No permissions required for the administrator accounts
-    if (type === UserRoleEnum.ADMIN || type === UserRoleEnum.SUB_ADMIN) return next()
+    if (type === UserRoleEnum.ADMIN || type === UserRoleEnum.SUBADMIN) return next()
 
     // Undefined permission is only for admins
     if (systemPage === undefined) {
