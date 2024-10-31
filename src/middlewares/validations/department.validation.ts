@@ -2,54 +2,53 @@ import { body, query, param } from 'express-validator'
 import { handleValidationErrors, stringToBoolean } from '../../helpers'
 import { validateFilterParams } from './filter.validation'
 
-const validSortFields = ['idCountry', 'name', 'code', 'zipCode']
+const validSortFields = ['idDepartment', 'name', 'dteCode', 'zipCode', 'idCountry']
 
-const countryCommonValidations = (optional = false): any => [
+const departmentCommonValidations = (optional = false): any => [
   body('name')
     .optional(optional).isString().withMessage('name must be a string')
     .notEmpty().withMessage('name is required')
-    .isLength({ min: 1, max: 50 }).withMessage('name must be between 1 and 50 characters long'),
-
-  body('code')
-    .optional().isString().withMessage('code must be a string')
-    .notEmpty().withMessage('code is required')
-    .isLength({ min: 1, max: 3 }).withMessage('code must be between 1 and 3 characters long'),
+    .isLength({ min: 1, max: 85 }).withMessage('name must be between 1 and 85 characters long'),
 
   body('zipCode')
     .optional().isString().withMessage('code must be a string')
     .notEmpty().withMessage('zipCode is required')
     .isLength({ min: 1, max: 10 }).withMessage('zipCode must be between 1 and 10 characters long'),
 
-  body('timeZone')
-    .optional().isString().withMessage('timeZone must be a string')
-    .notEmpty().withMessage('timeZone is required')
-    .isLength({ min: 1, max: 50 }).withMessage('timeZone must be between 1 and 50 characters long')
+  body('dteCode')
+    .optional().isString().withMessage('dteCode must be a string')
+    .notEmpty().withMessage('dteCode is required')
+    .isLength({ min: 1, max: 2 }).withMessage('dteCode must be between 1 and 2 characters long'),
+
+  body('idCountry')
+    .optional(optional).isInt({ min: 1, max: 99999999999 }).withMessage('limit must be a integer between 1 and 99999999999')
+    .notEmpty().withMessage('idCountry is required')
 ]
 
-export const validateCountryCreation = (): any => {
+export const validateDepartmentCreation = (): any => {
   return [
-    ...countryCommonValidations(),
+    ...departmentCommonValidations(),
 
     handleValidationErrors
   ]
 }
 
-export const validateCountryUpdate = (): any => {
+export const validateDepartmentUpdate = (): any => {
   return [
-    param('idCountry')
-      .isInt().withMessage('idCountry must be an integer')
+    param('idDepartment')
+      .isInt().withMessage('idDepartment must be an integer')
       .customSanitizer(Number),
 
-    ...countryCommonValidations(true),
+    ...departmentCommonValidations(true),
 
     handleValidationErrors
   ]
 }
 
-export const validateCountryUpdateStatus = (): any => {
+export const validateDepartmentUpdateStatus = (): any => {
   return [
-    param('idCountry')
-      .isInt().withMessage('idCountry must be an integer')
+    param('idDepartment')
+      .isInt().withMessage('idDepartment must be an integer')
       .customSanitizer(Number),
 
     param('status')
@@ -60,7 +59,7 @@ export const validateCountryUpdateStatus = (): any => {
   ]
 }
 
-export const validateGetCountries = (): any => {
+export const validateGetDepartments = (): any => {
   return [
     ...validateFilterParams(validSortFields),
 
@@ -72,22 +71,26 @@ export const validateGetCountries = (): any => {
       .optional().isBoolean().withMessage('status must be a boolean')
       .customSanitizer(stringToBoolean),
 
-    query('code')
-      .optional().isString().withMessage('code must be a string')
+    query('dteCode')
+      .optional().isString().withMessage('dteCode must be a string')
       .customSanitizer(value => value as string | undefined),
 
     query('zipCode')
       .optional().isString().withMessage('zipCode must be a string')
       .customSanitizer(value => value as string | undefined),
 
+    query('idCountry')
+      .optional().isInt().withMessage('idCountry must be a integer')
+      .customSanitizer(Number),
+
     handleValidationErrors
   ]
 }
 
-export const validateGetCountryById = (): any => {
+export const validateGetDepartmentById = (): any => {
   return [
-    param('idCountry')
-      .isInt().withMessage('idCountry must be an integer')
+    param('idDepartment')
+      .isInt().withMessage('idDepartment must be an integer')
       .customSanitizer(Number),
 
     handleValidationErrors
