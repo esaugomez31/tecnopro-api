@@ -10,7 +10,7 @@ import {
 } from '../interfaces'
 import {
   IDMunicipalityNotFoundError,
-  MunicipalityCodeExistsError,
+  // MunicipalityCodeExistsError,
   IDMuniCountryNotFoundError,
   IDMuniDepartmentNotFoundError,
   NameExistsError
@@ -177,10 +177,12 @@ const existValuesValidations = async (name?: string, dteCode?: string, idCountry
     if (existMunicipality.name === name && existMunicipality.idMunicipality !== idMunicipality) {
       throw new NameExistsError()
     }
+
     // Searching for code matches
-    if (existMunicipality.dteCode === dteCode && existMunicipality.idMunicipality !== idMunicipality) {
-      throw new MunicipalityCodeExistsError()
-    }
+    // commented because in municipalities this code can be repeated
+    // if (existMunicipality.dteCode === dteCode && existMunicipality.idMunicipality !== idMunicipality) {
+    //   throw new MunicipalityCodeExistsError()
+    // }
   }
 }
 
