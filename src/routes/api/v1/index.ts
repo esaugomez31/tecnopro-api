@@ -2,6 +2,7 @@ import express from 'express'
 import userRoutes from './users.route'
 import roleRoutes from './roles.route'
 import brandRoutes from './brands.route'
+import countryRoutes from './countries.route'
 import categoryRoutes from './categories.route'
 import rolesPermissionRoutes from './roles.permissions.route'
 
@@ -11,6 +12,8 @@ routes.use('/users', userRoutes)
 
 routes.use('/roles', roleRoutes)
 routes.use('/roles-permissions', rolesPermissionRoutes)
+
+routes.use('/countries', countryRoutes)
 
 routes.use('/categories', categoryRoutes)
 routes.use('/brands', brandRoutes)

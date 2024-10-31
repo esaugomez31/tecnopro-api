@@ -4,6 +4,7 @@ import {
   UserModel,
   RoleModel,
   BrandModel,
+  CountryModel,
   CategoryModel,
   PermissionModel,
   RolePermissionModel
@@ -24,6 +25,7 @@ export const AppDataSource = new DataSource({
     UserModel,
     RoleModel,
     BrandModel,
+    CountryModel,
     CategoryModel,
     PermissionModel,
     RolePermissionModel
