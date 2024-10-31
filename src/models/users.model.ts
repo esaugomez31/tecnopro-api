@@ -34,17 +34,8 @@ export class UserModel extends BaseEntity {
   @Column({ type: 'enum', enum: UserRoleEnum, default: UserRoleEnum.USER, nullable: true })
     type?: UserRoleEnum
 
-  @CreateDateColumn({ name: 'created_at', type: 'datetime', default: () => 'CURRENT_TIMESTAMP' })
-    createdAt?: Date
-
-  @UpdateDateColumn({ name: 'updated_at', type: 'datetime', default: () => 'CURRENT_TIMESTAMP', onUpdate: 'CURRENT_TIMESTAMP' })
-    updatedAt?: Date
-
   @Column({ type: 'tinyint', default: 0 })
     notifications: boolean
-
-  @Column({ type: 'tinyint', default: 1 })
-    status: boolean
 
   @Column({ type: 'datetime', nullable: true, name: 'last_login' })
     lastLogin: Date | null
@@ -54,4 +45,13 @@ export class UserModel extends BaseEntity {
 
   @Column({ name: 'id_role', nullable: true })
     idRole?: number
+
+  @CreateDateColumn({ name: 'created_at', type: 'datetime', default: () => 'CURRENT_TIMESTAMP' })
+    createdAt?: Date
+
+  @UpdateDateColumn({ name: 'updated_at', type: 'datetime', default: () => 'CURRENT_TIMESTAMP', onUpdate: 'CURRENT_TIMESTAMP' })
+    updatedAt?: Date
+
+  @Column({ type: 'tinyint', default: 1 })
+    status: boolean
 }
