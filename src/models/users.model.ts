@@ -1,5 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn, BaseEntity } from 'typeorm'
-// import { RoleModel } from './roles.models'
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, BaseEntity } from 'typeorm'
 
 export enum UserRoleEnum {
   ADMIN = 'admin',
@@ -34,6 +33,12 @@ export class UserModel extends BaseEntity {
 
   @Column({ type: 'enum', enum: UserRoleEnum, default: UserRoleEnum.USER, nullable: true })
     type?: UserRoleEnum
+
+  @CreateDateColumn({ name: 'created_at', type: 'datetime', default: () => 'CURRENT_TIMESTAMP' })
+    createdAt?: Date
+
+  @UpdateDateColumn({ name: 'updated_at', type: 'datetime', default: () => 'CURRENT_TIMESTAMP', onUpdate: 'CURRENT_TIMESTAMP' })
+    updatedAt?: Date
 
   @Column({ type: 'tinyint', default: 0 })
     notifications: boolean

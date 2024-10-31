@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn, BaseEntity } from 'typeorm'
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, BaseEntity } from 'typeorm'
 
 export enum systemPageEnum {
   PRODUCTS = 'products',
@@ -21,6 +21,12 @@ export class PermissionModel extends BaseEntity {
 
   @Column({ type: 'varchar', length: 25, name: 'permission_name' })
     permissionName: string
+
+  @CreateDateColumn({ name: 'created_at', type: 'datetime', default: () => 'CURRENT_TIMESTAMP' })
+    createdAt?: Date
+
+  @UpdateDateColumn({ name: 'updated_at', type: 'datetime', default: () => 'CURRENT_TIMESTAMP', onUpdate: 'CURRENT_TIMESTAMP' })
+    updatedAt?: Date
 
   @Column({ type: 'tinyint', default: 1 })
     status: boolean

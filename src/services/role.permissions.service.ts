@@ -24,14 +24,14 @@ export const rolePermissionUpdate = async (permissions: iPermissionObject[], idR
 
     const permissionsBulk: RolePermissionModel[] = []
     // creation date time
-    const creationDate = new Date(getLocalDateTimeNow())
+    const createdAt = new Date(getLocalDateTimeNow())
     // Creating bulk role permission object
     permissions.forEach(({ idPermission }: iPermissionObject) => {
       const perm = new RolePermissionModel()
 
       perm.idRole = idRole
       perm.idPermission = idPermission
-      perm.creationDate = creationDate
+      perm.createdAt = createdAt
 
       permissionsBulk.push(perm)
     })
@@ -58,7 +58,7 @@ export const rolePermissionGetById = async (idRole: number): Promise<iGetRolePer
       idPermission: rolePermission.idPermission,
       systemPage: rolePermission.permissionDetail.systemPage,
       permissionName: rolePermission.permissionDetail.permissionName,
-      creationDate: rolePermission.creationDate
+      createdAt: rolePermission.createdAt
     }))
     return { data: formattedResult ?? [] }
   } catch (error) {

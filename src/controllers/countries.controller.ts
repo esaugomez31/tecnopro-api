@@ -60,7 +60,7 @@ export const countryUpdateController = async (req: iCountryCommonRequest, res: R
       return
     }
 
-    if (error instanceof NameExistsError) {
+    if (error instanceof NameExistsError || error instanceof CountryCodeExistsError) {
       res.status(409).json({ error: error.name, message: error.message })
       return
     }

@@ -21,7 +21,7 @@ export interface iRolePermissionJoin {
   idPermission: number
   systemPage: systemPageEnum
   permissionName: string
-  creationDate: Date | null
+  createdAt?: Date
 }
 
 // Unique role response
