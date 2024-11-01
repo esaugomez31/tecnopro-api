@@ -113,8 +113,9 @@ export const countryGetByIdController = async (req: Request, res: Response): Pro
   try {
     // Get country id param
     const idCountry: number = Number(req.params.idCountry)
-
-    const country = await countryService.countryGetById(idCountry)
+    // Filter params settings
+    const settings = filtersettings(req.query)
+    const country = await countryService.countryGetById(idCountry, settings)
 
     res.json(country)
   } catch (error) {

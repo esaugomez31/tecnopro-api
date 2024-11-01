@@ -1,4 +1,5 @@
-import { Entity, BaseEntity, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, Column } from 'typeorm'
+import { Entity, BaseEntity, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, Column, OneToMany } from 'typeorm'
+import { DepartmentModel } from './index'
 
 @Entity('countries')
 export class CountryModel extends BaseEntity {
@@ -25,4 +26,7 @@ export class CountryModel extends BaseEntity {
 
   @Column({ type: 'tinyint', default: 1 })
     status?: boolean
+
+  @OneToMany(() => DepartmentModel, (department) => department.country)
+    departments?: DepartmentModel[]
 }

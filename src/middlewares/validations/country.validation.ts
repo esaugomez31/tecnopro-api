@@ -1,8 +1,9 @@
 import { body, query, param } from 'express-validator'
 import { handleValidationErrors, stringToBoolean } from '../../helpers'
-import { validateFilterParams } from './filter.validation'
+import { validateFilterParams, validateIncludeParams } from './filter.validation'
 
 const validSortFields = ['idCountry', 'name', 'code', 'zipCode']
+const validIncludeFields = ['departments', 'municipalities']
 
 const countryCommonValidations = (optional = false): any => [
   body('name')
@@ -80,6 +81,8 @@ export const validateGetCountries = (): any => {
       .optional().isString().withMessage('zipCode must be a string')
       .customSanitizer(value => value as string | undefined),
 
+    ...validateIncludeParams(validIncludeFields),
+
     handleValidationErrors
   ]
 }
@@ -89,6 +92,8 @@ export const validateGetCountryById = (): any => {
     param('idCountry')
       .isInt().withMessage('idCountry must be an integer')
       .customSanitizer(Number),
+
+    ...validateIncludeParams(validIncludeFields),
 
     handleValidationErrors
   ]

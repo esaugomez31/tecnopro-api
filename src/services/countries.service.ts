@@ -66,14 +66,17 @@ export const countryUpdateStatus = async (idCountry: number, status: boolean): P
 export const countryGetAll = async (filterParams: iCountryFilters, settings: iFilterSettings): Promise<iGetCountriesResponse> => {
   try {
     const filters = getFilters(filterParams)
+    const relations = getCountryIncludeFields(settings.include)
+
     const [countries, totalCount] = await Promise.all([
       CountryModel.find({
         where: filters,
         take: settings.limit,
         skip: settings.skip,
-        order: settings.order
+        order: settings.order,
+        relations
       }),
-      CountryModel.count({ where: filters })
+      CountryModel.count({ where: filters, relations })
     ])
     // Total pages calc
     const totalPages = Math.ceil(totalCount / settings.limit)
@@ -90,16 +93,30 @@ export const countryGetAll = async (filterParams: iCountryFilters, settings: iFi
   }
 }
 
-export const countryGetById = async (idCountry: number): Promise<iGetCountryByIdResponse> => {
+export const countryGetById = async (idCountry: number, settings: iFilterSettings): Promise<iGetCountryByIdResponse> => {
   try {
+    const relations = getCountryIncludeFields(settings.include)
     const country = await CountryModel.findOne({
-      where: { idCountry }
+      where: { idCountry }, relations
     })
     return { data: country ?? {} }
   } catch (error) {
     logger.error('Get country by id: ' + (error as Error).name)
     throw error
   }
+}
+
+const getCountryIncludeFields = (includes?: string[]): string[] => {
+  const relations = []
+  if (includes !== undefined) {
+    if (includes.includes('departments')) {
+      relations.push('departments')
+    }
+    if (includes.includes('municipalities')) {
+      relations.push('departments.municipalities')
+    }
+  }
+  return relations
 }
 
 const getFilters = (filterParams: iCountryFilters): iCountryQueryParams => {

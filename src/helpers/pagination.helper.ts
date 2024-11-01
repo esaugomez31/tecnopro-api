@@ -5,6 +5,7 @@ export const filtersettings = (params: any): iFilterSettings => {
   const limit = params.limit
   const orderBy = params.orderBy
   const orderDirection = params.orderDirection
+  const include = params.include?.split(',')
 
   // Sorting settings
   const order: { [key: string]: 'ASC' | 'DESC' } = {}
@@ -16,5 +17,5 @@ export const filtersettings = (params: any): iFilterSettings => {
   const validPage = page > 0 ? page : 1
   const skip = (validPage - 1) * limit
 
-  return { page, limit, skip, order }
+  return { page, limit, skip, order, include }
 }

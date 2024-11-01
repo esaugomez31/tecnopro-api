@@ -3,4 +3,5 @@ export interface iFilterSettings {
   skip: number
   limit: number
   order: { [key: string]: 'ASC' | 'DESC' }
+  include?: string[]
 }

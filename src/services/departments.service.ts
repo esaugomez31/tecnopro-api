@@ -67,14 +67,17 @@ export const departmentUpdateStatus = async (idDepartment: number, status: boole
 export const departmentGetAll = async (filterParams: iDepartmentFilters, settings: iFilterSettings): Promise<iGetDepartmentsResponse> => {
   try {
     const filters = getFilters(filterParams)
+    const relations = getDepartmentIncludeFields(settings.include)
+
     const [departments, totalCount] = await Promise.all([
       DepartmentModel.find({
         where: filters,
         take: settings.limit,
         skip: settings.skip,
-        order: settings.order
+        order: settings.order,
+        relations
       }),
-      DepartmentModel.count({ where: filters })
+      DepartmentModel.count({ where: filters, relations })
     ])
     // Total pages calc
     const totalPages = Math.ceil(totalCount / settings.limit)
@@ -91,16 +94,27 @@ export const departmentGetAll = async (filterParams: iDepartmentFilters, setting
   }
 }
 
-export const departmentGetById = async (idDepartment: number): Promise<iGetDepartmentByIdResponse> => {
+export const departmentGetById = async (idDepartment: number, settings: iFilterSettings): Promise<iGetDepartmentByIdResponse> => {
   try {
+    const relations = getDepartmentIncludeFields(settings.include)
     const department = await DepartmentModel.findOne({
-      where: { idDepartment }
+      where: { idDepartment }, relations
     })
     return { data: department ?? {} }
   } catch (error) {
     logger.error('Get department by id: ' + (error as Error).name)
     throw error
   }
+}
+
+const getDepartmentIncludeFields = (includes?: string[]): string[] => {
+  const relations = []
+  if (includes !== undefined) {
+    if (includes.includes('municipalities')) {
+      relations.push('municipalities')
+    }
+  }
+  return relations
 }
 
 const getFilters = (filterParams: iDepartmentFilters): iDepartmentQueryParams => {

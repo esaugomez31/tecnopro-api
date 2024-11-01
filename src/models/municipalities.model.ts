@@ -1,5 +1,4 @@
 import { Entity, BaseEntity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne, JoinColumn } from 'typeorm'
-import { CountryModel } from './country.model'
 import { DepartmentModel } from './departments.model'
 
 @Entity('municipalities')
@@ -22,11 +21,7 @@ export class MunicipalityModel extends BaseEntity {
   @Column({ name: 'id_department' })
     idDepartment: number
 
-  @ManyToOne(() => CountryModel, (country) => country.idCountry, { nullable: true })
-  @JoinColumn({ name: 'id_country' })
-    country?: CountryModel
-
-  @ManyToOne(() => DepartmentModel, (department) => department.idDepartment, { nullable: true })
+  @ManyToOne(() => DepartmentModel, (department) => department.municipalities)
   @JoinColumn({ name: 'id_department' })
     department?: DepartmentModel
 

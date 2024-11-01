@@ -120,8 +120,9 @@ export const departmentGetByIdController = async (req: Request, res: Response): 
   try {
     // Get department id param
     const idDepartment: number = Number(req.params.idDepartment)
-
-    const department = await departmentService.departmentGetById(idDepartment)
+    // Filter params settings
+    const settings = filtersettings(req.query)
+    const department = await departmentService.departmentGetById(idDepartment, settings)
 
     res.json(department)
   } catch (error) {
