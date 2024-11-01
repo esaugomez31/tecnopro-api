@@ -1,7 +1,7 @@
 {
-  "name": "tecnopro-admin-api",
+  "name": "sales-admin-api",
   "version": "0.0.1",
-  "description": "Admin products manager",
+  "description": "Admin products manager and sales",
   "main": "index.js",
   "scripts": {
     "build:dev": "tsc && node --env-file=.env.development ./build",
