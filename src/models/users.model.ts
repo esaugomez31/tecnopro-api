@@ -22,7 +22,7 @@ export class UserModel extends BaseEntity {
   @Column({ type: 'varchar', length: 70 })
     password: string
 
-  @Column({ type: 'varchar', length: 15, nullable: true, name: 'phone_number' })
+  @Column({ type: 'varchar', length: 17, nullable: true, name: 'phone_number' })
     phoneNumber: string | null
 
   @Column({ type: 'varchar', length: 15, nullable: true, name: 'whatsapp_number' })

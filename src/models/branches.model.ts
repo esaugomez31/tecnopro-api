@@ -24,7 +24,7 @@ export class BranchModel extends BaseEntity {
   @Column({ type: 'text', nullable: true })
     description?: string
 
-  @Column({ name: 'phone_number', type: 'varchar', nullable: true, length: 15 })
+  @Column({ name: 'phone_number', type: 'varchar', nullable: true, length: 17 })
     phoneNumber?: string
 
   @Column({ name: 'email', type: 'varchar', nullable: true, length: 100 })
