@@ -11,7 +11,7 @@ const municipalityCommonValidations = (optional = false): any => [
     .isLength({ min: 1, max: 85 }).withMessage('name must be between 1 and 85 characters long'),
 
   body('zipCode')
-    .optional().isString().withMessage('code must be a string')
+    .optional().isString().withMessage('zipCode must be a string')
     .notEmpty().withMessage('zipCode is required')
     .isLength({ min: 1, max: 10 }).withMessage('zipCode must be between 1 and 10 characters long'),
 
