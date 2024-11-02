@@ -1,7 +1,7 @@
 {
-  "name": "sales-admin-api",
+  "name": "store-manager-api",
   "version": "0.0.1",
-  "description": "Admin products manager and sales",
+  "description": "Store manager api",
   "main": "index.js",
   "scripts": {
     "build:dev": "tsc && node --env-file=.env.development ./build",
@@ -15,7 +15,9 @@
     "products",
     "manager",
     "inventory",
-    "sales"
+    "sales",
+    "invoices",
+    "dte"
   ],
   "author": "Esaú Gómez",
   "license": "ISC",
