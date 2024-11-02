@@ -5,18 +5,18 @@ import {
   municipalityGetByIdController,
   municipalityGetAllController,
   municipalityUpdateStatusController
-} from '../../../controllers/municipalities.controller'
+} from '../../../../controllers/locations'
 import {
   validateMunicipalityCreation,
   validateMunicipalityUpdate,
   validateGetMunicipalityById,
   validateGetMunicipalities,
   validateMunicipalityUpdateStatus
-} from '../../../middlewares/validations'
+} from '../../../../middlewares/validations'
 import {
   authenticationJWT,
   checkPermission
-} from '../../../middlewares'
+} from '../../../../middlewares'
 
 const routes = express.Router()
 

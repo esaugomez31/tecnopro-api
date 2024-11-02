@@ -1,4 +1,4 @@
-import ErrorFactory from './error.factory'
+import ErrorFactory from '../error.factory'
 
 export const IDDepCountryNotFoundError = ErrorFactory('Country not found', 'The Country could not be found in the system. Make sure the idCountry is correct.')
 export const IDDepartmentNotFoundError = ErrorFactory('Department not found', 'The Department could not be found in the system. Make sure the idDepartment is correct.')

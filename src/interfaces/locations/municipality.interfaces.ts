@@ -1,9 +1,9 @@
 import { FindOperator } from 'typeorm'
 import { Request } from 'express'
 import { ParsedQs } from 'qs'
-import { MunicipalityModel } from '../models'
-import { iFilterSettings } from './filter.interfaces'
-import { OrmOperationAttributes } from './orm.interfaces'
+import { MunicipalityModel } from '../../models'
+import { iFilterSettings } from '../filter.interfaces'
+import { OrmOperationAttributes } from '../orm.interfaces'
 
 // Allow filter params from API
 export interface iMunicipalityFilters {

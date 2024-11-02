@@ -5,18 +5,18 @@ import {
   departmentGetByIdController,
   departmentGetAllController,
   departmentUpdateStatusController
-} from '../../../controllers/departments.controller'
+} from '../../../../controllers/locations'
 import {
   validateDepartmentCreation,
   validateDepartmentUpdate,
   validateGetDepartmentById,
   validateGetDepartments,
   validateDepartmentUpdateStatus
-} from '../../../middlewares/validations'
+} from '../../../../middlewares/validations'
 import {
   authenticationJWT,
   checkPermission
-} from '../../../middlewares'
+} from '../../../../middlewares'
 
 const routes = express.Router()
 

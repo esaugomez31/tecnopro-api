@@ -1,19 +1,19 @@
 import { Request, Response } from 'express'
-import * as municipalityService from '../services/municipalities.service'
-import { MunicipalityModel } from '../models'
-import { filtersettings } from '../helpers'
+import { MunicipalityModel } from '../../models'
+import { filtersettings } from '../../helpers'
+import * as municipalityService from '../../services/locations/municipalities.service'
 import {
   IDMunicipalityNotFoundError,
   MunicipalityCodeExistsError,
   IDMuniCountryNotFoundError,
   IDMuniDepartmentNotFoundError,
   NameExistsError
-} from '../errors/municipality.factory'
+} from '../../errors/locations/municipality.factory'
 import {
   iMunicipalityGetCustomRequest,
   iMunicipalityCommonRequest,
   iMunicipalityFilters
-} from '../interfaces'
+} from '../../interfaces'
 
 export const municipalityCreateController = async (req: iMunicipalityCommonRequest, res: Response): Promise<void> => {
   try {

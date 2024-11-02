@@ -1,5 +1,5 @@
 import { Entity, BaseEntity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, OneToMany, JoinColumn, ManyToOne } from 'typeorm'
-import { MunicipalityModel, CountryModel } from '.'
+import { MunicipalityModel, CountryModel } from '..'
 
 @Entity('departments')
 export class DepartmentModel extends BaseEntity {

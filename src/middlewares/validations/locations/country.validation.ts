@@ -1,6 +1,6 @@
 import { body, query, param } from 'express-validator'
-import { handleValidationErrors, stringToBoolean } from '../../helpers'
-import { validateFilterParams, validateIncludeParams } from './filter.validation'
+import { handleValidationErrors, stringToBoolean } from '../../../helpers'
+import { validateFilterParams, validateIncludeParams } from '../filter.validation'
 
 const validSortFields = ['idCountry', 'name', 'code', 'zipCode']
 const validIncludeFields = ['departments', 'municipalities']

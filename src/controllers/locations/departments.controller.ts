@@ -1,18 +1,18 @@
 import { Request, Response } from 'express'
-import * as departmentService from '../services/departments.service'
-import { DepartmentModel } from '../models'
-import { filtersettings } from '../helpers'
+import { DepartmentModel } from '../../models'
+import { filtersettings } from '../../helpers'
+import * as departmentService from '../../services/locations/departments.service'
 import {
   NameExistsError,
   DepartmentCodeExistsError,
   IDDepCountryNotFoundError,
   IDDepartmentNotFoundError
-} from '../errors/department.factory'
+} from '../../errors/locations/department.factory'
 import {
   iDepartmentGetCustomRequest,
   iDepartmentCommonRequest,
   iDepartmentFilters
-} from '../interfaces'
+} from '../../interfaces'
 
 export const departmentCreateController = async (req: iDepartmentCommonRequest, res: Response): Promise<void> => {
   try {

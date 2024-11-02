@@ -1,19 +1,19 @@
 import { Like } from 'typeorm'
-import { DepartmentModel, CountryModel } from '../models'
-import { logger } from '../helpers'
+import { DepartmentModel, CountryModel } from '../../models'
+import { logger } from '../../helpers'
 import {
   iFilterSettings,
   iGetDepartmentByIdResponse,
   iGetDepartmentsResponse,
   iDepartmentQueryParams,
   iDepartmentFilters
-} from '../interfaces'
+} from '../../interfaces'
 import {
   IDDepartmentNotFoundError,
   DepartmentCodeExistsError,
   IDDepCountryNotFoundError,
   NameExistsError
-} from '../errors/department.factory'
+} from '../../errors/locations/department.factory'
 
 export const departmentCreate = async (department: DepartmentModel): Promise<DepartmentModel> => {
   try {

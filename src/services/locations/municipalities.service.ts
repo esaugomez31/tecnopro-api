@@ -1,20 +1,20 @@
 import { Like } from 'typeorm'
-import { MunicipalityModel, CountryModel, DepartmentModel } from '../models'
-import { logger } from '../helpers'
+import { MunicipalityModel, CountryModel, DepartmentModel } from '../../models'
+import { logger } from '../../helpers'
 import {
   iFilterSettings,
   iGetMunicipalityByIdResponse,
   iGetMunicipalitiesResponse,
   iMunicipalityQueryParams,
   iMunicipalityFilters
-} from '../interfaces'
+} from '../../interfaces'
 import {
   IDMunicipalityNotFoundError,
   // MunicipalityCodeExistsError,
   IDMuniCountryNotFoundError,
   IDMuniDepartmentNotFoundError,
   NameExistsError
-} from '../errors/municipality.factory'
+} from '../../errors/locations/municipality.factory'
 
 export const municipalityCreate = async (municipality: MunicipalityModel): Promise<MunicipalityModel> => {
   try {

@@ -5,18 +5,18 @@ import {
   countryGetByIdController,
   countryGetAllController,
   countryUpdateStatusController
-} from '../../../controllers/countries.controller'
+} from '../../../../controllers/locations'
 import {
   validateCountryCreation,
   validateCountryUpdate,
   validateGetCountryById,
   validateGetCountries,
   validateCountryUpdateStatus
-} from '../../../middlewares/validations'
+} from '../../../../middlewares/validations'
 import {
   authenticationJWT,
   checkPermission
-} from '../../../middlewares'
+} from '../../../../middlewares'
 
 const routes = express.Router()
 

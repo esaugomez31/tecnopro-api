@@ -1,17 +1,17 @@
 import { Request, Response } from 'express'
-import * as countryService from '../services/countries.service'
-import { CountryModel } from '../models'
-import { filtersettings } from '../helpers'
+import { CountryModel } from '../../models'
+import { filtersettings } from '../../helpers'
+import * as countryService from '../../services/locations/countries.service'
 import {
   NameExistsError,
   CountryCodeExistsError,
   IDCountryNotFoundError
-} from '../errors/country.factory'
+} from '../../errors/locations/country.factory'
 import {
   iCountryGetCustomRequest,
   iCountryCommonRequest,
   iCountryFilters
-} from '../interfaces'
+} from '../../interfaces'
 
 export const countryCreateController = async (req: iCountryCommonRequest, res: Response): Promise<void> => {
   try {
