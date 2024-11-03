@@ -60,7 +60,8 @@ const branchCommonValidations = (optional = false): any => [
     .isLength({ min: 1, max: 255 }).withMessage('dteApiJwt must be between 1 and 255 characters long'),
 
   body('dteApiJwtDate')
-    .optional().isDate().withMessage('dteApiJwtDate must be a datetime'),
+    .optional()
+    .isISO8601().withMessage('dteApiJwtDate must be in ISO 8601 format'),
 
   body('dteSenderNit')
     .optional().isString().withMessage('dteSenderNit must be a string')
