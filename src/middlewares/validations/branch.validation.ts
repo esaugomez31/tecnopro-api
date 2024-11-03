@@ -62,11 +62,6 @@ const branchCommonValidations = (optional = false): any => [
   body('dteApiJwtDate')
     .optional().isDate().withMessage('dteApiJwtDate must be a datetime'),
 
-  body('dteControlNumber')
-    .optional().isString().withMessage('dteControlNumber must be a string')
-    .notEmpty().withMessage('dteControlNumber is required')
-    .isLength({ min: 31, max: 31 }).withMessage('dteControlNumber must be between 31 and 31 characters long'),
-
   body('dteSenderNit')
     .optional().isString().withMessage('dteSenderNit must be a string')
     .notEmpty().withMessage('dteSenderNit is required')

@@ -71,9 +71,6 @@ export class BranchModel extends BaseEntity {
   @Column({ name: 'dte_api_jwt_date', type: 'datetime', nullable: true })
     dteApiJwtDate?: Date
 
-  @Column({ name: 'dte_control_number', type: 'varchar', length: 31, nullable: true })
-    dteControlNumber?: string
-
   @Column({ name: 'dte_sender_nit', type: 'varchar', length: 14, nullable: true })
     dteSenderNit?: string
 
