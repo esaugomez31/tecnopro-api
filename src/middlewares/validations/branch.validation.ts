@@ -46,67 +46,76 @@ const branchCommonValidations = (optional = false): any => [
 
   // ########################################### DTE START ###########################################
 
-  body('dteActive')
+  body('dte')
+    .optional()
+    .custom((value) => {
+      if (value !== undefined && value !== null) {
+        return true
+      }
+      return true
+    }),
+
+  body('dte.dteActive')
     .optional().isBoolean().withMessage('dteActive must be a boolean')
     .customSanitizer(stringToBoolean),
 
-  body('dteEnvironment')
+  body('dte.dteEnvironment')
     .isIn(validDteEnvironment).withMessage(`dteEnvironment must be one of the following: ${validDteEnvironment.join(', ')}.`)
     .customSanitizer(value => value as string),
 
-  body('dteApiJwt')
+  body('dte.dteApiJwt')
     .optional().isString().withMessage('dteApiJwt must be a string')
     .notEmpty().withMessage('dteApiJwt is required')
     .isLength({ min: 1, max: 255 }).withMessage('dteApiJwt must be between 1 and 255 characters long'),
 
-  body('dteApiJwtDate')
+  body('dte.dteApiJwtDate')
     .optional()
     .isISO8601().withMessage('dteApiJwtDate must be in ISO 8601 format'),
 
-  body('dteSenderNit')
+  body('dte.dteSenderNit')
     .optional().isString().withMessage('dteSenderNit must be a string')
     .notEmpty().withMessage('dteSenderNit is required')
     .isLength({ min: 9, max: 14 }).withMessage('dteSenderNit must be between 9 and 14 characters long')
     .matches(/^[^-]+$/).withMessage('dteSenderNit must not contain hyphens'),
 
-  body('dteSenderNrc')
+  body('dte.dteSenderNrc')
     .optional().isString().withMessage('dteSenderNrc must be a string')
     .notEmpty().withMessage('dteSenderNrc is required')
     .isLength({ min: 2, max: 8 }).withMessage('dteSenderNrc must be between 2 and 8 characters long')
     .matches(/^[^-]+$/).withMessage('dteSenderNrc must not contain hyphens'),
 
-  body('dteSenderEmail')
+  body('dte.dteSenderEmail')
     .optional().isEmail().withMessage('dteSenderEmail must be a valid email')
     .isLength({ max: 100 }).withMessage('dteSenderEmail length does not exceed 100 characters')
     .notEmpty().withMessage('dteSenderEmail is required'),
 
-  body('dteSenderPhone')
+  body('dte.dteSenderPhone')
     .isString().withMessage('dteSenderPhone must be a string')
     .isLength({ max: 30 }).withMessage('dteSenderPhone length does not exceed 30 characters')
     .matches(/^(\d{8,30})(,\d{8,30}){0,2}$/) // allow three phone numbers, separates by commas
     .withMessage('dteSenderPhone must be between 8 and 30 digits long and can contain up to three numbers separated by commas'),
 
-  body('dteActivityCode')
+  body('dte.dteActivityCode')
     .optional().isString().withMessage('dteActivityCode must be a string')
     .notEmpty().withMessage('dteActivityCode is required')
     .isLength({ min: 5, max: 6 }).withMessage('dteActivityCode must be between 5 and 6 characters long'),
 
-  body('dteActivityDesc')
+  body('dte.dteActivityDesc')
     .optional().isString().withMessage('dteActivityDesc must be a string')
     .notEmpty().withMessage('dteActivityDesc is required')
     .isLength({ min: 5, max: 150 }).withMessage('dteActivityDesc must be between 5 and 150 characters long'),
 
-  body('dteSenderName')
+  body('dte.dteSenderName')
     .optional().isString().withMessage('dteSenderName must be a string')
     .notEmpty().withMessage('dteSenderName is required')
     .isLength({ min: 1, max: 250 }).withMessage('dteSenderName must be between 1 and 250 characters long'),
 
-  body('dteSenderTradeName')
+  body('dte.dteSenderTradeName')
     .optional().isString().withMessage('dteSenderTradeName must be a string')
     .notEmpty().withMessage('dteSenderTradeName is required')
     .isLength({ min: 1, max: 150 }).withMessage('dteSenderTradeName must be between 1 and 150 characters long'),
 
-  body('dteEstablishment')
+  body('dte.dteEstablishment')
     .isIn(validDteEstablishment).withMessage(`dteEstablishment must be one of the following: ${validDteEstablishment.join(', ')}.`)
     .customSanitizer(value => value as string)
 

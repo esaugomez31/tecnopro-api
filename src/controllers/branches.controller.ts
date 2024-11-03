@@ -38,7 +38,7 @@ export const branchCreateController = async (req: iBranchCommonRequest, res: Res
     payload.dteSenderPhone = body.dteSenderPhone
     payload.dteActivityCode = body.dteActivityCode
     payload.dteActivityDesc = body.dteActivityDesc
-    payload.dteSenderName = body.phoneNumber
+    payload.dteSenderName = body.dteSenderName
     payload.dteSenderTradeName = body.dteSenderTradeName
     payload.dteEstablishment = body.dteEstablishment
     payload.status = true
@@ -87,7 +87,7 @@ export const branchUpdateController = async (req: iBranchCommonRequest, res: Res
     payload.dteSenderPhone = body.dteSenderPhone
     payload.dteActivityCode = body.dteActivityCode
     payload.dteActivityDesc = body.dteActivityDesc
-    payload.dteSenderName = body.phoneNumber
+    payload.dteSenderName = body.dteSenderName
     payload.dteSenderTradeName = body.dteSenderTradeName
     payload.dteEstablishment = body.dteEstablishment
     // Update Branch

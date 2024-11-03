@@ -44,6 +44,24 @@ export interface iBranchGetCustomRequest extends Request {
   query: iBranchFilters & iFilterSettings & ParsedQs
 }
 
+// type branchDtefields = 'dteActive' |
+// 'dteEnvironment' |
+// 'dteApiJwt' |
+// 'dteApiJwtDate' |
+// 'dteSenderNit' |
+// 'dteSenderNrc' |
+// 'dteSenderEmail' |
+// 'dteSenderPhone' |
+// 'dteActivityCode' |
+// 'dteActivityDesc' |
+// 'dteSenderName' |
+// 'dteSenderTradeName' |
+// 'dteEstablishment'
+
+// interface iBranchCommonBody extends Omit<BranchModel, OrmOperationAttributes | branchDtefields> {
+//   dte: Pick<BranchModel, branchDtefields>
+// }
+
 // Custom request to type branches create controllers
 export interface iBranchCommonRequest extends Request {
   body: Omit<BranchModel, OrmOperationAttributes> & ParsedQs
