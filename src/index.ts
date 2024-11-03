@@ -10,7 +10,7 @@ const main = async (): Promise<void> => {
 
     // Starting server....
     app.listen(port, () => {
-      logger.info(`Tecnopro API is listening at ${port} port...`)
+      logger.info(`API is listening at ${port} port...`)
     })
   } catch (error) {
     if (error instanceof Error) {
