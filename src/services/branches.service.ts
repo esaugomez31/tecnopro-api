@@ -7,6 +7,7 @@ import {
   iGetBranchByIdResponse,
   iGetBranchesResponse,
   iBranchQueryParams,
+  iBranchResponse,
   iBranchFilters
 } from '../interfaces'
 import {
@@ -86,11 +87,39 @@ export const branchGetAll = async (filterParams: iBranchFilters, settings: iFilt
       }),
       BranchModel.count({ where: filters })
     ])
+
+    const response: iBranchResponse[] = branches.map(branch => ({
+      idBranch: branch.idBranch,
+      name: branch.name,
+      description: branch.description,
+      phoneNumber: branch.phoneNumber,
+      email: branch.email,
+      address: branch.address,
+      idCountry: branch.idCountry,
+      idDepartment: branch.idDepartment,
+      idMunicipality: branch.idMunicipality,
+      dte: {
+        dteActive: branch.dteActive,
+        dteEnvironment: branch.dteEnvironment,
+        // dteApiJwt: branch.dteApiJwt,
+        // dteApiJwtDate: branch.dteApiJwtDate,
+        dteSenderNit: branch.dteSenderNit,
+        dteSenderNrc: branch.dteSenderNrc,
+        dteSenderEmail: branch.dteSenderEmail,
+        dteSenderPhone: branch.dteSenderPhone,
+        dteActivityCode: branch.dteActivityCode,
+        dteActivityDesc: branch.dteActivityDesc,
+        dteSenderName: branch.dteSenderName,
+        dteSenderTradeName: branch.dteSenderTradeName,
+        dteEstablishment: branch.dteEstablishment
+      }
+    }))
+
     // Total pages calc
     const totalPages = Math.ceil(totalCount / settings.limit)
 
     return {
-      data: branches,
+      data: response,
       total: totalCount,
       page: totalPages > 0 ? settings.page : 0,
       totalPages
@@ -106,7 +135,39 @@ export const branchGetById = async (idBranch: number): Promise<iGetBranchByIdRes
     const branch = await BranchModel.findOne({
       where: { idBranch }
     })
-    return { data: branch ?? {} }
+
+    let response = {}
+
+    if (branch !== null) {
+      response = {
+        idBranch: branch.idBranch,
+        name: branch.name,
+        description: branch.description,
+        phoneNumber: branch.phoneNumber,
+        email: branch.email,
+        address: branch.address,
+        idCountry: branch.idCountry,
+        idDepartment: branch.idDepartment,
+        idMunicipality: branch.idMunicipality,
+        dte: {
+          dteActive: branch.dteActive,
+          dteEnvironment: branch.dteEnvironment,
+          // dteApiJwt: branch.dteApiJwt,
+          // dteApiJwtDate: branch.dteApiJwtDate,
+          dteSenderNit: branch.dteSenderNit,
+          dteSenderNrc: branch.dteSenderNrc,
+          dteSenderEmail: branch.dteSenderEmail,
+          dteSenderPhone: branch.dteSenderPhone,
+          dteActivityCode: branch.dteActivityCode,
+          dteActivityDesc: branch.dteActivityDesc,
+          dteSenderName: branch.dteSenderName,
+          dteSenderTradeName: branch.dteSenderTradeName,
+          dteEstablishment: branch.dteEstablishment
+        }
+      }
+    }
+
+    return { data: response }
   } catch (error) {
     logger.error('Get branch by id: ' + (error as Error).name)
     throw error

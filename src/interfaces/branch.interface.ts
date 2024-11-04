@@ -11,6 +11,31 @@ export enum BranchPermEnum {
   UPDATESTATUS = 'update_status',
 }
 
+export interface iBranchResponse {
+  idBranch?: number
+  name?: string
+  description?: string
+  phoneNumber?: string
+  email?: string
+  address?: string
+  idCountry?: number
+  idDepartment?: number
+  idMunicipality?: number
+  dte: {
+    dteActive?: boolean
+    dteEnvironment?: string
+    dteSenderNit?: string
+    dteSenderNrc?: string
+    dteSenderEmail?: string
+    dteSenderPhone?: string
+    dteActivityCode?: string
+    dteActivityDesc?: string
+    dteSenderName?: string
+    dteSenderTradeName?: string
+    dteEstablishment?: string
+  }
+}
+
 // Allow filter params from API
 export interface iBranchFilters {
   name?: string
@@ -34,7 +59,7 @@ export interface iBranchQueryParams extends Omit<iBranchFilters, 'name' | 'descr
 
 // Multi branches response interface
 export interface iGetBranchesResponse {
-  data: BranchModel[]
+  data: iBranchResponse[]
   total: number
   page: number
   totalPages: number
@@ -42,7 +67,7 @@ export interface iGetBranchesResponse {
 
 // Unique branch response
 export interface iGetBranchByIdResponse {
-  data: BranchModel | {}
+  data: iBranchResponse | {}
 }
 
 // Custom request to type branches get controllers
@@ -50,25 +75,25 @@ export interface iBranchGetCustomRequest extends Request {
   query: iBranchFilters & iFilterSettings & ParsedQs
 }
 
-// type branchDtefields = 'dteActive' |
-// 'dteEnvironment' |
-// 'dteApiJwt' |
-// 'dteApiJwtDate' |
-// 'dteSenderNit' |
-// 'dteSenderNrc' |
-// 'dteSenderEmail' |
-// 'dteSenderPhone' |
-// 'dteActivityCode' |
-// 'dteActivityDesc' |
-// 'dteSenderName' |
-// 'dteSenderTradeName' |
-// 'dteEstablishment'
+type branchDtefields = 'dteActive' |
+'dteEnvironment' |
+'dteApiJwt' |
+'dteApiJwtDate' |
+'dteSenderNit' |
+'dteSenderNrc' |
+'dteSenderEmail' |
+'dteSenderPhone' |
+'dteActivityCode' |
+'dteActivityDesc' |
+'dteSenderName' |
+'dteSenderTradeName' |
+'dteEstablishment'
 
-// interface iBranchCommonBody extends Omit<BranchModel, OrmOperationAttributes | branchDtefields> {
-//   dte: Pick<BranchModel, branchDtefields>
-// }
+interface iBranchCommonBody extends Omit<BranchModel, OrmOperationAttributes | branchDtefields> {
+  dte: Pick<BranchModel, branchDtefields>
+}
 
 // Custom request to type branches create controllers
 export interface iBranchCommonRequest extends Request {
-  body: Omit<BranchModel, OrmOperationAttributes> & ParsedQs
+  body: iBranchCommonBody & ParsedQs
 }

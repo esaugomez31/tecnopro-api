@@ -60,7 +60,7 @@ const branchCommonValidations = (optional = false): any => [
     .customSanitizer(stringToBoolean),
 
   body('dte.dteEnvironment')
-    .isIn(validDteEnvironment).withMessage(`dteEnvironment must be one of the following: ${validDteEnvironment.join(', ')}.`)
+    .optional().isIn(validDteEnvironment).withMessage(`dteEnvironment must be one of the following: ${validDteEnvironment.join(', ')}.`)
     .customSanitizer(value => value as string),
 
   body('dte.dteApiJwt')
@@ -90,7 +90,7 @@ const branchCommonValidations = (optional = false): any => [
     .notEmpty().withMessage('dteSenderEmail is required'),
 
   body('dte.dteSenderPhone')
-    .isString().withMessage('dteSenderPhone must be a string')
+    .optional().isString().withMessage('dteSenderPhone must be a string')
     .isLength({ max: 30 }).withMessage('dteSenderPhone length does not exceed 30 characters')
     .matches(/^(\d{8,30})(,\d{8,30}){0,2}$/) // allow three phone numbers, separates by commas
     .withMessage('dteSenderPhone must be between 8 and 30 digits long and can contain up to three numbers separated by commas'),
@@ -116,7 +116,7 @@ const branchCommonValidations = (optional = false): any => [
     .isLength({ min: 1, max: 150 }).withMessage('dteSenderTradeName must be between 1 and 150 characters long'),
 
   body('dte.dteEstablishment')
-    .isIn(validDteEstablishment).withMessage(`dteEstablishment must be one of the following: ${validDteEstablishment.join(', ')}.`)
+    .optional().isIn(validDteEstablishment).withMessage(`dteEstablishment must be one of the following: ${validDteEstablishment.join(', ')}.`)
     .customSanitizer(value => value as string)
 
   // ########################################### DTE END ###########################################
