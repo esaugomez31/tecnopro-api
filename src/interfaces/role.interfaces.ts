@@ -5,6 +5,13 @@ import { RoleModel } from '../models'
 import { iFilterSettings } from './filter.interfaces'
 import { OrmOperationAttributes } from './orm.interfaces'
 
+export enum RolePermEnum {
+  VIEWLIST = 'view_list',
+  CREATE = 'create',
+  UPDATE = 'update',
+  UPDATESTATUS = 'update_status',
+}
+
 // Allow filter params from API
 export interface iRoleFilters {
   name?: string

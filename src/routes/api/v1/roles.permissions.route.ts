@@ -3,6 +3,7 @@ import {
   rolePermissionUpdateController,
   rolePermissionGetByIdController
 } from '../../../controllers/roles.permissions.controller'
+import { PermissionPermEnum, SystemPageEnum } from '../../../interfaces'
 import {
   validateRolePremissionUpdate,
   validateGetRolePermissionById
@@ -13,11 +14,11 @@ import {
 } from '../../../middlewares'
 
 const routes = express.Router()
-const page = 'permissions'
+const page = SystemPageEnum.PERMISSIONS
 
 // Get roles
-routes.get('/:idRole', authenticationJWT, validateGetRolePermissionById(), checkPermission(page, 'view_list'), rolePermissionGetByIdController)
+routes.get('/:idRole', authenticationJWT, validateGetRolePermissionById(), checkPermission(page, PermissionPermEnum.VIEWLIST), rolePermissionGetByIdController)
 // Permission actions
-routes.put('/update/:idRole', authenticationJWT, validateRolePremissionUpdate(), checkPermission(page, 'update'), rolePermissionUpdateController)
+routes.put('/update/:idRole', authenticationJWT, validateRolePremissionUpdate(), checkPermission(page, PermissionPermEnum.UPDATE), rolePermissionUpdateController)
 
 export default routes

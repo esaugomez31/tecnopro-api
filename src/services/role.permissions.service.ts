@@ -1,10 +1,11 @@
 
-import { RolePermissionModel, PermissionModel, RoleModel, systemPageEnum } from '../models'
+import { RolePermissionModel, PermissionModel, RoleModel } from '../models'
 import { getLocalDateTimeNow, logger } from '../helpers'
 import {
   IDRoleNotFoundError
 } from '../errors/role.error'
 import {
+  SystemPageEnum,
   iPermissionObject,
   iRolePermissionJoin,
   iGetRolePermissionByIdResponse
@@ -67,7 +68,7 @@ export const rolePermissionGetById = async (idRole: number): Promise<iGetRolePer
   }
 }
 
-export const getRolePermissionsByPage = async (idRole: number, systemPage: systemPageEnum): Promise<PermissionModel[]> => {
+export const getRolePermissionsByPage = async (idRole: number, systemPage: SystemPageEnum): Promise<PermissionModel[]> => {
   const rolePermissions = await RolePermissionModel.find({
     where: { idRole, permissionDetail: { systemPage } },
     relations: ['permissionDetail']

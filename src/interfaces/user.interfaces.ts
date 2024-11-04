@@ -1,9 +1,22 @@
 import { FindOperator } from 'typeorm'
 import { Request } from 'express'
 import { ParsedQs } from 'qs'
-import { UserModel, UserRoleEnum } from '../models'
+import { UserModel } from '../models'
 import { iFilterSettings } from './filter.interfaces'
 import { OrmOperationAttributes } from './orm.interfaces'
+
+export enum UserRoleEnum {
+  ADMIN = 'admin',
+  SUBADMIN = 'sub_admin',
+  USER = 'user'
+}
+
+export enum UserPermEnum {
+  VIEWLIST = 'view_list',
+  CREATE = 'create',
+  UPDATE = 'update',
+  UPDATESTATUS = 'update_status',
+}
 
 // JWT interface
 export interface iUserJWT {

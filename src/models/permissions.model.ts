@@ -1,23 +1,13 @@
 import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, BaseEntity } from 'typeorm'
-
-export enum systemPageEnum {
-  PRODUCTS = 'products',
-  CATEGORIES = 'categories',
-  SALES = 'sales',
-  SALES_HISTORY = 'sales_history',
-  CUSTOMERS = 'customers',
-  USERS = 'users',
-  ROLES = 'roles',
-  PERMISSIONS = 'permissions'
-}
+import { SystemPageEnum } from '../interfaces'
 
 @Entity('permissions')
 export class PermissionModel extends BaseEntity {
   @PrimaryGeneratedColumn({ type: 'int', name: 'id_permission' })
     idPermission?: number
 
-  @Column({ type: 'enum', enum: systemPageEnum, name: 'system_page' })
-    systemPage: systemPageEnum
+  @Column({ type: 'enum', enum: SystemPageEnum, name: 'system_page' })
+    systemPage: SystemPageEnum
 
   @Column({ type: 'varchar', length: 25, name: 'permission_name' })
     permissionName: string

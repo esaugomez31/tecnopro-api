@@ -6,6 +6,7 @@ import {
   categoryGetAllController,
   categoryUpdateStatusController
 } from '../../../controllers/categories.controller'
+import { CategoryPermEnum, SystemPageEnum } from '../../../interfaces'
 import {
   validateCategoryCreation,
   validateCategoryUpdate,
@@ -19,15 +20,15 @@ import {
 } from '../../../middlewares'
 
 const routes = express.Router()
-const page = 'categories'
+const page = SystemPageEnum.CATEGORIES
 
 // Get categories
-routes.get('/', authenticationJWT, validateGetCategories(), checkPermission(page, 'view_list'), categoryGetAllController)
-routes.get('/:idCategory', authenticationJWT, validateGetCategoryById(), checkPermission(page, 'view_list'), categoryGetByIdController)
+routes.get('/', authenticationJWT, validateGetCategories(), checkPermission(page, CategoryPermEnum.VIEWLIST), categoryGetAllController)
+routes.get('/:idCategory', authenticationJWT, validateGetCategoryById(), checkPermission(page, CategoryPermEnum.VIEWLIST), categoryGetByIdController)
 
 // Category actions
-routes.post('/register', authenticationJWT, validateCategoryCreation(), checkPermission(page, 'create'), categoryCreateController)
-routes.put('/update/:idCategory', authenticationJWT, validateCategoryUpdate(), checkPermission(page, 'update'), categoryUpdateController)
-routes.put('/:idCategory/status/:status', authenticationJWT, validateCategoryUpdateStatus(), checkPermission(page, 'update_status'), categoryUpdateStatusController)
+routes.post('/register', authenticationJWT, validateCategoryCreation(), checkPermission(page, CategoryPermEnum.CREATE), categoryCreateController)
+routes.put('/update/:idCategory', authenticationJWT, validateCategoryUpdate(), checkPermission(page, CategoryPermEnum.UPDATE), categoryUpdateController)
+routes.put('/:idCategory/status/:status', authenticationJWT, validateCategoryUpdateStatus(), checkPermission(page, CategoryPermEnum.UPDATESTATUS), categoryUpdateStatusController)
 
 export default routes

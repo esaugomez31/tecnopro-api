@@ -8,6 +8,7 @@ import {
   userGetByIdController,
   userUpdateStatusController
 } from '../../../controllers/users.controller'
+import { UserPermEnum, SystemPageEnum } from '../../../interfaces'
 import {
   validateUserSignup,
   validateUserUpdate,
@@ -22,19 +23,19 @@ import {
 } from '../../../middlewares'
 
 const routes = express.Router()
-const page = 'users'
+const page = SystemPageEnum.USERS
 
 // Authentication
 routes.post('/login', validateUserLogin(), userLoginController)
 routes.post('/logout', authenticationJWT, userLogoutController)
 
 // Get users
-routes.get('/', authenticationJWT, validateGetUsers(), checkPermission(page, 'view_list'), userGetAllController)
-routes.get('/:idUser', authenticationJWT, validateGetUserById(), checkPermission(page, 'view_list'), userGetByIdController)
+routes.get('/', authenticationJWT, validateGetUsers(), checkPermission(page, UserPermEnum.VIEWLIST), userGetAllController)
+routes.get('/:idUser', authenticationJWT, validateGetUserById(), checkPermission(page, UserPermEnum.VIEWLIST), userGetByIdController)
 
 // User actions
-routes.post('/signup', authenticationJWT, validateUserSignup(), checkPermission(page, 'create'), userSignupController)
-routes.put('/update/:idUser', authenticationJWT, validateUserUpdate(), checkPermission(page, 'update'), userUpdateController)
-routes.put('/:idUser/status/:status', authenticationJWT, validateUserUpdateStatus(), checkPermission(page, 'update_status'), userUpdateStatusController)
+routes.post('/signup', authenticationJWT, validateUserSignup(), checkPermission(page, UserPermEnum.CREATE), userSignupController)
+routes.put('/update/:idUser', authenticationJWT, validateUserUpdate(), checkPermission(page, UserPermEnum.UPDATE), userUpdateController)
+routes.put('/:idUser/status/:status', authenticationJWT, validateUserUpdateStatus(), checkPermission(page, UserPermEnum.UPDATESTATUS), userUpdateStatusController)
 
 export default routes

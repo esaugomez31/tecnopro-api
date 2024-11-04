@@ -5,6 +5,12 @@ import { BranchModel } from '../models'
 import { iFilterSettings } from './filter.interfaces'
 import { OrmOperationAttributes } from './orm.interfaces'
 
+export enum BranchPermEnum {
+  CREATE = 'create',
+  UPDATE = 'update',
+  UPDATESTATUS = 'update_status',
+}
+
 // Allow filter params from API
 export interface iBranchFilters {
   name?: string

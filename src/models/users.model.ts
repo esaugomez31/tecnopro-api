@@ -1,10 +1,6 @@
 import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, BaseEntity } from 'typeorm'
+import { UserRoleEnum } from '../interfaces'
 
-export enum UserRoleEnum {
-  ADMIN = 'admin',
-  SUBADMIN = 'sub_admin',
-  USER = 'user'
-}
 @Entity('users')
 export class UserModel extends BaseEntity {
   @PrimaryGeneratedColumn({ type: 'int', name: 'id_user' })

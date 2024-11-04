@@ -2,7 +2,7 @@ import { Request, Response } from 'express'
 import jwt from 'jsonwebtoken'
 import envs from '../config/environment.config'
 import * as userService from '../services/users.service'
-import { UserModel, UserRoleEnum } from '../models'
+import { UserModel } from '../models'
 import { filtersettings } from '../helpers'
 import { IDRoleNotFoundError } from '../errors/role.error'
 import {
@@ -16,6 +16,7 @@ import {
 import {
   iUserJWT,
   iUserFilters,
+  UserRoleEnum,
   iUserGetCustomRequest,
   iUserCommonRequest
 } from '../interfaces'

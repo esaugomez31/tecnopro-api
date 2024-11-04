@@ -1,7 +1,7 @@
 import { v4 as uuidv4 } from 'uuid'
 import { Like } from 'typeorm'
 import envs from '../config/environment.config'
-import { UserModel, RoleModel, UserRoleEnum } from '../models'
+import { UserModel, RoleModel } from '../models'
 import { logger, hashPassword, comparePassword, getLocalDateTimeNow } from '../helpers'
 import {
   iFilterSettings,
@@ -10,6 +10,7 @@ import {
   iUserQueryParams,
   iGetUsersResponse,
   iGetUserByIdResponse,
+  UserRoleEnum,
   iUserJWT
 } from '../interfaces'
 import {

@@ -1,14 +1,11 @@
 import { Request, Response, NextFunction } from 'express'
-import { iUserJWT } from '../interfaces/user.interfaces'
+import { iUserJWT, UserRoleEnum } from '../interfaces/user.interfaces'
 import { getRolePermissionsByPage } from '../services/role.permissions.service'
+import { SystemPageEnum } from '../interfaces'
 import { hasPermission } from '../helpers'
-import {
-  UserRoleEnum,
-  PermissionModel,
-  systemPageEnum
-} from '../models'
+import { PermissionModel } from '../models'
 
-export const checkPermission = (systemPage?: string, permissionName: string = '') => {
+export const checkPermission = (systemPage?: SystemPageEnum, permissionName: string = '') => {
   return async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const { type, idRole } = req.session as iUserJWT
 
@@ -18,12 +15,13 @@ export const checkPermission = (systemPage?: string, permissionName: string = ''
     // Undefined permission is only for admins
     if (systemPage === undefined) {
       res.status(403).json({ error: 'Access denied' })
+      return
     }
 
     // Get permissions
     const permissions: PermissionModel[] = await getRolePermissionsByPage(
       idRole as number,
-      systemPage as systemPageEnum
+      systemPage
     )
 
     if (hasPermission(permissions, permissionName)) {

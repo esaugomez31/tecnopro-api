@@ -5,6 +5,13 @@ import { BrandModel } from '../models'
 import { iFilterSettings } from './filter.interfaces'
 import { OrmOperationAttributes } from './orm.interfaces'
 
+export enum BrandPermEnum {
+  VIEWLIST = 'view_list',
+  CREATE = 'create',
+  UPDATE = 'update',
+  UPDATESTATUS = 'update_status',
+}
+
 // Allow filter params from API
 export interface iBrandFilters {
   name?: string
