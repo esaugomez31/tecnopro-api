@@ -24,6 +24,11 @@ const envs: iEnvs = {
     port: retrieveEnv('PORT'),
     passwordSalt: Number(retrieveEnv('PASS_SALT_ROUNDS')),
     secretJwtKey: retrieveEnv('SECRET_JWT_KEY'),
+    defaultUser: {
+      name: retrieveEnv('DEFAULT_USER_NAME'),
+      email: retrieveEnv('DEFAULT_USER_EMAIL'),
+      password: retrieveEnv('DEFAULT_USER_PASSWORD')
+    },
     db: {
       host: retrieveEnv('DB_HOST'),
       database: retrieveEnv('DB_NAME'),

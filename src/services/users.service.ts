@@ -1,5 +1,6 @@
 import { v4 as uuidv4 } from 'uuid'
 import { Like } from 'typeorm'
+import envs from '../config/environment.config'
 import { UserModel, RoleModel, UserRoleEnum } from '../models'
 import { logger, hashPassword, comparePassword, getLocalDateTimeNow } from '../helpers'
 import {
@@ -274,5 +275,25 @@ const evaluateUserHierarchy = async (currUser: iUserJWT, idUserTarget: number): 
     }
   } else {
     throw new UserActionNotAllowedError()
+  }
+}
+
+export const generateFirstUser = async (): Promise<void> => {
+  // Verify user existence
+  const usersCount = await UserModel.count()
+
+  if (usersCount === 0) {
+    const user = new UserModel()
+    // User payload
+    user.uuid = uuidv4()
+    user.username = 'admin'
+    user.name = envs.app.defaultUser.name
+    user.email = envs.app.defaultUser.email
+    user.notifications = true
+    user.type = UserRoleEnum.ADMIN
+    user.password = hashPassword(envs.app.defaultUser.password)
+    // Create default and first user
+    await UserModel.save(user)
+    logger.info('Default user created successfully')
   }
 }
