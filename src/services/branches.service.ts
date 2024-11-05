@@ -197,10 +197,10 @@ const existValuesValidations = async (idCountry?: number, idDepartment?: number,
       ? CountryModel.findOne({ select: ['idCountry'], where: { idCountry } })
       : null,
     idDepartment !== undefined
-      ? DepartmentModel.findOne({ select: ['idDepartment'], where: { idDepartment } })
+      ? DepartmentModel.findOne({ select: ['idDepartment'], where: { idCountry, idDepartment } })
       : null,
     idMunicipality !== undefined
-      ? MunicipalityModel.findOne({ select: ['idMunicipality'], where: { idMunicipality } })
+      ? MunicipalityModel.findOne({ select: ['idMunicipality'], where: { idCountry, idDepartment, idMunicipality } })
       : null
   ])
 
