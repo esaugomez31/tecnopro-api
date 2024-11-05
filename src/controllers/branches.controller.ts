@@ -1,3 +1,4 @@
+import { matchedData } from 'express-validator'
 import { Request, Response } from 'express'
 import { BranchModel } from '../models'
 import { filtersettings } from '../helpers'
@@ -11,12 +12,15 @@ import {
 import {
   iBranchGetCustomRequest,
   iBranchCommonRequest,
+  iBranchCommonBody,
   iBranchFilters
 } from '../interfaces'
 
 export const branchCreateController = async (req: iBranchCommonRequest, res: Response): Promise<void> => {
   try {
-    const body = req.body
+    const body = matchedData<iBranchCommonBody>(req, {
+      locations: ['body']
+    })
 
     // Model branch object
     const payload = new BranchModel()
@@ -54,8 +58,10 @@ export const branchCreateController = async (req: iBranchCommonRequest, res: Res
 
 export const branchUpdateController = async (req: iBranchCommonRequest, res: Response): Promise<void> => {
   try {
-    const body = req.body
     const idBranch = Number(req.params.idBranch)
+    const body = matchedData<iBranchCommonBody>(req, {
+      locations: ['body']
+    })
 
     // Model branch object
     const payload = new BranchModel()

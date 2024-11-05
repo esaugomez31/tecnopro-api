@@ -89,7 +89,7 @@ type branchDtefields = 'dteActive' |
 'dteSenderTradeName' |
 'dteEstablishment'
 
-interface iBranchCommonBody extends Omit<BranchModel, OrmOperationAttributes | branchDtefields> {
+export interface iBranchCommonBody extends Omit<BranchModel, OrmOperationAttributes | branchDtefields> {
   dte: Pick<BranchModel, branchDtefields>
 }
 
