@@ -5,7 +5,8 @@ import * as branchService from '../services/branches.service'
 import {
   IDBranchMunicipalityNotFoundError,
   IDBranchCountryNotFoundError,
-  IDBranchDepartmentNotFoundError
+  IDBranchDepartmentNotFoundError,
+  IDBranchNotFoundError
 } from '../errors/branch.factory'
 import {
   iBranchGetCustomRequest,
@@ -98,7 +99,8 @@ export const branchUpdateController = async (req: iBranchCommonRequest, res: Res
     if (
       error instanceof IDBranchMunicipalityNotFoundError ||
       error instanceof IDBranchCountryNotFoundError ||
-      error instanceof IDBranchDepartmentNotFoundError
+      error instanceof IDBranchDepartmentNotFoundError ||
+      error instanceof IDBranchNotFoundError
     ) {
       res.status(404).json({ error: error.name, message: error.message })
       return
@@ -118,7 +120,7 @@ export const branchUpdateStatusController = async (req: Request, res: Response):
 
     res.json(branch)
   } catch (error) {
-    if (error instanceof IDBranchMunicipalityNotFoundError) {
+    if (error instanceof IDBranchMunicipalityNotFoundError || error instanceof IDBranchNotFoundError) {
       res.status(404).json({ error: error.name, message: error.message })
       return
     }

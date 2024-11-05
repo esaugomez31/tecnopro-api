@@ -13,10 +13,11 @@ import {
 import {
   IDBranchMunicipalityNotFoundError,
   IDBranchCountryNotFoundError,
-  IDBranchDepartmentNotFoundError
+  IDBranchDepartmentNotFoundError,
+  IDBranchNotFoundError
 } from '../errors/branch.factory'
 
-export const branchCreate = async (branch: BranchModel): Promise<BranchModel> => {
+export const branchCreate = async (branch: BranchModel): Promise<iBranchResponse | {}> => {
   try {
     // Searching for name matches
     await existValuesValidations(
@@ -29,14 +30,20 @@ export const branchCreate = async (branch: BranchModel): Promise<BranchModel> =>
     branch.uuid = uuidv4()
     // Create branch
     const createdBranch = await BranchModel.save(branch)
-    return createdBranch
+
+    // return db response
+    const getBranch = await BranchModel.findOne({
+      where: { idBranch: createdBranch.idBranch }
+    })
+
+    return getBranch !== null ? getBranchPayload(getBranch) : {}
   } catch (error) {
     logger.error('Create branch: ' + (error as Error).name)
     throw error
   }
 }
 
-export const branchUpdate = async (branch: BranchModel, idBranch: number): Promise<BranchModel> => {
+export const branchUpdate = async (branch: BranchModel, idBranch: number): Promise<iBranchResponse | {}> => {
   try {
     // Required validations to update
     await Promise.all([
@@ -52,14 +59,20 @@ export const branchUpdate = async (branch: BranchModel, idBranch: number): Promi
     const updatedBranch = await BranchModel.save({
       idBranch, ...branch
     })
-    return updatedBranch
+
+    // return db response
+    const getBranch = await BranchModel.findOne({
+      where: { idBranch: updatedBranch.idBranch }
+    })
+
+    return getBranch !== null ? getBranchPayload(getBranch) : {}
   } catch (error) {
     logger.error('Update branch: ' + (error as Error).name)
     throw error
   }
 }
 
-export const branchUpdateStatus = async (idBranch: number, status: boolean): Promise<BranchModel> => {
+export const branchUpdateStatus = async (idBranch: number, status: boolean): Promise<BranchModel | {}> => {
   try {
     // Existing branch
     await existIdValidation(idBranch)
@@ -68,7 +81,12 @@ export const branchUpdateStatus = async (idBranch: number, status: boolean): Pro
     const updatedBranch = await BranchModel.save({
       idBranch, status
     })
-    return updatedBranch
+
+    // return db response
+    const getBranch = await BranchModel.findOne({
+      where: { idBranch: updatedBranch.idBranch }
+    })
+    return getBranch !== null ? getBranchPayload(getBranch) : {}
   } catch (error) {
     logger.error('Update branch status: ' + (error as Error).name)
     throw error
@@ -88,32 +106,7 @@ export const branchGetAll = async (filterParams: iBranchFilters, settings: iFilt
       BranchModel.count({ where: filters })
     ])
 
-    const response: iBranchResponse[] = branches.map(branch => ({
-      idBranch: branch.idBranch,
-      name: branch.name,
-      description: branch.description,
-      phoneNumber: branch.phoneNumber,
-      email: branch.email,
-      address: branch.address,
-      idCountry: branch.idCountry,
-      idDepartment: branch.idDepartment,
-      idMunicipality: branch.idMunicipality,
-      dte: {
-        dteActive: branch.dteActive,
-        dteEnvironment: branch.dteEnvironment,
-        // dteApiJwt: branch.dteApiJwt,
-        // dteApiJwtDate: branch.dteApiJwtDate,
-        dteSenderNit: branch.dteSenderNit,
-        dteSenderNrc: branch.dteSenderNrc,
-        dteSenderEmail: branch.dteSenderEmail,
-        dteSenderPhone: branch.dteSenderPhone,
-        dteActivityCode: branch.dteActivityCode,
-        dteActivityDesc: branch.dteActivityDesc,
-        dteSenderName: branch.dteSenderName,
-        dteSenderTradeName: branch.dteSenderTradeName,
-        dteEstablishment: branch.dteEstablishment
-      }
-    }))
+    const response: iBranchResponse[] = branches.map(branch => getBranchPayload(branch))
 
     // Total pages calc
     const totalPages = Math.ceil(totalCount / settings.limit)
@@ -136,38 +129,7 @@ export const branchGetById = async (idBranch: number): Promise<iGetBranchByIdRes
       where: { idBranch }
     })
 
-    let response = {}
-
-    if (branch !== null) {
-      response = {
-        idBranch: branch.idBranch,
-        name: branch.name,
-        description: branch.description,
-        phoneNumber: branch.phoneNumber,
-        email: branch.email,
-        address: branch.address,
-        idCountry: branch.idCountry,
-        idDepartment: branch.idDepartment,
-        idMunicipality: branch.idMunicipality,
-        dte: {
-          dteActive: branch.dteActive,
-          dteEnvironment: branch.dteEnvironment,
-          // dteApiJwt: branch.dteApiJwt,
-          // dteApiJwtDate: branch.dteApiJwtDate,
-          dteSenderNit: branch.dteSenderNit,
-          dteSenderNrc: branch.dteSenderNrc,
-          dteSenderEmail: branch.dteSenderEmail,
-          dteSenderPhone: branch.dteSenderPhone,
-          dteActivityCode: branch.dteActivityCode,
-          dteActivityDesc: branch.dteActivityDesc,
-          dteSenderName: branch.dteSenderName,
-          dteSenderTradeName: branch.dteSenderTradeName,
-          dteEstablishment: branch.dteEstablishment
-        }
-      }
-    }
-
-    return { data: response }
+    return { data: branch !== null ? getBranchPayload(branch) : {} }
   } catch (error) {
     logger.error('Get branch by id: ' + (error as Error).name)
     throw error
@@ -261,5 +223,34 @@ const existIdValidation = async (idBranch: number): Promise<void> => {
     select: ['idBranch'], where: { idBranch }
   })
 
-  if (existBranch === null) throw new IDBranchMunicipalityNotFoundError()
+  if (existBranch === null) throw new IDBranchNotFoundError()
+}
+
+const getBranchPayload = (branch?: BranchModel): iBranchResponse => {
+  return {
+    idBranch: branch?.idBranch,
+    name: branch?.name,
+    description: branch?.description,
+    phoneNumber: branch?.phoneNumber,
+    email: branch?.email,
+    address: branch?.address,
+    idCountry: branch?.idCountry,
+    idDepartment: branch?.idDepartment,
+    idMunicipality: branch?.idMunicipality,
+    dte: {
+      dteActive: branch?.dteActive,
+      dteEnvironment: branch?.dteEnvironment,
+      // dteApiJwt: branch?.dteApiJwt,
+      // dteApiJwtDate: branch?.dteApiJwtDate,
+      dteSenderNit: branch?.dteSenderNit,
+      dteSenderNrc: branch?.dteSenderNrc,
+      dteSenderEmail: branch?.dteSenderEmail,
+      dteSenderPhone: branch?.dteSenderPhone,
+      dteActivityCode: branch?.dteActivityCode,
+      dteActivityDesc: branch?.dteActivityDesc,
+      dteSenderName: branch?.dteSenderName,
+      dteSenderTradeName: branch?.dteSenderTradeName,
+      dteEstablishment: branch?.dteEstablishment
+    }
+  }
 }
