@@ -29,19 +29,9 @@ export const branchCreateController = async (req: iBranchCommonRequest, res: Res
     payload.idDepartment = body.idDepartment
     payload.idMunicipality = body.idMunicipality
     // DTE Fields
-    payload.dteActive = body.dte?.dteActive
-    payload.dteEnvironment = body.dte?.dteEnvironment
-    payload.dteApiJwt = body.dte?.dteApiJwt
-    payload.dteApiJwtDate = body.dte?.dteApiJwtDate
-    payload.dteSenderNit = body.dte?.dteSenderNit
-    payload.dteSenderNrc = body.dte?.dteSenderNrc
-    payload.dteSenderEmail = body.dte?.dteSenderEmail
-    payload.dteSenderPhone = body.dte?.dteSenderPhone
-    payload.dteActivityCode = body.dte?.dteActivityCode
-    payload.dteActivityDesc = body.dte?.dteActivityDesc
-    payload.dteSenderName = body.dte?.dteSenderName
-    payload.dteSenderTradeName = body.dte?.dteSenderTradeName
-    payload.dteEstablishment = body.dte?.dteEstablishment
+    if (body.dte !== null && body.dte !== undefined) {
+      Object.assign(payload, body.dte)
+    }
     payload.status = true
     // Create Branch
     const branch = await branchService.branchCreate(payload)
@@ -78,19 +68,9 @@ export const branchUpdateController = async (req: iBranchCommonRequest, res: Res
     payload.idDepartment = body.idDepartment
     payload.idMunicipality = body.idMunicipality
     // DTE Fields
-    payload.dteActive = body.dte?.dteActive
-    payload.dteEnvironment = body.dte?.dteEnvironment
-    payload.dteApiJwt = body.dte?.dteApiJwt
-    payload.dteApiJwtDate = body.dte?.dteApiJwtDate
-    payload.dteSenderNit = body.dte?.dteSenderNit
-    payload.dteSenderNrc = body.dte?.dteSenderNrc
-    payload.dteSenderEmail = body.dte?.dteSenderEmail
-    payload.dteSenderPhone = body.dte?.dteSenderPhone
-    payload.dteActivityCode = body.dte?.dteActivityCode
-    payload.dteActivityDesc = body.dte?.dteActivityDesc
-    payload.dteSenderName = body.dte?.dteSenderName
-    payload.dteSenderTradeName = body.dte?.dteSenderTradeName
-    payload.dteEstablishment = body.dte?.dteEstablishment
+    if (body.dte !== null && body.dte !== undefined) {
+      Object.assign(payload, body.dte)
+    }
     // Update Branch
     const branch = await branchService.branchUpdate(payload, idBranch)
 
