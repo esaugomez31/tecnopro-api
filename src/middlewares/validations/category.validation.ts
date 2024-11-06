@@ -6,13 +6,13 @@ const validSortFields = ['idCategory', 'name', 'description']
 
 const categoryCommonValidations = (optional = false): any => [
   body('name')
-    .optional(optional).isString().withMessage('name must be a string')
-    .notEmpty().withMessage('name is required')
-    .isLength({ min: 1, max: 50 }).withMessage('name must be between 8 and 20 characters long'),
+    .optional(optional)
+    .isString().withMessage('name must be a string')
+    .isLength({ min: 1, max: 50 }).withMessage('name must be between 1 and 50 characters long'),
 
   body('description')
-    .optional().isString().withMessage('description must be a string')
-    .notEmpty().withMessage('description is required')
+    .optional()
+    .isString().withMessage('description must be a string')
     .isLength({ min: 1, max: 250 }).withMessage('description must be between 1 and 250 characters long')
 ]
 
@@ -55,19 +55,23 @@ export const validateGetCategories = (): any => {
     ...validateFilterParams(validSortFields),
 
     query('name')
-      .optional().isString().withMessage('name must be a string')
+      .optional()
+      .isString().withMessage('name must be a string')
       .customSanitizer(value => value as string | undefined),
 
     query('status')
-      .optional().isBoolean().withMessage('status must be a boolean')
+      .optional()
+      .isBoolean().withMessage('status must be a boolean')
       .customSanitizer(stringToBoolean),
 
     query('description')
-      .optional().isString().withMessage('description must be a string')
+      .optional()
+      .isString().withMessage('description must be a string')
       .customSanitizer(value => value as string | undefined),
 
     query('uuid')
-      .optional().isString().withMessage('uuid must be a string')
+      .optional()
+      .isString().withMessage('uuid must be a string')
       .customSanitizer(value => value as string | undefined),
 
     handleValidationErrors

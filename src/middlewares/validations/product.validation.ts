@@ -37,7 +37,6 @@ const productCommonValidations = (optional = false): any => [
     .customSanitizer(stringToBoolean),
 
   body('price')
-    // .exists().withMessage('price is required')
     .optional(optional)
     .isDecimal({ decimal_digits: '0,4' }).withMessage('price must be a decimal with up to 4 decimal places')
     .custom(value => value > 0).withMessage('price must be greater than 0'),
@@ -54,7 +53,7 @@ const productCommonValidations = (optional = false): any => [
 
   body('dteUnitMeasure')
     .optional()
-    .isInt({ min: 0, max: 99 }).withMessage('dteUnitMeasure must be an integer')
+    .isInt({ min: 0, max: 99 }).withMessage('dteUnitMeasure must be an integer between 0 and 99 digits')
     .customSanitizer(Number),
 
   body('userCommissionPercent')
@@ -158,47 +157,58 @@ export const validateGetProducts = (): any => {
     ...validateFilterParams(validSortFields),
 
     query('name')
-      .optional().isString().withMessage('name must be a string')
+      .optional()
+      .isString().withMessage('name must be a string')
       .customSanitizer(value => value as string | undefined),
 
     query('status')
-      .optional().isBoolean().withMessage('status must be a boolean')
+      .optional()
+      .isBoolean().withMessage('status must be a boolean')
       .customSanitizer(stringToBoolean),
 
     query('description')
-      .optional().isString().withMessage('description must be a string')
+      .optional()
+      .isString().withMessage('description must be a string')
       .customSanitizer(value => value as string | undefined),
 
     query('uuid')
-      .optional().isString().withMessage('uuid must be a string')
+      .optional()
+      .isString().withMessage('uuid must be a string')
       .customSanitizer(value => value as string | undefined),
 
     query('location')
-      .optional().isString().withMessage('location must be a string')
+      .optional()
+      .isString().withMessage('location must be a string')
       .customSanitizer(value => value as string | undefined),
 
     query('code')
-      .optional().isString().withMessage('code must be a string')
+      .optional()
+      .isString().withMessage('code must be a string')
       .customSanitizer(value => value as string | undefined),
 
     query('barcode')
-      .optional().isString().withMessage('barcode must be a string')
+      .optional()
+      .isString().withMessage('barcode must be a string')
       .customSanitizer(value => value as string | undefined),
 
     query('idBranch')
-      .optional().isInt().withMessage('idBranch must be a string')
+      .optional()
+      .isInt().withMessage('idBranch must be a string')
       .customSanitizer(value => value as number | undefined),
 
     query('idCategory')
-      .optional().isInt().withMessage('idCategory must be a string')
+      .optional()
+      .isInt().withMessage('idCategory must be a string')
       .customSanitizer(value => value as number | undefined),
 
     query('idBrand')
-      .optional().isInt().withMessage('idBrand must be a string')
+      .optional()
+      .isInt().withMessage('idBrand must be a string')
       .customSanitizer(value => value as number | undefined),
 
     query('idUser')
-      .optional().isInt().withMessage('idUser must be a string')
+      .optional()
+      .isInt().withMessage('idUser must be a string')
       .customSanitizer(value => value as number | undefined),
 
     handleValidationErrors

@@ -6,8 +6,8 @@ const validSortFields = ['idRole', 'name']
 
 const roleCommonValidations = (optional = false): any => [
   body('name')
-    .optional(optional).isString().withMessage('name must be a string')
-    .notEmpty().withMessage('name is required')
+    .optional(optional)
+    .isString().withMessage('name must be a string')
     .isLength({ min: 8, max: 25 }).withMessage('name must be between 8 and 20 characters long')
 ]
 
@@ -50,11 +50,13 @@ export const validateGetRoles = (): any => {
     ...validateFilterParams(validSortFields),
 
     query('name')
-      .optional().isString().withMessage('name must be a string')
+      .optional()
+      .isString().withMessage('name must be a string')
       .customSanitizer(value => value as string | undefined),
 
     query('status')
-      .optional().isBoolean().withMessage('status must be a boolean')
+      .optional()
+      .isBoolean().withMessage('status must be a boolean')
       .customSanitizer(stringToBoolean),
 
     handleValidationErrors

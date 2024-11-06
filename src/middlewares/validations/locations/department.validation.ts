@@ -7,22 +7,23 @@ const validIncludeFields = ['municipalities']
 
 const departmentCommonValidations = (optional = false): any => [
   body('name')
-    .optional(optional).isString().withMessage('name must be a string')
-    .notEmpty().withMessage('name is required')
+    .optional(optional)
+    .isString().withMessage('name must be a string')
     .isLength({ min: 1, max: 85 }).withMessage('name must be between 1 and 85 characters long'),
 
   body('zipCode')
-    .optional().isString().withMessage('code must be a string')
-    .notEmpty().withMessage('zipCode is required')
+    .optional()
+    .isString().withMessage('zipCode must be a string')
     .isLength({ min: 1, max: 10 }).withMessage('zipCode must be between 1 and 10 characters long'),
 
   body('dteCode')
-    .optional().isString().withMessage('dteCode must be a string')
-    .notEmpty().withMessage('dteCode is required')
+    .optional()
+    .isString().withMessage('dteCode must be a string')
     .isLength({ min: 1, max: 2 }).withMessage('dteCode must be between 1 and 2 characters long'),
 
   body('idCountry')
-    .optional(optional).isInt({ min: 1, max: 99999999999 }).withMessage('idCountry must be a integer between 1 and 99999999999')
+    .optional(optional)
+    .isInt({ min: 1, max: 99999999999 }).withMessage('idCountry must be a integer between 1 and 99999999999')
     .notEmpty().withMessage('idCountry is required')
 ]
 
@@ -65,23 +66,28 @@ export const validateGetDepartments = (): any => {
     ...validateFilterParams(validSortFields),
 
     query('name')
-      .optional().isString().withMessage('name must be a string')
+      .optional()
+      .isString().withMessage('name must be a string')
       .customSanitizer(value => value as string | undefined),
 
     query('status')
-      .optional().isBoolean().withMessage('status must be a boolean')
+      .optional()
+      .isBoolean().withMessage('status must be a boolean')
       .customSanitizer(stringToBoolean),
 
     query('dteCode')
-      .optional().isString().withMessage('dteCode must be a string')
+      .optional()
+      .isString().withMessage('dteCode must be a string')
       .customSanitizer(value => value as string | undefined),
 
     query('zipCode')
-      .optional().isString().withMessage('zipCode must be a string')
+      .optional()
+      .isString().withMessage('zipCode must be a string')
       .customSanitizer(value => value as string | undefined),
 
     query('idCountry')
-      .optional().isInt().withMessage('idCountry must be a integer')
+      .optional()
+      .isInt().withMessage('idCountry must be a integer')
       .customSanitizer(Number),
 
     ...validateIncludeParams(validIncludeFields),
