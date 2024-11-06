@@ -1,21 +1,27 @@
 import { Like } from 'typeorm'
 import { v4 as uuidv4 } from 'uuid'
-import { logger } from '../helpers'
+import { logger, hasPermission, isValidValue } from '../helpers'
 import {
   ProductModel,
   BranchModel,
   CategoryModel,
   BrandModel,
-  UserModel
+  UserModel,
+  PermissionModel
 } from '../models'
 import {
   iFilterSettings,
   iGetProductByIdResponse,
   iGetProductsResponse,
   iProductQueryParams,
-  iProductFilters
+  iProductFilters,
+  ProductPermEnum
 } from '../interfaces'
 import {
+  ProdUpdatePriceError,
+  ProdUpdatePurchaseDataError,
+  ProdUpdateCommissionsError,
+  ProdUpdateStockError,
   IDProductNotFoundError,
   IDProdBranchNotFoundError,
   IDProdCategoryNotFoundError,
@@ -50,8 +56,11 @@ export const productCreate = async (product: ProductModel): Promise<ProductModel
   }
 }
 
-export const productUpdate = async (product: ProductModel, idProduct: number): Promise<ProductModel | {}> => {
+export const productUpdate = async (product: ProductModel, idProduct: number, permissions?: PermissionModel[]): Promise<ProductModel | {}> => {
   try {
+    // Evaluate update Price's Permission
+    evaluateUpdatePermission(product, permissions)
+
     // Required validations to update
     await Promise.all([
       existIdValidation(idProduct),
@@ -73,7 +82,7 @@ export const productUpdate = async (product: ProductModel, idProduct: number): P
       where: { idBranch: updatedProduct.idProduct }
     })
 
-    return getProduct !== null ? getProduct : {}
+    return getProduct !== null ? getProductAvailableInfo(getProduct, permissions) : {}
   } catch (error) {
     logger.error('Update product: ' + (error as Error).name)
     throw error
@@ -96,7 +105,7 @@ export const productUpdateStatus = async (idProduct: number, status: boolean): P
   }
 }
 
-export const productGetAll = async (filterParams: iProductFilters, settings: iFilterSettings): Promise<iGetProductsResponse> => {
+export const productGetAll = async (filterParams: iProductFilters, settings: iFilterSettings, permissions?: PermissionModel[]): Promise<iGetProductsResponse> => {
   try {
     const filters = getFilters(filterParams)
     const [products, totalCount] = await Promise.all([
@@ -110,9 +119,10 @@ export const productGetAll = async (filterParams: iProductFilters, settings: iFi
     ])
     // Total pages calc
     const totalPages = Math.ceil(totalCount / settings.limit)
+    const response = products.map(product => getProductAvailableInfo(product, permissions))
 
     return {
-      data: products,
+      data: response,
       total: totalCount,
       page: totalPages > 0 ? settings.page : 0,
       totalPages
@@ -123,15 +133,51 @@ export const productGetAll = async (filterParams: iProductFilters, settings: iFi
   }
 }
 
-export const productGetById = async (idProduct: number): Promise<iGetProductByIdResponse> => {
+export const productGetById = async (idProduct: number, permissions?: PermissionModel[]): Promise<iGetProductByIdResponse> => {
   try {
     const product = await ProductModel.findOne({
       where: { idProduct }
     })
-    return { data: product ?? {} }
+    return { data: product !== null ? getProductAvailableInfo(product, permissions) : {} }
   } catch (error) {
     logger.error('Get product by id: ' + (error as Error).name)
     throw error
+  }
+}
+
+const getProductAvailableInfo = (product: ProductModel, permissions?: PermissionModel[]): ProductModel => {
+  if (permissions !== undefined) {
+    if (!hasPermission(permissions, ProductPermEnum.SEEPURCHASEDATA)) {
+      delete product.purchasePrice
+      delete product.purchasedBy
+    }
+  }
+
+  return product
+}
+
+const evaluateUpdatePermission = (product: ProductModel, permissions?: PermissionModel[]): void => {
+  if (permissions === undefined) return
+
+  if (isValidValue(product.price)) {
+    if (!hasPermission(permissions, ProductPermEnum.UPDTPRICE)) {
+      throw new ProdUpdatePriceError()
+    }
+  }
+  if (isValidValue(product.branchCommissionPercent) || isValidValue(product.userCommissionPercent)) {
+    if (!hasPermission(permissions, ProductPermEnum.UPDTCOMMISSIONS)) {
+      throw new ProdUpdateCommissionsError()
+    }
+  }
+  if (isValidValue(product.purchasePrice) || isValidValue(product.purchasedBy)) {
+    if (!hasPermission(permissions, ProductPermEnum.UPDTPURCHASEDATA)) {
+      throw new ProdUpdatePurchaseDataError()
+    }
+  }
+  if (isValidValue(product.stock)) {
+    if (!hasPermission(permissions, ProductPermEnum.UPDTSTOCK)) {
+      throw new ProdUpdateStockError()
+    }
   }
 }
 

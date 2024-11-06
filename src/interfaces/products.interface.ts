@@ -10,8 +10,11 @@ export enum ProductPermEnum {
   CREATE = 'create',
   UPDATE = 'update',
   UPDATESTATUS = 'update_status',
-  SEEPROFIT = 'see_profit',
-  CHANGEPRICE = 'change_price'
+  SEEPURCHASEDATA = 'see_purchase_data',
+  UPDTPURCHASEDATA = 'update_purchase_data',
+  UPDTCOMMISSIONS = 'update_commissions',
+  UPDTSTOCK = 'update_stock',
+  UPDTPRICE = 'update_price'
 }
 
 // Allow filter params from API

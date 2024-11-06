@@ -30,35 +30,23 @@ export class ProductModel extends BaseEntity {
   @Column({ type: 'decimal', precision: 11, scale: 4 })
     price: number
 
-  @Column({ type: 'decimal', precision: 11, scale: 4, nullable: true, name: 'purchase_price' })
-    purchasePrice: number | null
+  @Column({ type: 'decimal', precision: 11, scale: 4, default: 0.00, name: 'purchase_price' })
+    purchasePrice?: number | null
 
   @Column({ type: 'enum', enum: ['store', 'user'], default: 'store', name: 'purchased_by' })
-    purchasedBy: 'store' | 'user'
+    purchasedBy?: 'store' | 'user'
 
   @Column({ type: 'int', default: 59, name: 'dte_unit_measure' })
     dteUnitMeasure: number
 
-  @Column({ type: 'decimal', precision: 11, scale: 4, default: 0.00 })
-    profit: number
+  @Column({ type: 'decimal', precision: 5, scale: 2, default: 0.00, name: 'user_commission_percentage' })
+    userCommissionPercent?: number | null
 
-  @Column({ type: 'decimal', precision: 11, scale: 4, default: 0.00, name: 'profit_percentage' })
-    profitPercentage: number | null
+  @Column({ type: 'decimal', precision: 5, scale: 2, default: 100.00, name: 'branch_commission_percentage' })
+    branchCommissionPercent?: number | null
 
-  @Column({ type: 'decimal', precision: 11, scale: 4, default: 0.00, name: 'profit_user' })
-    profitUser: number
-
-  @Column({ type: 'decimal', precision: 11, scale: 4, default: 0.00, name: 'profit_percentage_user' })
-    profitPercentageUser: number | null
-
-  @Column({ type: 'decimal', precision: 11, scale: 4, default: 0.00, name: 'profit_branch' })
-    profitBranch: number
-
-  @Column({ type: 'decimal', precision: 11, scale: 4, default: 0.00, name: 'profit_percentage_branch' })
-    profitPercentageBranch: number | null
-
-  @Column({ type: 'decimal', precision: 11, scale: 4, default: 0.00, name: 'max_discount' })
-    maxDiscount: number
+  @Column({ type: 'decimal', precision: 11, scale: 4, default: 0.00, name: 'min_price' })
+    minPrice: number
 
   @Column({ type: 'decimal', precision: 11, scale: 4 })
     stock: number

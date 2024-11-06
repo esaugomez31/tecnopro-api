@@ -1,9 +1,13 @@
 import { matchedData } from 'express-validator'
 import { Request, Response } from 'express'
 import * as productService from '../services/products.service'
-import { ProductModel } from '../models'
+import { ProductModel, PermissionModel } from '../models'
 import { filtersettings } from '../helpers'
 import {
+  ProdUpdatePriceError,
+  ProdUpdatePurchaseDataError,
+  ProdUpdateCommissionsError,
+  ProdUpdateStockError,
   IDProductNotFoundError,
   IDProdBranchNotFoundError,
   IDProdCategoryNotFoundError,
@@ -47,6 +51,7 @@ export const productCreateController = async (req: iProductCommonRequest, res: R
 
 export const productUpdateController = async (req: iProductCommonRequest, res: Response): Promise<void> => {
   try {
+    const permissions: PermissionModel[] = req.permissions
     const idProduct = Number(req.params.idProduct)
     const body = matchedData<ProductModel>(req, {
       locations: ['body']
@@ -56,10 +61,20 @@ export const productUpdateController = async (req: iProductCommonRequest, res: R
     const payload = new ProductModel()
     Object.assign(payload, body)
 
-    const product = await productService.productUpdate(payload, idProduct)
+    const product = await productService.productUpdate(payload, idProduct, permissions)
 
     res.json(product)
   } catch (error) {
+    if (
+      error instanceof ProdUpdatePriceError ||
+      error instanceof ProdUpdatePurchaseDataError ||
+      error instanceof ProdUpdateCommissionsError ||
+      error instanceof ProdUpdateStockError
+    ) {
+      res.status(403).json({ error: error.name, message: error.message })
+      return
+    }
+
     if (
       error instanceof IDProductNotFoundError ||
       error instanceof IDProdBranchNotFoundError ||
@@ -98,6 +113,7 @@ export const productUpdateStatusController = async (req: Request, res: Response)
 export const productGetAllController = async (req: iProductGetCustomRequest, res: Response): Promise<void> => {
   try {
     const query = req.query
+    const permissions: PermissionModel[] = req.permissions
     // Filter params settings
     const settings = filtersettings(query)
     // Filter params product
@@ -114,7 +130,7 @@ export const productGetAllController = async (req: iProductGetCustomRequest, res
       idUser: query.idUser
     }
 
-    const products = await productService.productGetAll(params, settings)
+    const products = await productService.productGetAll(params, settings, permissions)
     res.json(products)
   } catch (error) {
     // Default error message
@@ -124,10 +140,11 @@ export const productGetAllController = async (req: iProductGetCustomRequest, res
 
 export const productGetByIdController = async (req: Request, res: Response): Promise<void> => {
   try {
+    const permissions: PermissionModel[] = req.permissions
     // Get product id param
     const idProduct: number = Number(req.params.idProduct)
 
-    const product = await productService.productGetById(idProduct)
+    const product = await productService.productGetById(idProduct, permissions)
 
     res.json(product)
   } catch (error) {

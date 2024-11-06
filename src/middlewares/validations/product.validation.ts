@@ -2,7 +2,7 @@ import { body, query, param } from 'express-validator'
 import { handleValidationErrors, stringToBoolean } from '../../helpers'
 import { validateFilterParams } from './filter.validation'
 
-const validSortFields = ['idProduct', 'name', 'location', 'price', 'stock', 'profit', 'profitPercentage']
+const validSortFields = ['idProduct', 'name', 'location', 'price', 'stock', 'userCommissionPercent', 'branchCommissionPercent']
 const purchasedBy = ['store', 'user']
 
 const productCommonValidations = (optional = false): any => [
@@ -57,40 +57,36 @@ const productCommonValidations = (optional = false): any => [
     .isInt({ min: 0, max: 99 }).withMessage('dteUnitMeasure must be an integer')
     .customSanitizer(Number),
 
-  body('profit')
+  body('userCommissionPercent')
     .optional()
-    .isDecimal({ decimal_digits: '0,4' }).withMessage('profit must be a decimal with up to 4 decimal places')
-    .custom(value => value > 0).withMessage('profit must be greater than 0'),
+    .isDecimal({ decimal_digits: '0,2' }).withMessage('userCommissionPercent must be a decimal with up to 2 decimal places')
+    .custom((value: number, { req }) => {
+      const branchCommision: number = req.body?.branchCommissionPercent ?? 0.00
 
-  body('profitPercentage')
-    .optional()
-    .isDecimal({ decimal_digits: '0,4' }).withMessage('profitPercentage must be a decimal with up to 4 decimal places')
-    .custom(value => value > 0).withMessage('profitPercentage must be greater than 0'),
+      if ((value + branchCommision) !== 100.00) {
+        throw new Error('The sum of userCommissionPercent and branchCommissionPercent must equal 100.00')
+      }
 
-  body('profitUser')
-    .optional()
-    .isDecimal({ decimal_digits: '0,4' }).withMessage('profitUser must be a decimal with up to 4 decimal places')
-    .custom(value => value > 0).withMessage('profitUser must be greater than 0'),
+      return true
+    }),
 
-  body('profitPercentageUser')
+  body('branchCommissionPercent')
     .optional()
-    .isDecimal({ decimal_digits: '0,4' }).withMessage('profitPercentageUser must be a decimal with up to 4 decimal places')
-    .custom(value => value > 0).withMessage('profitPercentageUser must be greater than 0'),
+    .isDecimal({ decimal_digits: '0,2' }).withMessage('branchCommissionPercent must be a decimal with up to 2 decimal places')
+    .custom((value: number, { req }) => {
+      const userCommision: number = req.body?.userCommissionPercent ?? 0.00
 
-  body('profitBranch')
-    .optional()
-    .isDecimal({ decimal_digits: '0,4' }).withMessage('profitBranch must be a decimal with up to 4 decimal places')
-    .custom(value => value > 0).withMessage('profitBranch must be greater than 0'),
+      if ((value + userCommision) !== 100.00) {
+        throw new Error('The sum of userCommissionPercent and branchCommissionPercent must equal 100.00')
+      }
 
-  body('profitPercentageBranch')
-    .optional()
-    .isDecimal({ decimal_digits: '0,4' }).withMessage('profitPercentageBranch must be a decimal with up to 4 decimal places')
-    .custom(value => value > 0).withMessage('profitPercentageBranch must be greater than 0'),
+      return true
+    }),
 
-  body('maxDiscount')
+  body('minPrice')
     .optional()
-    .isDecimal({ decimal_digits: '0,4' }).withMessage('maxDiscount must be a decimal with up to 4 decimal places')
-    .custom(value => value > 0).withMessage('maxDiscount must be greater than 0'),
+    .isDecimal({ decimal_digits: '0,4' }).withMessage('minPrice must be a decimal with up to 4 decimal places')
+    .custom(value => value > 0).withMessage('minPrice must be greater than 0'),
 
   body('stock')
     .optional(optional)

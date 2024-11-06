@@ -12,16 +12,15 @@ export const checkPermission = (systemPage?: SystemPageEnum, permissionName: str
     // No permissions required for the administrator accounts
     if (type === UserRoleEnum.ADMIN || type === UserRoleEnum.SUBADMIN) return next()
 
-    // Undefined permission is only for admins
-    if (systemPage === undefined) {
+    // Undefined permission is only for admins - or user don't have role
+    if (systemPage === undefined || typeof idRole !== 'number') {
       res.status(403).json({ error: 'Access denied' })
       return
     }
 
     // Get permissions
     const permissions: PermissionModel[] = await getRolePermissionsByPage(
-      idRole as number,
-      systemPage
+      idRole, systemPage
     )
 
     if (hasPermission(permissions, permissionName)) {
