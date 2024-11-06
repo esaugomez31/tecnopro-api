@@ -5,7 +5,7 @@ import { filtersettings } from '../helpers'
 import {
   NameExistsError,
   IDBrandNotFoundError
-} from '../errors/brand.factory'
+} from '../errors/brand.error'
 import {
   iBrandGetCustomRequest,
   iBrandCommonRequest,

@@ -15,7 +15,7 @@ import {
   IDBranchCountryNotFoundError,
   IDBranchDepartmentNotFoundError,
   IDBranchNotFoundError
-} from '../errors/branch.factory'
+} from '../errors/branch.error'
 
 export const branchCreate = async (branch: BranchModel): Promise<iBranchResponse | {}> => {
   try {

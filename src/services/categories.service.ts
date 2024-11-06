@@ -12,7 +12,7 @@ import {
 import {
   IDCategoryNotFoundError,
   NameExistsError
-} from '../errors/category.factory'
+} from '../errors/category.error'
 
 export const categoryCreate = async (category: CategoryModel): Promise<CategoryModel> => {
   try {

@@ -12,7 +12,7 @@ import {
 import {
   IDBrandNotFoundError,
   NameExistsError
-} from '../errors/brand.factory'
+} from '../errors/brand.error'
 
 export const brandCreate = async (brand: BrandModel): Promise<BrandModel> => {
   try {

@@ -27,7 +27,7 @@ import {
   IDProdCategoryNotFoundError,
   IDProdBrandNotFoundError,
   IDProdUserNotFoundError
-} from '../errors/product.factory'
+} from '../errors/product.error'
 
 export const productCreate = async (product: ProductModel): Promise<ProductModel | {}> => {
   try {

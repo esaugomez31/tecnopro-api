@@ -13,7 +13,7 @@ import {
   IDProdCategoryNotFoundError,
   IDProdBrandNotFoundError,
   IDProdUserNotFoundError
-} from '../errors/product.factory'
+} from '../errors/product.error'
 import {
   iProductGetCustomRequest,
   iProductCommonRequest,

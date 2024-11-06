@@ -8,7 +8,7 @@ import {
   IDBranchCountryNotFoundError,
   IDBranchDepartmentNotFoundError,
   IDBranchNotFoundError
-} from '../errors/branch.factory'
+} from '../errors/branch.error'
 import {
   iBranchGetCustomRequest,
   iBranchCommonRequest,

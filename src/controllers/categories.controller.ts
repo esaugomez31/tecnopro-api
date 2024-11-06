@@ -5,7 +5,7 @@ import { filtersettings } from '../helpers'
 import {
   NameExistsError,
   IDCategoryNotFoundError
-} from '../errors/category.factory'
+} from '../errors/category.error'
 import {
   iCategoryGetCustomRequest,
   iCategoryCommonRequest,
