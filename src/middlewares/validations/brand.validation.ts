@@ -8,7 +8,7 @@ const brandCommonValidations = (optional = false): any => [
   body('name')
     .optional(optional).isString().withMessage('name must be a string')
     .notEmpty().withMessage('name is required')
-    .isLength({ min: 1, max: 50 }).withMessage('name must be between 8 and 20 characters long'),
+    .isLength({ min: 1, max: 50 }).withMessage('name must be between 1 and 50 characters long'),
 
   body('description')
     .optional().isString().withMessage('description must be a string')

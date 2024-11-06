@@ -3,6 +3,7 @@ import userRoutes from './users.route'
 import roleRoutes from './roles.route'
 import brandRoutes from './brands.route'
 import locationRoutes from './locations'
+import productRoutes from './products.route'
 import categoryRoutes from './categories.route'
 import branchesRoutes from './branches.route'
 import rolesPermissionRoutes from './roles.permissions.route'
@@ -18,6 +19,7 @@ routes.use('/locations', locationRoutes)
 
 routes.use('/branches', branchesRoutes)
 
+routes.use('/products', productRoutes)
 routes.use('/categories', categoryRoutes)
 routes.use('/brands', brandRoutes)
 
