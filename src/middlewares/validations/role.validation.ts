@@ -8,7 +8,12 @@ const roleCommonValidations = (optional = false): any => [
   body('name')
     .optional(optional)
     .isString().withMessage('name must be a string')
-    .isLength({ min: 8, max: 25 }).withMessage('name must be between 8 and 20 characters long')
+    .isLength({ min: 8, max: 25 }).withMessage('name must be between 8 and 20 characters long'),
+
+  body('description')
+    .optional({ checkFalsy: true })
+    .isString().withMessage('description must be a string')
+    .isLength({ max: 250 }).withMessage('description must have a maximum of 250 characters')
 ]
 
 export const validateRoleCreation = (): any => {

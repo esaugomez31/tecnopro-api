@@ -1,4 +1,5 @@
 import { Request, Response } from 'express'
+import { matchedData } from 'express-validator'
 import * as categoryService from '../services/categories.service'
 import { CategoryModel } from '../models'
 import { filtersettings } from '../helpers'
@@ -14,13 +15,13 @@ import {
 
 export const categoryCreateController = async (req: iCategoryCommonRequest, res: Response): Promise<void> => {
   try {
-    const body = req.body
+    const body = matchedData<CategoryModel>(req, {
+      locations: ['body'], includeOptionals: true
+    })
 
     // Model category object
     const payload = new CategoryModel()
-    payload.name = body.name
-    payload.description = body.description
-    payload.status = true
+    Object.assign(payload, body)
 
     const category = await categoryService.categoryCreate(payload)
 
@@ -37,13 +38,14 @@ export const categoryCreateController = async (req: iCategoryCommonRequest, res:
 
 export const categoryUpdateController = async (req: iCategoryCommonRequest, res: Response): Promise<void> => {
   try {
-    const body = req.body
     const idCategory = Number(req.params.idCategory)
+    const body = matchedData<CategoryModel>(req, {
+      locations: ['body'], includeOptionals: true
+    })
 
     // Model category object
     const payload = new CategoryModel()
-    payload.name = body.name
-    payload.description = body.description
+    Object.assign(payload, body)
 
     const category = await categoryService.categoryUpdate(payload, idCategory)
 

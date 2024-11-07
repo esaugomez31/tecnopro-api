@@ -11,9 +11,9 @@ const brandCommonValidations = (optional = false): any => [
     .isLength({ min: 1, max: 50 }).withMessage('name must be between 1 and 50 characters long'),
 
   body('description')
-    .optional()
+    .optional({ checkFalsy: true })
     .isString().withMessage('description must be a string')
-    .isLength({ min: 1, max: 250 }).withMessage('description must be between 1 and 250 characters long')
+    .isLength({ max: 250 }).withMessage('description must have a maximum of 250 characters')
 ]
 
 export const validateBrandCreation = (): any => {

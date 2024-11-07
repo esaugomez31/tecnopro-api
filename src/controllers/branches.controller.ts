@@ -19,19 +19,15 @@ import {
 export const branchCreateController = async (req: iBranchCommonRequest, res: Response): Promise<void> => {
   try {
     const body = matchedData<iBranchCommonBody>(req, {
-      locations: ['body']
+      locations: ['body'], includeOptionals: true
     })
 
     // Model branch object
     const payload = new BranchModel()
-    payload.name = body.name
-    payload.description = body.description
-    payload.phoneNumber = body.phoneNumber
-    payload.email = body.email
-    payload.address = body.address
-    payload.idCountry = body.idCountry
-    payload.idDepartment = body.idDepartment
-    payload.idMunicipality = body.idMunicipality
+    const { dte: _, ...mainData } = body
+    // Main Fields
+    Object.assign(payload, mainData)
+
     // DTE Fields
     if (body.dte !== null && body.dte !== undefined) {
       Object.assign(payload, body.dte)
@@ -59,19 +55,15 @@ export const branchUpdateController = async (req: iBranchCommonRequest, res: Res
   try {
     const idBranch = Number(req.params.idBranch)
     const body = matchedData<iBranchCommonBody>(req, {
-      locations: ['body']
+      locations: ['body'], includeOptionals: true
     })
 
     // Model branch object
     const payload = new BranchModel()
-    payload.name = body.name
-    payload.description = body.description
-    payload.phoneNumber = body.phoneNumber
-    payload.email = body.email
-    payload.address = body.address
-    payload.idCountry = body.idCountry
-    payload.idDepartment = body.idDepartment
-    payload.idMunicipality = body.idMunicipality
+    const { dte: _, ...mainData } = body
+    // Main Fields
+    Object.assign(payload, mainData)
+
     // DTE Fields
     if (body.dte !== null && body.dte !== undefined) {
       Object.assign(payload, body.dte)

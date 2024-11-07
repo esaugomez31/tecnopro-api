@@ -1,4 +1,5 @@
 import { Request, Response } from 'express'
+import { matchedData } from 'express-validator'
 import jwt from 'jsonwebtoken'
 import envs from '../config/environment.config'
 import * as userService from '../services/users.service'
@@ -23,18 +24,13 @@ import {
 
 export const userSignupController = async (req: iUserCommonRequest, res: Response): Promise<void> => {
   try {
-    const body = req.body
+    const body = matchedData<UserModel>(req, {
+      locations: ['body'], includeOptionals: true
+    })
 
     // Model user object
     const payload = new UserModel()
-    payload.name = body.name
-    payload.username = body.username
-    payload.password = body.password
-    payload.phoneNumber = body.phoneNumber
-    payload.whatsappNumber = body.whatsappNumber
-    payload.email = body.email
-    payload.notifications = body.notifications
-    payload.idRole = body.idRole
+    Object.assign(payload, body)
 
     const { password: _, ...user } = await userService.userSignup(payload)
 
@@ -57,20 +53,15 @@ export const userSignupController = async (req: iUserCommonRequest, res: Respons
 
 export const userUpdateController = async (req: iUserCommonRequest, res: Response): Promise<void> => {
   try {
-    const body = req.body
     const idUser = Number(req.params.idUser)
     const jwtData = req.session as iUserJWT
+    const body = matchedData<UserModel>(req, {
+      locations: ['body'], includeOptionals: true
+    })
 
     // Model user object
     const payload = new UserModel()
-    payload.name = body.name
-    payload.username = body.username
-    payload.password = body.password
-    payload.phoneNumber = body.phoneNumber
-    payload.whatsappNumber = body.whatsappNumber
-    payload.email = body.email
-    payload.notifications = body.notifications
-    payload.idRole = body.idRole
+    Object.assign(payload, body)
 
     const { password: _, ...user } = await userService.userUpdate(payload, idUser, jwtData)
 

@@ -24,7 +24,7 @@ export class UserModel extends BaseEntity {
   @Column({ type: 'varchar', length: 15, nullable: true, name: 'whatsapp_number' })
     whatsappNumber: string | null
 
-  @Column({ type: 'varchar', length: 85, nullable: true })
+  @Column({ type: 'varchar', length: 100, nullable: true })
     email: string
 
   @Column({ type: 'enum', enum: UserRoleEnum, default: UserRoleEnum.USER, nullable: true })

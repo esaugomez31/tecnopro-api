@@ -1,4 +1,5 @@
 import { Request, Response } from 'express'
+import { matchedData } from 'express-validator'
 import * as brandService from '../services/brands.service'
 import { BrandModel } from '../models'
 import { filtersettings } from '../helpers'
@@ -14,13 +15,13 @@ import {
 
 export const brandCreateController = async (req: iBrandCommonRequest, res: Response): Promise<void> => {
   try {
-    const body = req.body
+    const body = matchedData<BrandModel>(req, {
+      locations: ['body'], includeOptionals: true
+    })
 
     // Model brand object
     const payload = new BrandModel()
-    payload.name = body.name
-    payload.description = body.description
-    payload.status = true
+    Object.assign(payload, body)
 
     const brand = await brandService.brandCreate(payload)
 
@@ -37,13 +38,14 @@ export const brandCreateController = async (req: iBrandCommonRequest, res: Respo
 
 export const brandUpdateController = async (req: iBrandCommonRequest, res: Response): Promise<void> => {
   try {
-    const body = req.body
     const idBrand = Number(req.params.idBrand)
+    const body = matchedData<BrandModel>(req, {
+      locations: ['body'], includeOptionals: true
+    })
 
     // Model brand object
     const payload = new BrandModel()
-    payload.name = body.name
-    payload.description = body.description
+    Object.assign(payload, body)
 
     const brand = await brandService.brandUpdate(payload, idBrand)
 

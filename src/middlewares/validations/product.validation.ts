@@ -12,22 +12,22 @@ const productCommonValidations = (optional = false): any => [
     .isLength({ min: 1, max: 50 }).withMessage('name must be between 1 and 50 characters long'),
 
   body('description')
-    .optional()
+    .optional({ checkFalsy: true })
     .isString().withMessage('description must be a string')
     .isLength({ min: 1, max: 100 }).withMessage('description must be between 1 and 100 characters long'),
 
   body('location')
-    .optional()
+    .optional({ checkFalsy: true })
     .isString().withMessage('location must be a string')
     .isLength({ min: 1, max: 50 }).withMessage('location must be between 1 and 50 characters long'),
 
   body('code')
-    .optional()
+    .optional({ checkFalsy: true })
     .isString().withMessage('code must be a string')
     .isLength({ min: 1, max: 20 }).withMessage('code must be between 1 and 20 characters long'),
 
   body('barcode')
-    .optional()
+    .optional({ checkFalsy: true })
     .isString().withMessage('barcode must be a string')
     .isLength({ min: 1, max: 30 }).withMessage('barcode must be between 1 and 30 characters long'),
 
@@ -93,7 +93,7 @@ const productCommonValidations = (optional = false): any => [
     .custom(value => value > 0).withMessage('stock must be greater than 0'),
 
   body('imageUrl')
-    .optional()
+    .optional({ checkFalsy: true })
     .isString().withMessage('imageUrl must be a string')
     .isLength({ min: 1, max: 100 }).withMessage('imageUrl must be between 1 and 100 characters long'),
 
@@ -103,17 +103,17 @@ const productCommonValidations = (optional = false): any => [
     .customSanitizer(Number),
 
   body('idBrand')
-    .optional()
+    .optional({ checkFalsy: true })
     .isInt({ min: 1, max: 99999999999 }).withMessage('idBrand must be an integer')
     .customSanitizer(Number),
 
   body('idCategory')
-    .optional()
+    .optional({ checkFalsy: true })
     .isInt({ min: 1, max: 99999999999 }).withMessage('idCategory must be an integer')
     .customSanitizer(Number),
 
   body('idUser')
-    .optional()
+    .optional({ checkFalsy: true })
     .isInt({ min: 1, max: 99999999999 }).withMessage('idUser must be an integer')
     .customSanitizer(Number)
 ]

@@ -8,6 +8,9 @@ export class RoleModel extends BaseEntity {
   @Column({ type: 'varchar', length: 25 })
     name: string
 
+  @Column({ type: 'text', nullable: true })
+    description: string
+
   @CreateDateColumn({ name: 'created_at', type: 'datetime', default: () => 'CURRENT_TIMESTAMP' })
     createdAt?: Date
 

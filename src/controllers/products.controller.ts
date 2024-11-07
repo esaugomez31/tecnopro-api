@@ -23,7 +23,7 @@ import {
 export const productCreateController = async (req: iProductCommonRequest, res: Response): Promise<void> => {
   try {
     const body = matchedData<ProductModel>(req, {
-      locations: ['body']
+      locations: ['body'], includeOptionals: true
     })
 
     // Model product object
@@ -53,7 +53,7 @@ export const productUpdateController = async (req: iProductCommonRequest, res: R
     const permissions: PermissionModel[] = req.permissions
     const idProduct = Number(req.params.idProduct)
     const body = matchedData<ProductModel>(req, {
-      locations: ['body']
+      locations: ['body'], includeOptionals: true
     })
 
     // Model product object

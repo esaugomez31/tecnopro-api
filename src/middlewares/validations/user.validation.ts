@@ -27,25 +27,23 @@ const userCommonValidations = (optional = false): any => [
   body('email')
     .optional(optional)
     .isEmail().withMessage('email must be a valid email')
-    .isLength({ max: 85 }).withMessage('email length does not exceed 85 characters'),
+    .isLength({ max: 100 }).withMessage('email length does not exceed 100 characters'),
 
   body('phoneNumber')
-    .optional()
+    .optional({ checkFalsy: true })
     .isString().withMessage('phoneNumber must be a string')
-    .matches(/^\+\d{1,3} \d{6,12}$/).withMessage('phoneNumber must be in the format (+503 12345678)')
-    .customSanitizer(value => value ?? null),
+    .matches(/^\+\d{1,3} \d{6,12}$/).withMessage('phoneNumber must be in the format (+503 12345678)'),
 
   body('whatsappNumber')
-    .optional()
+    .optional({ checkFalsy: true })
     .isString().withMessage('whatsappNumber must be a string')
-    .matches(/^\+\d{1,3} \d{6,12}$/).withMessage('whatsappNumber must be in the format (+503 12345678)')
-    .customSanitizer(value => value ?? null),
+    .matches(/^\+\d{1,3} \d{6,12}$/).withMessage('whatsappNumber must be in the format (+503 12345678)'),
 
   body('notifications')
     .optional()
     .isBoolean().withMessage('notifications must be a boolean')
     .custom((value: boolean, { req }) => {
-      if (value && req.body?.whatsappNumber === undefined) {
+      if (value && (req.body?.whatsappNumber === undefined || req.body?.whatsappNumber === '')) {
         throw new Error('whatsappNumber is required when notifications is true')
       }
       return true
@@ -53,14 +51,8 @@ const userCommonValidations = (optional = false): any => [
     .customSanitizer(value => stringToBoolean(value) === true),
 
   body('idRole')
-    .optional()
-    .custom(value => {
-      if (value === null || typeof value === 'number') {
-        return true
-      }
-      throw new Error('idRole must be a number or null')
-    })
-    .customSanitizer(value => value ?? null)
+    .optional({ checkFalsy: true })
+    .isInt({ min: 1, max: 99999999999 }).withMessage('idRole must be a integer between 1 and 99999999999')
 ]
 
 export const validateUserSignup = (): any => {

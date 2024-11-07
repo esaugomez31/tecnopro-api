@@ -18,7 +18,7 @@ import {
 export const customerCreateController = async (req: iCustomerCommonRequest, res: Response): Promise<void> => {
   try {
     const body = matchedData<CustomerModel>(req, {
-      locations: ['body']
+      locations: ['body'], includeOptionals: true
     })
 
     // Model customer object
@@ -48,7 +48,7 @@ export const customerUpdateController = async (req: iCustomerCommonRequest, res:
   try {
     const idCustomer = Number(req.params.idCustomer)
     const body = matchedData<CustomerModel>(req, {
-      locations: ['body']
+      locations: ['body'], includeOptionals: true
     })
 
     // Model customer object
