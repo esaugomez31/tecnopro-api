@@ -1,4 +1,5 @@
 import { Request, Response } from 'express'
+import { matchedData } from 'express-validator'
 import { MunicipalityModel } from '../../models'
 import { filtersettings } from '../../helpers'
 import * as municipalityService from '../../services/locations/municipalities.service'
@@ -17,16 +18,13 @@ import {
 
 export const municipalityCreateController = async (req: iMunicipalityCommonRequest, res: Response): Promise<void> => {
   try {
-    const body = req.body
+    const body = matchedData<MunicipalityModel>(req, {
+      locations: ['body'], includeOptionals: true
+    })
 
     // Model municipality object
     const payload = new MunicipalityModel()
-    payload.name = body.name
-    payload.dteCode = body.dteCode
-    payload.zipCode = body.zipCode
-    payload.idCountry = body.idCountry
-    payload.idDepartment = body.idDepartment
-    payload.status = true
+    Object.assign(payload, body)
 
     const municipality = await municipalityService.municipalityCreate(payload)
 
@@ -49,16 +47,14 @@ export const municipalityCreateController = async (req: iMunicipalityCommonReque
 
 export const municipalityUpdateController = async (req: iMunicipalityCommonRequest, res: Response): Promise<void> => {
   try {
-    const body = req.body
     const idMunicipality = Number(req.params.idMunicipality)
+    const body = matchedData<MunicipalityModel>(req, {
+      locations: ['body'], includeOptionals: true
+    })
 
     // Model municipality object
     const payload = new MunicipalityModel()
-    payload.name = body.name
-    payload.dteCode = body.dteCode
-    payload.zipCode = body.zipCode
-    payload.idCountry = body.idCountry
-    payload.idDepartment = body.idDepartment
+    Object.assign(payload, body)
 
     const municipality = await municipalityService.municipalityUpdate(payload, idMunicipality)
 

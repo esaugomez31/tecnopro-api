@@ -1,4 +1,5 @@
 import { Request, Response } from 'express'
+import { matchedData } from 'express-validator'
 import { CountryModel } from '../../models'
 import { filtersettings } from '../../helpers'
 import * as countryService from '../../services/locations/countries.service'
@@ -15,15 +16,13 @@ import {
 
 export const countryCreateController = async (req: iCountryCommonRequest, res: Response): Promise<void> => {
   try {
-    const body = req.body
+    const body = matchedData<CountryModel>(req, {
+      locations: ['body'], includeOptionals: true
+    })
 
     // Model country object
     const payload = new CountryModel()
-    payload.name = body.name
-    payload.code = body.code
-    payload.zipCode = body.zipCode
-    payload.timeZone = body.timeZone
-    payload.status = true
+    Object.assign(payload, body)
 
     const country = await countryService.countryCreate(payload)
 
@@ -41,15 +40,14 @@ export const countryCreateController = async (req: iCountryCommonRequest, res: R
 
 export const countryUpdateController = async (req: iCountryCommonRequest, res: Response): Promise<void> => {
   try {
-    const body = req.body
     const idCountry = Number(req.params.idCountry)
+    const body = matchedData<CountryModel>(req, {
+      locations: ['body'], includeOptionals: true
+    })
 
     // Model country object
     const payload = new CountryModel()
-    payload.name = body.name
-    payload.code = body.code
-    payload.zipCode = body.zipCode
-    payload.timeZone = body.timeZone
+    Object.assign(payload, body)
 
     const country = await countryService.countryUpdate(payload, idCountry)
 

@@ -12,17 +12,17 @@ const countryCommonValidations = (optional = false): any => [
     .isLength({ min: 1, max: 50 }).withMessage('name must be between 1 and 50 characters long'),
 
   body('code')
-    .optional()
+    .optional({ checkFalsy: true })
     .isString().withMessage('code must be a string')
     .isLength({ min: 1, max: 3 }).withMessage('code must be between 1 and 3 characters long'),
 
   body('zipCode')
-    .optional()
+    .optional({ checkFalsy: true })
     .isString().withMessage('zipCode must be a string')
     .isLength({ min: 1, max: 10 }).withMessage('zipCode must be between 1 and 10 characters long'),
 
   body('timeZone')
-    .optional()
+    .optional({ checkFalsy: true })
     .isString().withMessage('timeZone must be a string')
     .isLength({ min: 1, max: 50 }).withMessage('timeZone must be between 1 and 50 characters long')
 ]

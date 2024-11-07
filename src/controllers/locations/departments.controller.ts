@@ -1,4 +1,5 @@
 import { Request, Response } from 'express'
+import { matchedData } from 'express-validator'
 import { DepartmentModel } from '../../models'
 import { filtersettings } from '../../helpers'
 import * as departmentService from '../../services/locations/departments.service'
@@ -16,15 +17,13 @@ import {
 
 export const departmentCreateController = async (req: iDepartmentCommonRequest, res: Response): Promise<void> => {
   try {
-    const body = req.body
+    const body = matchedData<DepartmentModel>(req, {
+      locations: ['body'], includeOptionals: true
+    })
 
     // Model department object
     const payload = new DepartmentModel()
-    payload.name = body.name
-    payload.dteCode = body.dteCode
-    payload.zipCode = body.zipCode
-    payload.idCountry = body.idCountry
-    payload.status = true
+    Object.assign(payload, body)
 
     const department = await departmentService.departmentCreate(payload)
 
@@ -47,15 +46,14 @@ export const departmentCreateController = async (req: iDepartmentCommonRequest, 
 
 export const departmentUpdateController = async (req: iDepartmentCommonRequest, res: Response): Promise<void> => {
   try {
-    const body = req.body
     const idDepartment = Number(req.params.idDepartment)
+    const body = matchedData<DepartmentModel>(req, {
+      locations: ['body'], includeOptionals: true
+    })
 
     // Model department object
     const payload = new DepartmentModel()
-    payload.name = body.name
-    payload.dteCode = body.dteCode
-    payload.zipCode = body.zipCode
-    payload.idCountry = body.idCountry
+    Object.assign(payload, body)
 
     const department = await departmentService.departmentUpdate(payload, idDepartment)
 

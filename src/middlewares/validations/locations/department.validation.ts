@@ -12,12 +12,12 @@ const departmentCommonValidations = (optional = false): any => [
     .isLength({ min: 1, max: 85 }).withMessage('name must be between 1 and 85 characters long'),
 
   body('zipCode')
-    .optional()
+    .optional({ checkFalsy: true })
     .isString().withMessage('zipCode must be a string')
     .isLength({ min: 1, max: 10 }).withMessage('zipCode must be between 1 and 10 characters long'),
 
   body('dteCode')
-    .optional()
+    .optional({ checkFalsy: true })
     .isString().withMessage('dteCode must be a string')
     .isLength({ min: 1, max: 2 }).withMessage('dteCode must be between 1 and 2 characters long'),
 
