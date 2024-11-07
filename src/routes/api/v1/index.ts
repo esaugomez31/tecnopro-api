@@ -5,6 +5,7 @@ import brandRoutes from './brands.route'
 import locationRoutes from './locations'
 import productRoutes from './products.route'
 import categoryRoutes from './categories.route'
+import customerRoutes from './customers.route'
 import branchesRoutes from './branches.route'
 import rolesPermissionRoutes from './roles.permissions.route'
 
@@ -22,5 +23,7 @@ routes.use('/branches', branchesRoutes)
 routes.use('/products', productRoutes)
 routes.use('/categories', categoryRoutes)
 routes.use('/brands', brandRoutes)
+
+routes.use('/customers', customerRoutes)
 
 export default routes

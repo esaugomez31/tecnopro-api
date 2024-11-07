@@ -36,7 +36,6 @@ export const branchCreateController = async (req: iBranchCommonRequest, res: Res
     if (body.dte !== null && body.dte !== undefined) {
       Object.assign(payload, body.dte)
     }
-    payload.status = true
     // Create Branch
     const branch = await branchService.branchCreate(payload)
 
@@ -106,7 +105,7 @@ export const branchUpdateStatusController = async (req: Request, res: Response):
 
     res.json(branch)
   } catch (error) {
-    if (error instanceof IDBranchMunicipalityNotFoundError || error instanceof IDBranchNotFoundError) {
+    if (error instanceof IDBranchNotFoundError) {
       res.status(404).json({ error: error.name, message: error.message })
       return
     }

@@ -28,7 +28,6 @@ export const productCreateController = async (req: iProductCommonRequest, res: R
 
     // Model product object
     const payload = new ProductModel()
-    payload.status = true
     Object.assign(payload, body)
 
     const product = await productService.productCreate(payload)

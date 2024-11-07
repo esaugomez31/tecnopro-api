@@ -9,6 +9,7 @@ import {
   DepartmentModel,
   MunicipalityModel,
   CategoryModel,
+  CustomerModel,
   ProductModel,
   PermissionModel,
   RolePermissionModel
@@ -34,6 +35,7 @@ export const AppDataSource = new DataSource({
     DepartmentModel,
     MunicipalityModel,
     CategoryModel,
+    CustomerModel,
     ProductModel,
     PermissionModel,
     RolePermissionModel
