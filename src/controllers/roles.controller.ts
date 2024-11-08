@@ -1,4 +1,5 @@
 import { Request, Response } from 'express'
+import { matchedData } from 'express-validator'
 import * as roleService from '../services/roles.service'
 import { RoleModel } from '../models'
 import { filtersettings } from '../helpers'
@@ -14,12 +15,13 @@ import {
 
 export const roleCreateController = async (req: iRoleCommonRequest, res: Response): Promise<void> => {
   try {
-    const body = req.body
+    const body = matchedData<RoleModel>(req, {
+      locations: ['body'], includeOptionals: true
+    })
 
     // Model role object
     const payload = new RoleModel()
-    payload.name = body.name
-    payload.status = true
+    Object.assign(payload, body)
 
     const role = await roleService.roleCreate(payload)
 
@@ -36,12 +38,14 @@ export const roleCreateController = async (req: iRoleCommonRequest, res: Respons
 
 export const roleUpdateController = async (req: iRoleCommonRequest, res: Response): Promise<void> => {
   try {
-    const body = req.body
     const idRole = Number(req.params.idRole)
+    const body = matchedData<RoleModel>(req, {
+      locations: ['body'], includeOptionals: true
+    })
 
     // Model role object
     const payload = new RoleModel()
-    payload.name = body.name
+    Object.assign(payload, body)
 
     const role = await roleService.roleUpdate(payload, idRole)
 
