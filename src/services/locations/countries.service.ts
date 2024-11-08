@@ -1,6 +1,5 @@
-import { Like } from 'typeorm'
 import { CountryModel } from '../../models'
-import { logger } from '../../helpers'
+import { logger, applyFilter } from '../../helpers'
 import {
   iFilterSettings,
   iGetCountryByIdResponse,
@@ -119,25 +118,13 @@ const getCountryIncludeFields = (includes?: string[]): string[] => {
   return relations
 }
 
-const getFilters = (filterParams: iCountryFilters): iCountryQueryParams => {
+const getFilters = (params: iCountryFilters): iCountryQueryParams => {
   const filters: iCountryQueryParams = {}
-  const { name, status, code, zipCode } = filterParams
 
-  if (name !== undefined) {
-    filters.name = Like(`%${name}%`)
-  }
-
-  if (code !== undefined) {
-    filters.code = Like(`%${code}%`)
-  }
-
-  if (zipCode !== undefined) {
-    filters.zipCode = Like(`%${zipCode}%`)
-  }
-
-  if (status !== undefined) {
-    filters.status = status
-  }
+  applyFilter(filters, 'name', params.name, true)
+  applyFilter(filters, 'code', params.code, true)
+  applyFilter(filters, 'zipCode', params.zipCode, true)
+  applyFilter(filters, 'status', params.status)
 
   return filters
 }

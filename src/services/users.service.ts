@@ -1,8 +1,13 @@
 import { v4 as uuidv4 } from 'uuid'
-import { Like } from 'typeorm'
 import envs from '../config/environment.config'
 import { UserModel, RoleModel } from '../models'
-import { logger, hashPassword, comparePassword, getLocalDateTimeNow } from '../helpers'
+import {
+  logger,
+  hashPassword,
+  comparePassword,
+  getLocalDateTimeNow,
+  applyFilter
+} from '../helpers'
 import {
   iFilterSettings,
   iUserPublicResponse,
@@ -182,33 +187,15 @@ export const userGetById = async (idUser: number): Promise<iGetUserByIdResponse>
   }
 }
 
-const getFilters = (filterParams: iUserFilters): iUserQueryParams => {
+const getFilters = (params: iUserFilters): iUserQueryParams => {
   const filters: iUserQueryParams = {}
-  const { username, name, email, idRole, phoneNumber, status } = filterParams
 
-  if (username !== undefined) {
-    filters.username = Like(`%${username}%`)
-  }
-
-  if (name !== undefined) {
-    filters.name = Like(`%${name}%`)
-  }
-
-  if (email !== undefined) {
-    filters.email = Like(`%${email}%`)
-  }
-
-  if (phoneNumber !== undefined) {
-    filters.phoneNumber = Like(`%${phoneNumber}%`)
-  }
-
-  if (status !== undefined) {
-    filters.status = status
-  }
-
-  if (idRole !== undefined) {
-    filters.idRole = idRole
-  }
+  applyFilter(filters, 'name', params.name, true)
+  applyFilter(filters, 'username', params.username, true)
+  applyFilter(filters, 'email', params.email, true)
+  applyFilter(filters, 'phoneNumber', params.phoneNumber, true)
+  applyFilter(filters, 'idRole', params.idRole)
+  applyFilter(filters, 'status', params.status)
 
   return filters
 }

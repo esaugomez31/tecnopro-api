@@ -1,7 +1,6 @@
 import { v4 as uuidv4 } from 'uuid'
-import { Like } from 'typeorm'
 import { BranchModel, CountryModel, DepartmentModel, MunicipalityModel } from '../models'
-import { logger } from '../helpers'
+import { logger, applyFilter } from '../helpers'
 import {
   iFilterSettings,
   iGetBranchByIdResponse,
@@ -136,55 +135,18 @@ export const branchGetById = async (idBranch: number): Promise<iGetBranchByIdRes
   }
 }
 
-const getFilters = (filterParams: iBranchFilters): iBranchQueryParams => {
+const getFilters = (params: iBranchFilters): iBranchQueryParams => {
   const filters: iBranchQueryParams = {}
-  const {
-    name,
-    description,
-    email,
-    phoneNumber,
-    uuid,
-    idCountry,
-    idDepartment,
-    idMunicipality,
-    status
-  } = filterParams
 
-  if (name !== undefined) {
-    filters.name = Like(`%${name}%`)
-  }
-
-  if (description !== undefined) {
-    filters.description = Like(`%${description}%`)
-  }
-
-  if (email !== undefined) {
-    filters.email = Like(`%${email}%`)
-  }
-
-  if (phoneNumber !== undefined) {
-    filters.phoneNumber = Like(`%${phoneNumber}%`)
-  }
-
-  if (uuid !== undefined) {
-    filters.uuid = uuid
-  }
-
-  if (idCountry !== undefined) {
-    filters.idCountry = idCountry
-  }
-
-  if (idDepartment !== undefined) {
-    filters.idDepartment = idDepartment
-  }
-
-  if (idMunicipality !== undefined) {
-    filters.idMunicipality = idMunicipality
-  }
-
-  if (status !== undefined) {
-    filters.status = status
-  }
+  applyFilter(filters, 'name', params.name, true)
+  applyFilter(filters, 'description', params.description, true)
+  applyFilter(filters, 'email', params.email, true)
+  applyFilter(filters, 'phoneNumber', params.phoneNumber, true)
+  applyFilter(filters, 'uuid', params.uuid)
+  applyFilter(filters, 'idCountry', params.idCountry)
+  applyFilter(filters, 'idDepartment', params.idDepartment)
+  applyFilter(filters, 'idMunicipality', params.idMunicipality)
+  applyFilter(filters, 'status', params.status)
 
   return filters
 }

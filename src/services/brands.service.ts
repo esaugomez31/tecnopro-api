@@ -1,7 +1,6 @@
-import { Like } from 'typeorm'
 import { v4 as uuidv4 } from 'uuid'
 import { BrandModel } from '../models'
-import { logger } from '../helpers'
+import { logger, applyFilter } from '../helpers'
 import {
   iFilterSettings,
   iGetBrandByIdResponse,
@@ -105,25 +104,13 @@ export const brandGetById = async (idBrand: number): Promise<iGetBrandByIdRespon
   }
 }
 
-const getFilters = (filterParams: iBrandFilters): iBrandQueryParams => {
+const getFilters = (params: iBrandFilters): iBrandQueryParams => {
   const filters: iBrandQueryParams = {}
-  const { name, status, description, uuid } = filterParams
 
-  if (name !== undefined) {
-    filters.name = Like(`%${name}%`)
-  }
-
-  if (description !== undefined) {
-    filters.description = Like(`%${description}%`)
-  }
-
-  if (uuid !== undefined) {
-    filters.uuid = uuid
-  }
-
-  if (status !== undefined) {
-    filters.status = status
-  }
+  applyFilter(filters, 'name', params.name, true)
+  applyFilter(filters, 'description', params.description, true)
+  applyFilter(filters, 'uuid', params.uuid)
+  applyFilter(filters, 'status', params.status)
 
   return filters
 }

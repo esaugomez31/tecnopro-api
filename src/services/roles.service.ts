@@ -1,6 +1,5 @@
-import { Like } from 'typeorm'
 import { RoleModel } from '../models'
-import { logger } from '../helpers'
+import { logger, applyFilter } from '../helpers'
 import {
   iFilterSettings,
   iGetRoleByIdResponse,
@@ -101,17 +100,11 @@ export const roleGetById = async (idRole: number): Promise<iGetRoleByIdResponse>
   }
 }
 
-const getFilters = (filterParams: iRoleFilters): iRoleQueryParams => {
+const getFilters = (params: iRoleFilters): iRoleQueryParams => {
   const filters: iRoleQueryParams = {}
-  const { name, status } = filterParams
 
-  if (name !== undefined) {
-    filters.name = Like(`%${name}%`)
-  }
-
-  if (status !== undefined) {
-    filters.status = status
-  }
+  applyFilter(filters, 'name', params.name, true)
+  applyFilter(filters, 'status', params.status)
 
   return filters
 }

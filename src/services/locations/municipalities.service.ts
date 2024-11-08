@@ -1,6 +1,5 @@
-import { Like } from 'typeorm'
 import { MunicipalityModel, CountryModel, DepartmentModel } from '../../models'
-import { logger } from '../../helpers'
+import { logger, applyFilter } from '../../helpers'
 import {
   iFilterSettings,
   iGetMunicipalityByIdResponse,
@@ -115,33 +114,15 @@ export const municipalityGetById = async (idMunicipality: number): Promise<iGetM
   }
 }
 
-const getFilters = (filterParams: iMunicipalityFilters): iMunicipalityQueryParams => {
+const getFilters = (params: iMunicipalityFilters): iMunicipalityQueryParams => {
   const filters: iMunicipalityQueryParams = {}
-  const { name, status, dteCode, zipCode, idCountry, idDepartment } = filterParams
 
-  if (name !== undefined) {
-    filters.name = Like(`%${name}%`)
-  }
-
-  if (dteCode !== undefined) {
-    filters.dteCode = dteCode
-  }
-
-  if (idCountry !== undefined) {
-    filters.idCountry = idCountry
-  }
-
-  if (idDepartment !== undefined) {
-    filters.idDepartment = idDepartment
-  }
-
-  if (zipCode !== undefined) {
-    filters.zipCode = Like(`%${zipCode}%`)
-  }
-
-  if (status !== undefined) {
-    filters.status = status
-  }
+  applyFilter(filters, 'name', params.name, true)
+  applyFilter(filters, 'zipCode', params.zipCode, true)
+  applyFilter(filters, 'dteCode', params.dteCode)
+  applyFilter(filters, 'idCountry', params.idCountry)
+  applyFilter(filters, 'idDepartment', params.idDepartment)
+  applyFilter(filters, 'status', params.status)
 
   return filters
 }
@@ -177,12 +158,6 @@ const existValuesValidations = async (name?: string, dteCode?: string, idCountry
     if (existMunicipality.name === name && existMunicipality.idMunicipality !== idMunicipality) {
       throw new NameExistsError()
     }
-
-    // Searching for code matches
-    // commented because in municipalities this code can be repeated
-    // if (existMunicipality.dteCode === dteCode && existMunicipality.idMunicipality !== idMunicipality) {
-    //   throw new MunicipalityCodeExistsError()
-    // }
   }
 }
 

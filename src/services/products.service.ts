@@ -1,6 +1,10 @@
-import { Like } from 'typeorm'
 import { v4 as uuidv4 } from 'uuid'
-import { logger, hasPermission, isValidValue } from '../helpers'
+import {
+  logger,
+  hasPermission,
+  isValidValue,
+  applyFilter
+} from '../helpers'
 import {
   ProductModel,
   BranchModel,
@@ -181,65 +185,20 @@ const evaluateUpdatePermission = (product: ProductModel, permissions?: Permissio
   }
 }
 
-const getFilters = (filterParams: iProductFilters): iProductQueryParams => {
+const getFilters = (params: iProductFilters): iProductQueryParams => {
   const filters: iProductQueryParams = {}
-  const {
-    name,
-    status,
-    description,
-    uuid,
-    location,
-    code,
-    barcode,
-    idBranch,
-    idBrand,
-    idCategory,
-    idUser
-  } = filterParams
 
-  if (name !== undefined) {
-    filters.name = Like(`%${name}%`)
-  }
-
-  if (description !== undefined) {
-    filters.description = Like(`%${description}%`)
-  }
-
-  if (uuid !== undefined) {
-    filters.uuid = uuid
-  }
-
-  if (location !== undefined) {
-    filters.location = Like(`%${location}%`)
-  }
-
-  if (code !== undefined) {
-    filters.code = Like(`%${code}%`)
-  }
-
-  if (barcode !== undefined) {
-    filters.barcode = barcode
-  }
-
-  if (idBranch !== undefined) {
-    filters.idBranch = idBranch
-  }
-
-  if (idBrand !== undefined) {
-    filters.idBrand = idBrand
-  }
-
-  if (idCategory !== undefined) {
-    filters.idCategory = idCategory
-  }
-
-  if (idUser !== undefined) {
-    filters.idUser = idUser
-  }
-
-  if (status !== undefined) {
-    filters.status = status
-  }
+  applyFilter(filters, 'name', params.name, true)
+  applyFilter(filters, 'description', params.description, true)
+  applyFilter(filters, 'location', params.location, true)
+  applyFilter(filters, 'code', params.code, true)
+  applyFilter(filters, 'uuid', params.uuid)
+  applyFilter(filters, 'barcode', params.barcode)
+  applyFilter(filters, 'idBranch', params.idBranch)
+  applyFilter(filters, 'idBrand', params.idBrand)
+  applyFilter(filters, 'idCategory', params.idCategory)
+  applyFilter(filters, 'idUser', params.idUser)
+  applyFilter(filters, 'status', params.status)
 
   return filters
 }
