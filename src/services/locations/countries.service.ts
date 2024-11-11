@@ -98,7 +98,7 @@ export const countryGetById = async (idCountry: number, settings: iFilterSetting
     const country = await CountryModel.findOne({
       where: { idCountry }, relations
     })
-    return { data: country ?? {} }
+    return { data: country }
   } catch (error) {
     logger.error('Get country by id: ' + (error as Error).name)
     throw error

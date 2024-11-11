@@ -99,7 +99,7 @@ export const departmentGetById = async (idDepartment: number, settings: iFilterS
     const department = await DepartmentModel.findOne({
       where: { idDepartment }, relations
     })
-    return { data: department ?? {} }
+    return { data: department }
   } catch (error) {
     logger.error('Get department by id: ' + (error as Error).name)
     throw error

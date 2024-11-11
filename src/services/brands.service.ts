@@ -97,7 +97,7 @@ export const brandGetById = async (idBrand: number): Promise<iGetBrandByIdRespon
     const brand = await BrandModel.findOne({
       where: { idBrand }
     })
-    return { data: brand ?? {} }
+    return { data: brand }
   } catch (error) {
     logger.error('Get brand by id: ' + (error as Error).name)
     throw error

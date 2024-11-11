@@ -36,7 +36,7 @@ export interface iGetCategoriesResponse {
 
 // Unique category response
 export interface iGetCategoryByIdResponse {
-  data: CategoryModel | {}
+  data: CategoryModel | null
 }
 
 // Custom request to type categories get controllers

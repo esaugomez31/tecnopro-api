@@ -30,7 +30,7 @@ export interface iGetDepartmentsResponse {
 
 // Unique department response
 export interface iGetDepartmentByIdResponse {
-  data: DepartmentModel | {}
+  data: DepartmentModel | null
 }
 
 // Custom request to type departments get controllers

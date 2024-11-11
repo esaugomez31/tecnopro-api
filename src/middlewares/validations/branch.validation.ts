@@ -33,6 +33,11 @@ const branchCommonValidations = (optional = false): any => [
     .isString().withMessage('address must be a string')
     .isLength({ min: 1, max: 200 }).withMessage('address must be between 1 and 200 characters long'),
 
+  body('vatEnabled')
+    .optional()
+    .isBoolean().withMessage('vatEnabled must be a boolean')
+    .customSanitizer(stringToBoolean),
+
   body('idCountry')
     .optional(optional)
     .isInt({ min: 1, max: 99999999999 }).withMessage('idCountry must be a integer between 1 and 99999999999'),

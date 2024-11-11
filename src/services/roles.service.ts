@@ -93,7 +93,7 @@ export const roleGetById = async (idRole: number): Promise<iGetRoleByIdResponse>
     const role = await RoleModel.findOne({
       where: { idRole }
     })
-    return { data: role ?? {} }
+    return { data: role }
   } catch (error) {
     logger.error('Get role by id: ' + (error as Error).name)
     throw error

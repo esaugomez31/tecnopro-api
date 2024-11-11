@@ -180,7 +180,7 @@ export const userGetById = async (idUser: number): Promise<iGetUserByIdResponse>
     const user = await UserModel.findOne({
       where: { idUser }
     })
-    return { data: user ?? {} }
+    return { data: user }
   } catch (error) {
     logger.error('Get user by id: ' + (error as Error).name)
     throw error

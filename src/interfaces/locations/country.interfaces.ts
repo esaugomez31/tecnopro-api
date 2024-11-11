@@ -30,7 +30,7 @@ export interface iGetCountriesResponse {
 
 // Unique country response
 export interface iGetCountryByIdResponse {
-  data: CountryModel | {}
+  data: CountryModel | null
 }
 
 // Custom request to type countries get controllers

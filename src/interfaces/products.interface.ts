@@ -50,7 +50,7 @@ export interface iGetProductsResponse {
 
 // Unique product response
 export interface iGetProductByIdResponse {
-  data: ProductModel | {}
+  data: ProductModel | null
 }
 
 // Custom request to type products get controllers

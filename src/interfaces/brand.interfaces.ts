@@ -36,7 +36,7 @@ export interface iGetBrandsResponse {
 
 // Unique brand response
 export interface iGetBrandByIdResponse {
-  data: BrandModel | {}
+  data: BrandModel | null
 }
 
 // Custom request to type brands get controllers

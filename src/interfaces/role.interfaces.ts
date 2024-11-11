@@ -33,7 +33,7 @@ export interface iGetRolesResponse {
 
 // Unique role response
 export interface iGetRoleByIdResponse {
-  data: RoleModel | {}
+  data: RoleModel | null
 }
 
 // Custom request to type roles get controllers

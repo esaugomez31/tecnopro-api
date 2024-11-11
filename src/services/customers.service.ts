@@ -130,7 +130,7 @@ export const customerGetById = async (idCustomer: number): Promise<iGetCustomerB
       where: { idCustomer }
     })
 
-    return { data: customer ?? {} }
+    return { data: customer }
   } catch (error) {
     logger.error('Get customer by id: ' + (error as Error).name)
     throw error

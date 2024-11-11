@@ -107,7 +107,7 @@ export const municipalityGetById = async (idMunicipality: number): Promise<iGetM
     const municipality = await MunicipalityModel.findOne({
       where: { idMunicipality }
     })
-    return { data: municipality ?? {} }
+    return { data: municipality }
   } catch (error) {
     logger.error('Get municipality by id: ' + (error as Error).name)
     throw error

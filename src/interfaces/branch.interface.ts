@@ -21,6 +21,7 @@ export interface iBranchResponse {
   idCountry?: number
   idDepartment?: number
   idMunicipality?: number
+  vatEnabled?: boolean
   dte: {
     dteActive?: boolean
     dteEnvironment?: string
@@ -67,7 +68,7 @@ export interface iGetBranchesResponse {
 
 // Unique branch response
 export interface iGetBranchByIdResponse {
-  data: iBranchResponse | {}
+  data: iBranchResponse | null
 }
 
 // Custom request to type branches get controllers

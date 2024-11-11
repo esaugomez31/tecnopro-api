@@ -52,7 +52,7 @@ export interface iGetCustomersResponse {
 
 // Unique customer response
 export interface iGetCustomerByIdResponse {
-  data: CustomerModel | {}
+  data: CustomerModel | null
 }
 
 // Custom request to type customers get controllers

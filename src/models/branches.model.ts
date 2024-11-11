@@ -33,6 +33,9 @@ export class BranchModel extends BaseEntity {
   @Column({ name: 'address', type: 'varchar', nullable: true, length: 255 })
     address?: string
 
+  @Column({ name: 'vat_enabled', type: 'tinyint', default: 0 })
+    vatEnabled?: boolean
+
   @Column({ name: 'id_country', type: 'int' })
     idCountry: number
 

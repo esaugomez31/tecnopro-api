@@ -31,7 +31,7 @@ export interface iGetMunicipalitiesResponse {
 
 // Unique municipality response
 export interface iGetMunicipalityByIdResponse {
-  data: MunicipalityModel | {}
+  data: MunicipalityModel | null
 }
 
 // Custom request to type municipalities get controllers

@@ -1,4 +1,5 @@
 import { v4 as uuidv4 } from 'uuid'
+import { In } from 'typeorm'
 import {
   logger,
   hasPermission,
@@ -142,9 +143,21 @@ export const productGetById = async (idProduct: number, permissions?: Permission
     const product = await ProductModel.findOne({
       where: { idProduct }
     })
-    return { data: product !== null ? getProductAvailableInfo(product, permissions) : {} }
+    return { data: product !== null ? getProductAvailableInfo(product, permissions) : null }
   } catch (error) {
     logger.error('Get product by id: ' + (error as Error).name)
+    throw error
+  }
+}
+
+export const productsGetByIds = async (ids: number[]): Promise<ProductModel[]> => {
+  try {
+    const product = await ProductModel.find({
+      where: { idProduct: In(ids), status: true }
+    })
+    return product
+  } catch (error) {
+    logger.error('Get products by ids: ' + (error as Error).name)
     throw error
   }
 }

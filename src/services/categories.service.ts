@@ -97,7 +97,7 @@ export const categoryGetById = async (idCategory: number): Promise<iGetCategoryB
     const category = await CategoryModel.findOne({
       where: { idCategory }
     })
-    return { data: category ?? {} }
+    return { data: category }
   } catch (error) {
     logger.error('Get category by id: ' + (error as Error).name)
     throw error

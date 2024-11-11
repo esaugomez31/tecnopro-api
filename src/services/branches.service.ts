@@ -128,7 +128,7 @@ export const branchGetById = async (idBranch: number): Promise<iGetBranchByIdRes
       where: { idBranch }
     })
 
-    return { data: branch !== null ? getBranchPayload(branch) : {} }
+    return { data: branch !== null ? getBranchPayload(branch) : null }
   } catch (error) {
     logger.error('Get branch by id: ' + (error as Error).name)
     throw error
@@ -199,6 +199,7 @@ const getBranchPayload = (branch?: BranchModel): iBranchResponse => {
     idCountry: branch?.idCountry,
     idDepartment: branch?.idDepartment,
     idMunicipality: branch?.idMunicipality,
+    vatEnabled: branch?.vatEnabled,
     dte: {
       dteActive: branch?.dteActive,
       dteEnvironment: branch?.dteEnvironment,

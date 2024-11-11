@@ -59,7 +59,7 @@ export interface iGetUsersResponse {
 
 // Unique user response
 export interface iGetUserByIdResponse {
-  data: UserModel | {}
+  data: UserModel | null
 }
 
 // Custom request to type users get controllers
