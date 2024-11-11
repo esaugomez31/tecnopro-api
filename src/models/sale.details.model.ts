@@ -15,7 +15,7 @@ export class SaleDetailModel extends BaseEntity {
   @Column({ type: 'decimal', precision: 11, scale: 4 })
     quantity: number
 
-  @Column({ type: 'decimal', precision: 11, scale: 4, name: 'affected_Sale' })
+  @Column({ type: 'decimal', precision: 11, scale: 4, name: 'affected_sale' })
     affectedSale: number
 
   @Column({ type: 'decimal', precision: 11, scale: 4, default: 0.00 })
