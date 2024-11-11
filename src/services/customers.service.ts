@@ -1,11 +1,6 @@
 import { v4 as uuidv4 } from 'uuid'
 import { logger, applyFilter } from '../helpers'
-import {
-  CustomerModel,
-  CountryModel,
-  DepartmentModel,
-  MunicipalityModel
-} from '../models'
+import { CustomerModel } from '../models'
 import {
   iFilterSettings,
   iGetCustomerByIdResponse,
@@ -19,6 +14,11 @@ import {
   IDMunicipalityNotFoundError,
   IDCustNotFoundError
 } from '../errors/customer.error'
+import {
+  countryGetById,
+  departmentGetById,
+  municipalityGetById
+} from './locations'
 
 export const customerCreate = async (customer: CustomerModel): Promise<CustomerModel | {}> => {
   try {
@@ -158,38 +158,31 @@ const getFilters = (params: iCustomerFilters): iCustomerQueryParams => {
 }
 
 const existValuesValidations = async (idCountry?: number, idDepartment?: number, idMunicipality?: number): Promise<void> => {
-  if (idCountry === undefined && idMunicipality === undefined && idDepartment === undefined) return
+  const ids = [idCountry, idDepartment, idMunicipality]
+  if (!ids.some(id => id !== undefined)) return
 
   const [existCountry, existDepartment, existMunicipality] = await Promise.all([
-    idCountry !== undefined
-      ? CountryModel.findOne({ select: ['idCountry'], where: { idCountry } })
-      : null,
-    idDepartment !== undefined
-      ? DepartmentModel.findOne({ select: ['idDepartment'], where: { idCountry, idDepartment } })
-      : null,
-    idMunicipality !== undefined
-      ? MunicipalityModel.findOne({ select: ['idMunicipality'], where: { idCountry, idDepartment, idMunicipality } })
-      : null
+    idCountry !== undefined ? countryGetById(idCountry) : null,
+    idDepartment !== undefined ? departmentGetById(idDepartment) : null,
+    idMunicipality !== undefined ? municipalityGetById(idMunicipality) : null
   ])
 
-  if (idCountry !== undefined && existCountry === null) {
+  if (idCountry !== undefined && existCountry?.data === null) {
     throw new IDCountryNotFoundError()
   }
 
-  if (idDepartment !== undefined && existDepartment === null) {
+  if (idDepartment !== undefined && existDepartment?.data === null) {
     throw new IDDepartmentNotFoundError()
   }
 
-  if (idMunicipality !== undefined && existMunicipality === null) {
+  if (idMunicipality !== undefined && existMunicipality?.data === null) {
     throw new IDMunicipalityNotFoundError()
   }
 }
 
 const existIdValidation = async (idCustomer: number): Promise<void> => {
   // Existing customer per ID
-  const existCustomer = await CustomerModel.findOne({
-    select: ['idCustomer'], where: { idCustomer }
-  })
+  const existCustomer = await customerGetById(idCustomer)
 
-  if (existCustomer === null) throw new IDCustNotFoundError()
+  if (existCustomer.data === null) throw new IDCustNotFoundError()
 }

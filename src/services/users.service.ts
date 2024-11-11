@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from 'uuid'
 import envs from '../config/environment.config'
-import { UserModel, RoleModel } from '../models'
+import { UserModel } from '../models'
 import {
   logger,
   hashPassword,
@@ -29,6 +29,9 @@ import {
 import {
   IDRoleNotFoundError
 } from '../errors/role.error'
+import {
+  roleGetById
+} from '.'
 
 const publicSelect: Array<keyof UserModel> = [
   'idUser',
@@ -213,7 +216,7 @@ const userRequitedValidations = async (username?: string, email?: string, idRole
     userFilters.push({ email })
   }
 
-  const [existUser, existRole]: [UserModel | null, RoleModel | null] = await Promise.all([
+  const [existUser, existRole] = await Promise.all([
     (username !== undefined || email !== undefined)
       ? UserModel.findOne({
         select: ['idUser', 'email', 'username'],
@@ -221,9 +224,7 @@ const userRequitedValidations = async (username?: string, email?: string, idRole
       })
       : Promise.resolve(null),
 
-    (idRole !== undefined)
-      ? RoleModel.findOne({ where: { idRole } })
-      : Promise.resolve(null)
+    (idRole !== undefined) ? roleGetById(idRole) : Promise.resolve(null)
   ])
 
   // Conditions for user and email
@@ -239,7 +240,7 @@ const userRequitedValidations = async (username?: string, email?: string, idRole
   }
 
   // Conditions for roles
-  if ((idRole !== undefined && idRole !== null) && existRole === null) {
+  if (idRole !== undefined && existRole?.data === null) {
     throw new IDRoleNotFoundError()
   }
 }

@@ -135,9 +135,7 @@ const existNameValidations = async (name?: string, idCategory?: number): Promise
 
 const existIdValidation = async (idCategory: number): Promise<void> => {
   // Existing category per ID
-  const existCategory = await CategoryModel.findOne({
-    select: ['idCategory'], where: { idCategory }
-  })
+  const existCategory = await categoryGetById(idCategory)
 
-  if (existCategory === null) throw new IDCategoryNotFoundError()
+  if (existCategory.data === null) throw new IDCategoryNotFoundError()
 }

@@ -1,5 +1,5 @@
 import { v4 as uuidv4 } from 'uuid'
-import { BranchModel, CountryModel, DepartmentModel, MunicipalityModel } from '../models'
+import { BranchModel } from '../models'
 import { logger, applyFilter } from '../helpers'
 import {
   iFilterSettings,
@@ -15,6 +15,11 @@ import {
   IDBranchDepartmentNotFoundError,
   IDBranchNotFoundError
 } from '../errors/branch.error'
+import {
+  countryGetById,
+  departmentGetById,
+  municipalityGetById
+} from './locations'
 
 export const branchCreate = async (branch: BranchModel): Promise<iBranchResponse | {}> => {
   try {
@@ -152,40 +157,33 @@ const getFilters = (params: iBranchFilters): iBranchQueryParams => {
 }
 
 const existValuesValidations = async (idCountry?: number, idDepartment?: number, idMunicipality?: number): Promise<void> => {
-  if (idCountry === undefined && idMunicipality === undefined && idDepartment === undefined) return
+  const ids = [idCountry, idDepartment, idMunicipality]
+  if (!ids.some(id => id !== undefined)) return
 
   const [existCountry, existDepartment, existMunicipality] = await Promise.all([
-    idCountry !== undefined
-      ? CountryModel.findOne({ select: ['idCountry'], where: { idCountry } })
-      : null,
-    idDepartment !== undefined
-      ? DepartmentModel.findOne({ select: ['idDepartment'], where: { idCountry, idDepartment } })
-      : null,
-    idMunicipality !== undefined
-      ? MunicipalityModel.findOne({ select: ['idMunicipality'], where: { idCountry, idDepartment, idMunicipality } })
-      : null
+    idCountry !== undefined ? countryGetById(idCountry) : null,
+    idDepartment !== undefined ? departmentGetById(idDepartment) : null,
+    idMunicipality !== undefined ? municipalityGetById(idMunicipality) : null
   ])
 
-  if (idCountry !== undefined && existCountry === null) {
+  if (idCountry !== undefined && existCountry?.data === null) {
     throw new IDBranchCountryNotFoundError()
   }
 
-  if (idDepartment !== undefined && existDepartment === null) {
+  if (idDepartment !== undefined && existDepartment?.data === null) {
     throw new IDBranchDepartmentNotFoundError()
   }
 
-  if (idMunicipality !== undefined && existMunicipality === null) {
+  if (idMunicipality !== undefined && existMunicipality?.data === null) {
     throw new IDBranchMunicipalityNotFoundError()
   }
 }
 
 const existIdValidation = async (idBranch: number): Promise<void> => {
   // Existing branch per ID
-  const existBranch = await BranchModel.findOne({
-    select: ['idBranch'], where: { idBranch }
-  })
+  const existBranch = await branchGetById(idBranch)
 
-  if (existBranch === null) throw new IDBranchNotFoundError()
+  if (existBranch.data === null) throw new IDBranchNotFoundError()
 }
 
 const getBranchPayload = (branch?: BranchModel): iBranchResponse => {

@@ -8,10 +8,6 @@ import {
 } from '../helpers'
 import {
   ProductModel,
-  BranchModel,
-  CategoryModel,
-  BrandModel,
-  UserModel,
   PermissionModel
 } from '../models'
 import {
@@ -33,6 +29,12 @@ import {
   IDProdBrandNotFoundError,
   IDProdUserNotFoundError
 } from '../errors/product.error'
+import {
+  branchGetById,
+  brandGetById,
+  categoryGetById,
+  userGetById
+} from '.'
 
 export const productCreate = async (product: ProductModel): Promise<ProductModel | {}> => {
   try {
@@ -218,11 +220,9 @@ const getFilters = (params: iProductFilters): iProductQueryParams => {
 
 const existIdValidation = async (idProduct: number): Promise<void> => {
   // Existing product per ID
-  const existProduct = await ProductModel.findOne({
-    select: ['idProduct'], where: { idProduct }
-  })
+  const existProduct = await productGetById(idProduct)
 
-  if (existProduct === null) throw new IDProductNotFoundError()
+  if (existProduct.data === null) throw new IDProductNotFoundError()
 }
 
 const existValuesValidations = async (
@@ -230,41 +230,29 @@ const existValuesValidations = async (
   idCategory?: number,
   idBrand?: number,
   idUser?: number): Promise<void> => {
-  if (
-    idBranch === undefined &&
-    idCategory === undefined &&
-    idBrand === undefined &&
-    idUser === undefined
-  ) return
+  const ids = [idBranch, idCategory, idBrand, idUser]
+  if (!ids.some(id => id !== undefined)) return
 
   const [existBranch, existCategory, existBrand, existUser] = await Promise.all([
-    idBranch !== undefined
-      ? BranchModel.findOne({ select: ['idBranch'], where: { idBranch } })
-      : null,
-    idCategory !== undefined
-      ? CategoryModel.findOne({ select: ['idCategory'], where: { idCategory } })
-      : null,
-    idBrand !== undefined
-      ? BrandModel.findOne({ select: ['idBrand'], where: { idBrand } })
-      : null,
-    idUser !== undefined
-      ? UserModel.findOne({ select: ['idUser'], where: { idUser } })
-      : null
+    idBranch !== undefined ? branchGetById(idBranch) : null,
+    idCategory !== undefined ? categoryGetById(idCategory) : null,
+    idBrand !== undefined ? brandGetById(idBrand) : null,
+    idUser !== undefined ? userGetById(idUser) : null
   ])
 
-  if (idBranch !== undefined && existBranch === null) {
+  if (idBranch !== undefined && existBranch?.data === null) {
     throw new IDProdBranchNotFoundError()
   }
 
-  if (idCategory !== undefined && existCategory === null) {
+  if (idCategory !== undefined && existCategory?.data === null) {
     throw new IDProdCategoryNotFoundError()
   }
 
-  if (idBrand !== undefined && existBrand === null) {
+  if (idBrand !== undefined && existBrand?.data === null) {
     throw new IDProdBrandNotFoundError()
   }
 
-  if (idUser !== undefined && existUser === null) {
+  if (idUser !== undefined && existUser?.data === null) {
     throw new IDProdUserNotFoundError()
   }
 }

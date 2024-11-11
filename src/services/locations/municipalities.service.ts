@@ -1,4 +1,4 @@
-import { MunicipalityModel, CountryModel, DepartmentModel } from '../../models'
+import { MunicipalityModel } from '../../models'
 import { logger, applyFilter } from '../../helpers'
 import {
   iFilterSettings,
@@ -14,6 +14,7 @@ import {
   IDMuniDepartmentNotFoundError,
   NameExistsError
 } from '../../errors/locations/municipality.factory'
+import { countryGetById, departmentGetById } from '.'
 
 export const municipalityCreate = async (municipality: MunicipalityModel): Promise<MunicipalityModel> => {
   try {
@@ -128,7 +129,8 @@ const getFilters = (params: iMunicipalityFilters): iMunicipalityQueryParams => {
 }
 
 const existValuesValidations = async (name?: string, dteCode?: string, idCountry?: number, idDepartment?: number, idMunicipality?: number): Promise<void> => {
-  if (name === undefined && dteCode === undefined && idCountry === undefined && idDepartment === undefined) return
+  const params = [name, dteCode, idCountry, idDepartment]
+  if (!params.some(p => p !== undefined)) return
 
   const filters: iMunicipalityQueryParams[] = [{ name }, { dteCode }]
 
@@ -137,19 +139,15 @@ const existValuesValidations = async (name?: string, dteCode?: string, idCountry
       select: ['idMunicipality', 'name', 'dteCode'],
       where: filters
     }),
-    idCountry !== undefined
-      ? CountryModel.findOne({ select: ['idCountry'], where: { idCountry } })
-      : null,
-    idDepartment !== undefined
-      ? DepartmentModel.findOne({ select: ['idDepartment'], where: { idDepartment } })
-      : null
+    idCountry !== undefined ? countryGetById(idCountry) : null,
+    idDepartment !== undefined ? departmentGetById(idDepartment) : null
   ])
 
-  if (idCountry !== undefined && existCountry === null) {
+  if (idCountry !== undefined && existCountry?.data === null) {
     throw new IDMuniCountryNotFoundError()
   }
 
-  if (idDepartment !== undefined && existDepartment === null) {
+  if (idDepartment !== undefined && existDepartment?.data === null) {
     throw new IDMuniDepartmentNotFoundError()
   }
 
@@ -163,9 +161,7 @@ const existValuesValidations = async (name?: string, dteCode?: string, idCountry
 
 const existIdValidation = async (idMunicipality: number): Promise<void> => {
   // Existing municipality per ID
-  const existMunicipality = await MunicipalityModel.findOne({
-    select: ['idMunicipality'], where: { idMunicipality }
-  })
+  const existMunicipality = await municipalityGetById(idMunicipality)
 
-  if (existMunicipality === null) throw new IDMunicipalityNotFoundError()
+  if (existMunicipality.data === null) throw new IDMunicipalityNotFoundError()
 }

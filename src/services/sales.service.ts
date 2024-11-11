@@ -2,9 +2,6 @@ import { v4 as uuidv4 } from 'uuid'
 import { Between, MoreThanOrEqual, LessThanOrEqual } from 'typeorm'
 import { SaleModel, SaleDetailModel, CustomerModel } from '../models'
 import { logger, numberToWords, applyFilter } from '../helpers'
-import { productsGetByIds } from '../services/products.service'
-import { branchGetById } from '../services/branches.service'
-import { customerGetById } from '../services/customers.service'
 import {
   iBranchResponse,
   iFilterSettings,
@@ -26,6 +23,11 @@ import {
   CreateSaleDetailError,
   CreateSaleError
 } from '../errors/sale.error'
+import {
+  productsGetByIds,
+  branchGetById,
+  customerGetById
+} from '.'
 
 export const saleGenerate = async (data: iSaleRequest, idUser: number): Promise<SaleModel | {}> => {
   try {
@@ -225,9 +227,10 @@ export const saleGetAll = async (filterParams: iSaleFilters, settings: iFilterSe
 
 export const saleGetById = async (idSale: number, settings?: iFilterSettings): Promise<iGetSaleByIdResponse> => {
   try {
+    const relations = settings?.include !== undefined ? getSaleIncludeFields(settings.include) : []
     const sale = await SaleModel.findOne({
       where: { idSale },
-      relations: settings?.include !== undefined ? getSaleIncludeFields(settings.include) : [],
+      relations,
       select: getSelectIncludes()
     })
     return { data: sale }

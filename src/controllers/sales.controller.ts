@@ -4,6 +4,7 @@ import * as saleService from '../services/sales.service'
 import { filtersettings } from '../helpers'
 import {
   IDSaleNotFoundError,
+  IDSaleBranchNotFoundError,
   CreateSaleMissingProductError,
   IDSaleCustomerNotFoundError,
   GetSaleCreatedDetailError,
@@ -32,8 +33,8 @@ export const saleCreateController = async (req: iSaleCommonRequest, res: Respons
     res.json(sale)
   } catch (error) {
     if (
+      error instanceof IDSaleBranchNotFoundError ||
       error instanceof IDSaleCustomerNotFoundError ||
-      error instanceof IDSaleNotFoundError ||
       error instanceof GetSaleCreatedDetailError
     ) {
       res.status(404).json({ error: error.name, message: error.message })

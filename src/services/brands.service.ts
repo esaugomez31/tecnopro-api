@@ -135,9 +135,7 @@ const existNameValidations = async (name?: string, idBrand?: number): Promise<vo
 
 const existIdValidation = async (idBrand: number): Promise<void> => {
   // Existing brand per ID
-  const existBrand = await BrandModel.findOne({
-    select: ['idBrand'], where: { idBrand }
-  })
+  const existBrand = await brandGetById(idBrand)
 
-  if (existBrand === null) throw new IDBrandNotFoundError()
+  if (existBrand.data === null) throw new IDBrandNotFoundError()
 }

@@ -1,5 +1,6 @@
-import { DepartmentModel, CountryModel } from '../../models'
+import { DepartmentModel } from '../../models'
 import { logger, applyFilter } from '../../helpers'
+import { countryGetById } from './countries.service'
 import {
   iFilterSettings,
   iGetDepartmentByIdResponse,
@@ -93,9 +94,9 @@ export const departmentGetAll = async (filterParams: iDepartmentFilters, setting
   }
 }
 
-export const departmentGetById = async (idDepartment: number, settings: iFilterSettings): Promise<iGetDepartmentByIdResponse> => {
+export const departmentGetById = async (idDepartment: number, settings?: iFilterSettings): Promise<iGetDepartmentByIdResponse> => {
   try {
-    const relations = getDepartmentIncludeFields(settings.include)
+    const relations = settings !== undefined ? getDepartmentIncludeFields(settings.include) : []
     const department = await DepartmentModel.findOne({
       where: { idDepartment }, relations
     })
@@ -138,12 +139,10 @@ const existValuesValidations = async (name?: string, dteCode?: string, idCountry
       select: ['idDepartment', 'name', 'dteCode'],
       where: filters
     }),
-    idCountry !== undefined
-      ? CountryModel.findOne({ select: ['idCountry'], where: { idCountry } })
-      : null
+    idCountry !== undefined ? countryGetById(idCountry) : null
   ])
 
-  if (idCountry !== undefined && existCountry === null) {
+  if (idCountry !== undefined && existCountry?.data === null) {
     throw new IDDepCountryNotFoundError()
   }
 
@@ -161,9 +160,7 @@ const existValuesValidations = async (name?: string, dteCode?: string, idCountry
 
 const existIdValidation = async (idDepartment: number): Promise<void> => {
   // Existing department per ID
-  const existDepartment = await DepartmentModel.findOne({
-    select: ['idDepartment'], where: { idDepartment }
-  })
+  const existDepartment = await departmentGetById(idDepartment)
 
-  if (existDepartment === null) throw new IDDepartmentNotFoundError()
+  if (existDepartment.data === null) throw new IDDepartmentNotFoundError()
 }

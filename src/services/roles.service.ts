@@ -129,9 +129,7 @@ const roleRequitedValidations = async (name?: string, idRole?: number): Promise<
 
 const existIdValidation = async (idRole: number): Promise<void> => {
   // Existing role
-  const existRole = await RoleModel.findOne({
-    select: ['idRole'], where: { idRole }
-  })
+  const existRole = await roleGetById(idRole)
 
-  if (existRole === null) throw new IDRoleNotFoundError()
+  if (existRole.data === null) throw new IDRoleNotFoundError()
 }

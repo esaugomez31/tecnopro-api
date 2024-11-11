@@ -92,11 +92,12 @@ export const countryGetAll = async (filterParams: iCountryFilters, settings: iFi
   }
 }
 
-export const countryGetById = async (idCountry: number, settings: iFilterSettings): Promise<iGetCountryByIdResponse> => {
+export const countryGetById = async (idCountry: number, settings?: iFilterSettings): Promise<iGetCountryByIdResponse> => {
   try {
-    const relations = getCountryIncludeFields(settings.include)
+    const relations = settings !== undefined ? getCountryIncludeFields(settings.include) : []
     const country = await CountryModel.findOne({
-      where: { idCountry }, relations
+      where: { idCountry },
+      relations
     })
     return { data: country }
   } catch (error) {
