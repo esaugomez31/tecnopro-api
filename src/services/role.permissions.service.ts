@@ -1,24 +1,23 @@
 
-import { RolePermissionModel, PermissionModel, RoleModel } from '../models'
+import { RolePermissionModel } from '../models'
 import { getLocalDateTimeNow, logger } from '../helpers'
+import { roleGetById } from './'
 import {
   IDRoleNotFoundError
 } from '../errors/role.error'
 import {
+  IPermission,
   SystemPageEnum,
-  iPermissionObject,
-  iRolePermissionJoin,
-  iGetRolePermissionByIdResponse
-} from '../interfaces/role.permission.interfaces'
+  IRolePermission,
+  IPermissionObject,
+  IRolePermissionJoin,
+  IGetRolePermissionByIdResponse
+} from '../interfaces'
 
-export const rolePermissionUpdate = async (permissions: iPermissionObject[], idRole: number): Promise<RolePermissionModel[]> => {
+export const rolePermissionUpdate = async (permissions: IPermissionObject[], idRole: number): Promise<IRolePermission[]> => {
   try {
     // Existing role
-    const existRole = await RoleModel.findOne({
-      select: ['idRole'], where: { idRole }
-    })
-
-    if (existRole === null) throw new IDRoleNotFoundError()
+    await existValuesValidations(idRole)
 
     // Delete current role permissions
     await RolePermissionModel.delete({ idRole })
@@ -27,7 +26,7 @@ export const rolePermissionUpdate = async (permissions: iPermissionObject[], idR
     // creation date time
     const createdAt = new Date(getLocalDateTimeNow())
     // Creating bulk role permission object
-    permissions.forEach(({ idPermission }: iPermissionObject) => {
+    permissions.forEach(({ idPermission }: IPermissionObject) => {
       const perm = new RolePermissionModel()
 
       perm.idRole = idRole
@@ -46,14 +45,14 @@ export const rolePermissionUpdate = async (permissions: iPermissionObject[], idR
   }
 }
 
-export const rolePermissionGetById = async (idRole: number): Promise<iGetRolePermissionByIdResponse> => {
+export const rolePermissionGetById = async (idRole: number): Promise<IGetRolePermissionByIdResponse> => {
   try {
     const rolePermissions = await RolePermissionModel.find({
       relations: ['permissionDetail'],
       where: { idRole }
     })
 
-    const formattedResult: iRolePermissionJoin[] = rolePermissions.map((rolePermission: RolePermissionModel) => ({
+    const formattedResult: IRolePermissionJoin[] = rolePermissions.map((rolePermission: IRolePermission) => ({
       idRolePermission: rolePermission.idRolePermission,
       idRole: rolePermission.idRole,
       idPermission: rolePermission.idPermission,
@@ -68,15 +67,25 @@ export const rolePermissionGetById = async (idRole: number): Promise<iGetRolePer
   }
 }
 
-export const getRolePermissionsByPage = async (idRole: number, systemPage: SystemPageEnum): Promise<PermissionModel[]> => {
+export const getRolePermissionsByPage = async (idRole: number, systemPage: SystemPageEnum): Promise<IPermission[]> => {
   const rolePermissions = await RolePermissionModel.find({
     where: { idRole, permissionDetail: { systemPage } },
     relations: ['permissionDetail']
   })
 
-  const permissions: PermissionModel[] = rolePermissions.map(rolePermission => {
+  const permissions: IPermission[] = rolePermissions.map(rolePermission => {
     return rolePermission.permissionDetail
   }).filter(Boolean)
 
   return permissions
+}
+
+const existValuesValidations = async (idRole: number): Promise<void> => {
+  const [existRole] = await Promise.all([
+    roleGetById(idRole)
+  ])
+
+  if (existRole?.data === null) {
+    throw new IDRoleNotFoundError()
+  }
 }

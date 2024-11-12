@@ -2,11 +2,12 @@ import { v4 as uuidv4 } from 'uuid'
 import { logger, applyFilter } from '../helpers'
 import { CustomerModel } from '../models'
 import {
-  iFilterSettings,
-  iGetCustomerByIdResponse,
-  iGetCustomersResponse,
-  iCustomerQueryParams,
-  iCustomerFilters
+  IFilterSettings,
+  IGetCustomerByIdResponse,
+  IGetCustomersResponse,
+  ICustomerQueryParams,
+  ICustomerFilters,
+  ICustomer
 } from '../interfaces'
 import {
   IDCountryNotFoundError,
@@ -20,7 +21,7 @@ import {
   municipalityGetById
 } from './locations'
 
-export const customerCreate = async (customer: CustomerModel): Promise<CustomerModel | {}> => {
+export const customerCreate = async (customer: ICustomer): Promise<ICustomer | {}> => {
   try {
     // Searching for name matches
     await existValuesValidations(
@@ -32,7 +33,7 @@ export const customerCreate = async (customer: CustomerModel): Promise<CustomerM
     // Generate UUID
     customer.uuid = uuidv4()
     // Create customer
-    const createdCustomer = await CustomerModel.save(customer)
+    const createdCustomer = await CustomerModel.save({ ...customer })
 
     // return db response
     const getCustomer = await CustomerModel.findOne({
@@ -46,7 +47,7 @@ export const customerCreate = async (customer: CustomerModel): Promise<CustomerM
   }
 }
 
-export const customerUpdate = async (customer: CustomerModel, idCustomer: number): Promise<CustomerModel | {}> => {
+export const customerUpdate = async (customer: ICustomer, idCustomer: number): Promise<ICustomer | {}> => {
   try {
     // Required validations to update
     await Promise.all([
@@ -75,7 +76,7 @@ export const customerUpdate = async (customer: CustomerModel, idCustomer: number
   }
 }
 
-export const customerUpdateStatus = async (idCustomer: number, status: boolean): Promise<CustomerModel | {}> => {
+export const customerUpdateStatus = async (idCustomer: number, status: boolean): Promise<ICustomer | {}> => {
   try {
     // Existing customer
     await existIdValidation(idCustomer)
@@ -96,7 +97,7 @@ export const customerUpdateStatus = async (idCustomer: number, status: boolean):
   }
 }
 
-export const customerGetAll = async (filterParams: iCustomerFilters, settings: iFilterSettings): Promise<iGetCustomersResponse> => {
+export const customerGetAll = async (filterParams: ICustomerFilters, settings: IFilterSettings): Promise<IGetCustomersResponse> => {
   try {
     const filters = getFilters(filterParams)
     const [customers, totalCount] = await Promise.all([
@@ -124,7 +125,7 @@ export const customerGetAll = async (filterParams: iCustomerFilters, settings: i
   }
 }
 
-export const customerGetById = async (idCustomer: number): Promise<iGetCustomerByIdResponse> => {
+export const customerGetById = async (idCustomer: number): Promise<IGetCustomerByIdResponse> => {
   try {
     const customer = await CustomerModel.findOne({
       where: { idCustomer }
@@ -137,8 +138,8 @@ export const customerGetById = async (idCustomer: number): Promise<iGetCustomerB
   }
 }
 
-const getFilters = (params: iCustomerFilters): iCustomerQueryParams => {
-  const filters: iCustomerQueryParams = {}
+const getFilters = (params: ICustomerFilters): ICustomerQueryParams => {
+  const filters: ICustomerQueryParams = {}
 
   applyFilter(filters, 'name', params.name, true)
   applyFilter(filters, 'dui', params.dui, true)

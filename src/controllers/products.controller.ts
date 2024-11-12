@@ -1,7 +1,6 @@
 import { matchedData } from 'express-validator'
 import { Request, Response } from 'express'
 import * as productService from '../services/products.service'
-import { ProductModel, PermissionModel } from '../models'
 import { filtersettings } from '../helpers'
 import {
   ProdUpdatePriceError,
@@ -15,22 +14,21 @@ import {
   IDProdUserNotFoundError
 } from '../errors/product.error'
 import {
-  iProductGetCustomRequest,
-  iProductCommonRequest,
-  iProductFilters
+  IPermission,
+  IProductGetCustomRequest,
+  IProductCommonRequest,
+  IProductFilters,
+  IProduct
 } from '../interfaces'
 
-export const productCreateController = async (req: iProductCommonRequest, res: Response): Promise<void> => {
+export const productCreateController = async (req: IProductCommonRequest, res: Response): Promise<void> => {
   try {
-    const body = matchedData<ProductModel>(req, {
+    const body = matchedData<IProduct>(req, {
       locations: ['body'], includeOptionals: true
     })
 
-    // Model product object
-    const payload = new ProductModel()
-    Object.assign(payload, body)
-
-    const product = await productService.productCreate(payload)
+    // Service create product
+    const product = await productService.productCreate(body)
 
     res.json(product)
   } catch (error) {
@@ -48,19 +46,16 @@ export const productCreateController = async (req: iProductCommonRequest, res: R
   }
 }
 
-export const productUpdateController = async (req: iProductCommonRequest, res: Response): Promise<void> => {
+export const productUpdateController = async (req: IProductCommonRequest, res: Response): Promise<void> => {
   try {
-    const permissions: PermissionModel[] = req.permissions
+    const permissions: IPermission[] = req.permissions
     const idProduct = Number(req.params.idProduct)
-    const body = matchedData<ProductModel>(req, {
+    const body = matchedData<IProduct>(req, {
       locations: ['body'], includeOptionals: true
     })
 
-    // Model product object
-    const payload = new ProductModel()
-    Object.assign(payload, body)
-
-    const product = await productService.productUpdate(payload, idProduct, permissions)
+    // Service update product
+    const product = await productService.productUpdate(body, idProduct, permissions)
 
     res.json(product)
   } catch (error) {
@@ -109,14 +104,14 @@ export const productUpdateStatusController = async (req: Request, res: Response)
   }
 }
 
-export const productGetAllController = async (req: iProductGetCustomRequest, res: Response): Promise<void> => {
+export const productGetAllController = async (req: IProductGetCustomRequest, res: Response): Promise<void> => {
   try {
     const query = req.query
-    const permissions: PermissionModel[] = req.permissions
+    const permissions: IPermission[] = req.permissions
     // Filter params settings
     const settings = filtersettings(query)
     // Filter params product
-    const params: iProductFilters = {
+    const params: IProductFilters = {
       name: query.name,
       status: query.status,
       description: query.description,
@@ -139,7 +134,7 @@ export const productGetAllController = async (req: iProductGetCustomRequest, res
 
 export const productGetByIdController = async (req: Request, res: Response): Promise<void> => {
   try {
-    const permissions: PermissionModel[] = req.permissions
+    const permissions: IPermission[] = req.permissions
     // Get product id param
     const idProduct: number = Number(req.params.idProduct)
 

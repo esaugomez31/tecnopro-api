@@ -39,6 +39,11 @@ const saleCommonValidations = (optional = false): any => [
     .isLength({ max: 255 })
     .withMessage('customerNotes must be a string with a maximum length of 255 characters'),
 
+  body('contingencyStatus')
+    .optional()
+    .isBoolean().withMessage('contingencyStatus must be a boolean')
+    .customSanitizer(stringToBoolean),
+
   body('products')
     .isArray()
     .withMessage('products must be an array')

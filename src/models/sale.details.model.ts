@@ -22,7 +22,7 @@ export class SaleDetailModel extends BaseEntity {
     discount: number
 
   @Column({ type: 'decimal', precision: 11, scale: 2, nullable: true })
-    vat: number | null
+    vat: number
 
   @Column({ type: 'decimal', precision: 11, scale: 2, default: 0.00, name: 'user_commission' })
     userCommission: number
@@ -31,7 +31,7 @@ export class SaleDetailModel extends BaseEntity {
     branchCommission: number
 
   @Column({ type: 'int', name: 'id_product', nullable: true })
-    idProduct: number | null
+    idProduct: number
 
   @Column({ type: 'int', name: 'id_sale' })
     idSale: number
@@ -49,5 +49,5 @@ export class SaleDetailModel extends BaseEntity {
 
   @ManyToOne(() => ProductModel, { nullable: true })
   @JoinColumn({ name: 'id_product' })
-    product?: ProductModel | null
+    product?: ProductModel
 }

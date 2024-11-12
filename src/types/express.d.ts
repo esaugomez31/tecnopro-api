@@ -1,11 +1,10 @@
-import { iUserJWT } from '../interfaces/user.interfaces'
-import { PermissionModel } from '../models/permissions.model'
+import { IUserJWT, IPermission } from '../interfaces'
 
 declare global {
   namespace Express {
     interface Request {
-      session?: iUserJWT
-      permissions: PermissionModel[]
+      session?: IUserJWT
+      permissions: IPermission[]
     }
   }
 }

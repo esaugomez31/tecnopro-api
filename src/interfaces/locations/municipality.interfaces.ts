@@ -1,12 +1,27 @@
 import { FindOperator } from 'typeorm'
 import { Request } from 'express'
 import { ParsedQs } from 'qs'
-import { MunicipalityModel } from '../../models'
-import { iFilterSettings } from '../filter.interfaces'
-import { OrmOperationAttributes } from '../orm.interfaces'
+import {
+  IFilterSettings,
+  IDepartment
+} from '../'
+
+// Main municipality interface
+export interface IMunicipality {
+  idMunicipality?: number
+  name: string
+  zipCode?: string
+  dteCode?: string
+  idCountry?: number
+  idDepartment: number
+  department?: IDepartment
+  createdAt: Date
+  updatedAt: Date
+  status?: boolean
+}
 
 // Allow filter params from API
-export interface iMunicipalityFilters {
+export interface IMunicipalityFilters {
   name?: string
   idCountry?: number
   idDepartment?: number
@@ -16,30 +31,30 @@ export interface iMunicipalityFilters {
 }
 
 // Filter options to municipality in typeorm
-export interface iMunicipalityQueryParams extends Omit<iMunicipalityFilters, 'name' | 'zipCode'> {
+export interface IMunicipalityQueryParams extends Omit<IMunicipalityFilters, 'name' | 'zipCode'> {
   name?: FindOperator<string> | string
   zipCode?: FindOperator<string> | string
 }
 
 // Multi municipalities response interface
-export interface iGetMunicipalitiesResponse {
-  data: MunicipalityModel[]
+export interface IGetMunicipalitiesResponse {
+  data: IMunicipality[]
   total: number
   page: number
   totalPages: number
 }
 
 // Unique municipality response
-export interface iGetMunicipalityByIdResponse {
-  data: MunicipalityModel | null
+export interface IGetMunicipalityByIdResponse {
+  data: IMunicipality | null
 }
 
 // Custom request to type municipalities get controllers
-export interface iMunicipalityGetCustomRequest extends Request {
-  query: iMunicipalityFilters & iFilterSettings & ParsedQs
+export interface IMunicipalityGetCustomRequest extends Request {
+  query: IMunicipalityFilters & IFilterSettings & ParsedQs
 }
 
 // Custom request to type municipalities create controllers
-export interface iMunicipalityCommonRequest extends Request {
-  body: Omit<MunicipalityModel, OrmOperationAttributes> & ParsedQs
+export interface IMunicipalityCommonRequest extends Request {
+  body: IMunicipality
 }

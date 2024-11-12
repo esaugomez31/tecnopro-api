@@ -1,9 +1,13 @@
 import { FindOperator } from 'typeorm'
 import { Request } from 'express'
 import { ParsedQs } from 'qs'
-import { ProductModel } from '../models'
-import { iFilterSettings } from './filter.interfaces'
-import { OrmOperationAttributes } from './orm.interfaces'
+import {
+  IFilterSettings,
+  IBranch,
+  IBrand,
+  ICategory,
+  IUser
+} from '.'
 
 export enum ProductPermEnum {
   VIEWLIST = 'view_list',
@@ -17,8 +21,40 @@ export enum ProductPermEnum {
   UPDTPRICE = 'update_price'
 }
 
+// Main product interface
+export interface IProduct {
+  idProduct?: number
+  uuid?: string
+  name: string
+  description?: string
+  location?: string
+  code?: string
+  barcode?: string
+  barcodeGenerated: number
+  price: number
+  purchasePrice?: number
+  purchasedBy?: 'store' | 'user'
+  dteUnitMeasure: number
+  userCommissionPercent?: number
+  branchCommissionPercent?: number
+  minPrice: number
+  stock: number
+  imageUrl?: string
+  idBranch: number
+  idBrand?: number
+  idCategory?: number
+  idUser?: number
+  branch?: IBranch
+  brand?: IBrand
+  category?: ICategory
+  user?: IUser
+  createdAt?: Date
+  updatedAt?: Date
+  status?: boolean
+}
+
 // Allow filter params from API
-export interface iProductFilters {
+export interface IProductFilters {
   name?: string
   description?: string
   uuid?: string
@@ -33,7 +69,7 @@ export interface iProductFilters {
 }
 
 // Filter options to product in typeorm
-export interface iProductQueryParams extends Omit<iProductFilters, 'name' | 'description' | 'location' | 'code'> {
+export interface IProductQueryParams extends Omit<IProductFilters, 'name' | 'description' | 'location' | 'code'> {
   name?: FindOperator<string> | string
   description?: FindOperator<string> | string
   location?: FindOperator<string> | string
@@ -41,24 +77,24 @@ export interface iProductQueryParams extends Omit<iProductFilters, 'name' | 'des
 }
 
 // Multi products response interface
-export interface iGetProductsResponse {
-  data: ProductModel[]
+export interface IGetProductsResponse {
+  data: IProduct[]
   total: number
   page: number
   totalPages: number
 }
 
 // Unique product response
-export interface iGetProductByIdResponse {
-  data: ProductModel | null
+export interface IGetProductByIdResponse {
+  data: IProduct | null
 }
 
 // Custom request to type products get controllers
-export interface iProductGetCustomRequest extends Request {
-  query: iProductFilters & iFilterSettings & ParsedQs
+export interface IProductGetCustomRequest extends Request {
+  query: IProductFilters & IFilterSettings & ParsedQs
 }
 
 // Custom request to type products create controllers
-export interface iProductCommonRequest extends Request {
-  body: Omit<ProductModel, OrmOperationAttributes> & ParsedQs
+export interface IProductCommonRequest extends Request {
+  body: IProduct
 }

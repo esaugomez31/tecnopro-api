@@ -14,16 +14,16 @@ import {
 
 } from '../errors/sale.error'
 import {
-  iSaleGetCustomRequest,
-  iSaleCommonRequest,
-  iSaleRequest,
-  iSaleFilters
+  ISaleGetCustomRequest,
+  ISaleCommonRequest,
+  ISaleRequest,
+  ISaleFilters
 } from '../interfaces'
 
-export const saleCreateController = async (req: iSaleCommonRequest, res: Response): Promise<void> => {
+export const saleCreateController = async (req: ISaleCommonRequest, res: Response): Promise<void> => {
   try {
     const idUser = req.session?.idUser as number
-    const body = matchedData<iSaleRequest>(req, {
+    const body = matchedData<ISaleRequest>(req, {
       locations: ['body'], includeOptionals: true
     })
 
@@ -79,13 +79,13 @@ export const saleUpdateStatusController = async (req: Request, res: Response): P
   }
 }
 
-export const saleGetAllController = async (req: iSaleGetCustomRequest, res: Response): Promise<void> => {
+export const saleGetAllController = async (req: ISaleGetCustomRequest, res: Response): Promise<void> => {
   try {
     const query = req.query
     // Filter params settings
     const settings = filtersettings(query)
     // Filter params sale
-    const params: iSaleFilters = {
+    const params: ISaleFilters = {
       uuid: query.uuid,
       idUser: query.idUser,
       idCustomer: query.idCustomer,

@@ -2,11 +2,12 @@ import { DepartmentModel } from '../../models'
 import { logger, applyFilter } from '../../helpers'
 import { countryGetById } from './countries.service'
 import {
-  iFilterSettings,
-  iGetDepartmentByIdResponse,
-  iGetDepartmentsResponse,
-  iDepartmentQueryParams,
-  iDepartmentFilters
+  IFilterSettings,
+  IGetDepartmentByIdResponse,
+  IGetDepartmentsResponse,
+  IDepartmentQueryParams,
+  IDepartmentFilters,
+  IDepartment
 } from '../../interfaces'
 import {
   IDDepartmentNotFoundError,
@@ -15,13 +16,13 @@ import {
   NameExistsError
 } from '../../errors/locations/department.factory'
 
-export const departmentCreate = async (department: DepartmentModel): Promise<DepartmentModel> => {
+export const departmentCreate = async (department: IDepartment): Promise<IDepartment> => {
   try {
     // Searching for name matches
     await existValuesValidations(department.name, department.dteCode, department.idCountry)
 
     // Create department
-    const createdDepartment = await DepartmentModel.save(department)
+    const createdDepartment = await DepartmentModel.save({ ...department })
     return createdDepartment
   } catch (error) {
     logger.error('Create department: ' + (error as Error).name)
@@ -29,7 +30,7 @@ export const departmentCreate = async (department: DepartmentModel): Promise<Dep
   }
 }
 
-export const departmentUpdate = async (department: DepartmentModel, idDepartment: number): Promise<DepartmentModel> => {
+export const departmentUpdate = async (department: IDepartment, idDepartment: number): Promise<IDepartment> => {
   try {
     // Required validations to update
     await Promise.all([
@@ -48,7 +49,7 @@ export const departmentUpdate = async (department: DepartmentModel, idDepartment
   }
 }
 
-export const departmentUpdateStatus = async (idDepartment: number, status: boolean): Promise<DepartmentModel> => {
+export const departmentUpdateStatus = async (idDepartment: number, status: boolean): Promise<IDepartment> => {
   try {
     // Existing department
     await existIdValidation(idDepartment)
@@ -64,7 +65,7 @@ export const departmentUpdateStatus = async (idDepartment: number, status: boole
   }
 }
 
-export const departmentGetAll = async (filterParams: iDepartmentFilters, settings: iFilterSettings): Promise<iGetDepartmentsResponse> => {
+export const departmentGetAll = async (filterParams: IDepartmentFilters, settings: IFilterSettings): Promise<IGetDepartmentsResponse> => {
   try {
     const filters = getFilters(filterParams)
     const relations = getDepartmentIncludeFields(settings.include)
@@ -94,7 +95,7 @@ export const departmentGetAll = async (filterParams: iDepartmentFilters, setting
   }
 }
 
-export const departmentGetById = async (idDepartment: number, settings?: iFilterSettings): Promise<iGetDepartmentByIdResponse> => {
+export const departmentGetById = async (idDepartment: number, settings?: IFilterSettings): Promise<IGetDepartmentByIdResponse> => {
   try {
     const relations = settings !== undefined ? getDepartmentIncludeFields(settings.include) : []
     const department = await DepartmentModel.findOne({
@@ -117,8 +118,8 @@ const getDepartmentIncludeFields = (includes?: string[]): string[] => {
   return relations
 }
 
-const getFilters = (params: iDepartmentFilters): iDepartmentQueryParams => {
-  const filters: iDepartmentQueryParams = {}
+const getFilters = (params: IDepartmentFilters): IDepartmentQueryParams => {
+  const filters: IDepartmentQueryParams = {}
 
   applyFilter(filters, 'name', params.name, true)
   applyFilter(filters, 'zipCode', params.zipCode, true)
@@ -132,7 +133,7 @@ const getFilters = (params: iDepartmentFilters): iDepartmentQueryParams => {
 const existValuesValidations = async (name?: string, dteCode?: string, idCountry?: number, idDepartment?: number): Promise<void> => {
   if (name === undefined && dteCode === undefined && idCountry === undefined) return
 
-  const filters: iDepartmentQueryParams[] = [{ name }, { dteCode }]
+  const filters: IDepartmentQueryParams[] = [{ name }, { dteCode }]
 
   const [existDepartment, existCountry] = await Promise.all([
     DepartmentModel.findOne({

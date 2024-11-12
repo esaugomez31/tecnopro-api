@@ -1,13 +1,12 @@
 import { Request, Response, NextFunction } from 'express'
-import { iUserJWT, UserRoleEnum } from '../interfaces/user.interfaces'
+import { IUserJWT, UserRoleEnum } from '../interfaces/user.interfaces'
 import { getRolePermissionsByPage } from '../services/role.permissions.service'
-import { SystemPageEnum } from '../interfaces'
+import { SystemPageEnum, IPermission } from '../interfaces'
 import { hasPermission } from '../helpers'
-import { PermissionModel } from '../models'
 
 export const checkPermission = (systemPage?: SystemPageEnum, permissionName: string = '') => {
   return async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-    const { type, idRole } = req.session as iUserJWT
+    const { type, idRole } = req.session as IUserJWT
 
     // No permissions required for the administrator accounts
     if (type === UserRoleEnum.ADMIN || type === UserRoleEnum.SUBADMIN) return next()
@@ -19,7 +18,7 @@ export const checkPermission = (systemPage?: SystemPageEnum, permissionName: str
     }
 
     // Get permissions
-    const permissions: PermissionModel[] = await getRolePermissionsByPage(
+    const permissions: IPermission[] = await getRolePermissionsByPage(
       idRole, systemPage
     )
 

@@ -1,39 +1,34 @@
 import { Request } from 'express'
-import { RolePermissionModel } from '../models'
-import { OrmOperationAttributes } from './orm.interfaces'
+import {
+  IPermission,
+  SystemPageEnum
+} from '.'
 
 export enum PermissionPermEnum {
   VIEWLIST = 'view_list',
   UPDATE = 'update'
 }
-
-export enum SystemPageEnum {
-  BRANCHES = 'branches',
-  PRODUCTS = 'products',
-  CATEGORIES = 'categories',
-  BRANDS = 'brands',
-  SALES = 'sales',
-  SALES_HISTORY = 'sales_history',
-  CUSTOMERS = 'customers',
-  USERS = 'users',
-  ROLES = 'roles',
-  PERMISSIONS = 'permissions'
+export interface IRolePermission {
+  idRolePermission: number
+  idRole: number
+  idPermission: number
+  createdAt?: Date
+  updatedAt?: Date
+  permissionDetail: IPermission
 }
 
-export interface iRolePermission extends Omit<RolePermissionModel, OrmOperationAttributes> {}
-
-export interface iPermissionObject {
+export interface IPermissionObject {
   idPermission: number
 }
 
 // Custom request to type Ppermission roles controllers
-export interface iRolePermissionCommonRequest extends Request {
+export interface IRolePermissionCommonRequest extends Request {
   body: {
-    permissions: iPermissionObject[]
+    permissions: IPermissionObject[]
   }
 }
 
-export interface iRolePermissionJoin {
+export interface IRolePermissionJoin {
   idRolePermission: number
   idRole: number
   idPermission: number
@@ -43,6 +38,6 @@ export interface iRolePermissionJoin {
 }
 
 // Unique role response
-export interface iGetRolePermissionByIdResponse {
-  data: iRolePermissionJoin[]
+export interface IGetRolePermissionByIdResponse {
+  data: IRolePermissionJoin[]
 }

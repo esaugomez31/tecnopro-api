@@ -7,7 +7,7 @@ export class UserModel extends BaseEntity {
     idUser?: number
 
   @Column({ type: 'varchar', length: 36, nullable: true })
-    uuid: string | null
+    uuid: string
 
   @Column({ type: 'varchar', length: 40 })
     name: string
@@ -19,10 +19,10 @@ export class UserModel extends BaseEntity {
     password: string
 
   @Column({ type: 'varchar', length: 17, nullable: true, name: 'phone_number' })
-    phoneNumber: string | null
+    phoneNumber: string
 
   @Column({ type: 'varchar', length: 15, nullable: true, name: 'whatsapp_number' })
-    whatsappNumber: string | null
+    whatsappNumber: string
 
   @Column({ type: 'varchar', length: 100, nullable: true })
     email: string
@@ -34,10 +34,10 @@ export class UserModel extends BaseEntity {
     notifications: boolean
 
   @Column({ type: 'datetime', nullable: true, name: 'last_login' })
-    lastLogin: Date | null
+    lastLogin: Date
 
   @Column({ type: 'varchar', default: 'America/El_Salvador', name: 'time_zone' })
-    timeZone?: string | null
+    timeZone?: string
 
   @Column({ name: 'id_role', nullable: true })
     idRole?: number

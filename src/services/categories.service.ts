@@ -2,18 +2,19 @@ import { v4 as uuidv4 } from 'uuid'
 import { CategoryModel } from '../models'
 import { logger, applyFilter } from '../helpers'
 import {
-  iFilterSettings,
-  iGetCategoryByIdResponse,
-  iGetCategoriesResponse,
-  iCategoryQueryParams,
-  iCategoryFilters
+  IFilterSettings,
+  IGetCategoryByIdResponse,
+  IGetCategoriesResponse,
+  ICategoryQueryParams,
+  ICategoryFilters,
+  ICategory
 } from '../interfaces'
 import {
   IDCategoryNotFoundError,
   NameExistsError
 } from '../errors/category.error'
 
-export const categoryCreate = async (category: CategoryModel): Promise<CategoryModel> => {
+export const categoryCreate = async (category: ICategory): Promise<ICategory> => {
   try {
     // Searching for name matches
     await existNameValidations(category.name)
@@ -22,7 +23,7 @@ export const categoryCreate = async (category: CategoryModel): Promise<CategoryM
     category.uuid = uuidv4()
 
     // Create category
-    const createdCategory = await CategoryModel.save(category)
+    const createdCategory = await CategoryModel.save({ ...category })
     return createdCategory
   } catch (error) {
     logger.error('Create category: ' + (error as Error).name)
@@ -30,7 +31,7 @@ export const categoryCreate = async (category: CategoryModel): Promise<CategoryM
   }
 }
 
-export const categoryUpdate = async (category: CategoryModel, idCategory: number): Promise<CategoryModel> => {
+export const categoryUpdate = async (category: ICategory, idCategory: number): Promise<ICategory> => {
   try {
     // Required validations to update
     await Promise.all([
@@ -49,7 +50,7 @@ export const categoryUpdate = async (category: CategoryModel, idCategory: number
   }
 }
 
-export const categoryUpdateStatus = async (idCategory: number, status: boolean): Promise<CategoryModel> => {
+export const categoryUpdateStatus = async (idCategory: number, status: boolean): Promise<ICategory> => {
   try {
     // Existing category
     await existIdValidation(idCategory)
@@ -65,7 +66,7 @@ export const categoryUpdateStatus = async (idCategory: number, status: boolean):
   }
 }
 
-export const categoryGetAll = async (filterParams: iCategoryFilters, settings: iFilterSettings): Promise<iGetCategoriesResponse> => {
+export const categoryGetAll = async (filterParams: ICategoryFilters, settings: IFilterSettings): Promise<IGetCategoriesResponse> => {
   try {
     const filters = getFilters(filterParams)
     const [categories, totalCount] = await Promise.all([
@@ -92,7 +93,7 @@ export const categoryGetAll = async (filterParams: iCategoryFilters, settings: i
   }
 }
 
-export const categoryGetById = async (idCategory: number): Promise<iGetCategoryByIdResponse> => {
+export const categoryGetById = async (idCategory: number): Promise<IGetCategoryByIdResponse> => {
   try {
     const category = await CategoryModel.findOne({
       where: { idCategory }
@@ -104,8 +105,8 @@ export const categoryGetById = async (idCategory: number): Promise<iGetCategoryB
   }
 }
 
-const getFilters = (params: iCategoryFilters): iCategoryQueryParams => {
-  const filters: iCategoryQueryParams = {}
+const getFilters = (params: ICategoryFilters): ICategoryQueryParams => {
+  const filters: ICategoryQueryParams = {}
 
   applyFilter(filters, 'name', params.name, true)
   applyFilter(filters, 'description', params.description, true)
@@ -118,7 +119,7 @@ const getFilters = (params: iCategoryFilters): iCategoryQueryParams => {
 const existNameValidations = async (name?: string, idCategory?: number): Promise<void> => {
   if (name === undefined) return
 
-  const filters: iCategoryQueryParams[] = [{ name }]
+  const filters: ICategoryQueryParams[] = [{ name }]
 
   const existCategory = await CategoryModel.findOne({
     select: ['idCategory', 'name'],

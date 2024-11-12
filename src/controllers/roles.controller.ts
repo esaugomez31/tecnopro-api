@@ -1,29 +1,26 @@
 import { Request, Response } from 'express'
 import { matchedData } from 'express-validator'
 import * as roleService from '../services/roles.service'
-import { RoleModel } from '../models'
 import { filtersettings } from '../helpers'
 import {
   IDRoleNotFoundError,
   NameExistsError
 } from '../errors/role.error'
 import {
-  iRoleGetCustomRequest,
-  iRoleCommonRequest,
-  iRoleFilters
+  IRoleGetCustomRequest,
+  IRoleCommonRequest,
+  IRoleFilters,
+  IRole
 } from '../interfaces'
 
-export const roleCreateController = async (req: iRoleCommonRequest, res: Response): Promise<void> => {
+export const roleCreateController = async (req: IRoleCommonRequest, res: Response): Promise<void> => {
   try {
-    const body = matchedData<RoleModel>(req, {
+    const body = matchedData<IRole>(req, {
       locations: ['body'], includeOptionals: true
     })
 
-    // Model role object
-    const payload = new RoleModel()
-    Object.assign(payload, body)
-
-    const role = await roleService.roleCreate(payload)
+    // Service create Role
+    const role = await roleService.roleCreate(body)
 
     res.json(role)
   } catch (error) {
@@ -36,18 +33,15 @@ export const roleCreateController = async (req: iRoleCommonRequest, res: Respons
   }
 }
 
-export const roleUpdateController = async (req: iRoleCommonRequest, res: Response): Promise<void> => {
+export const roleUpdateController = async (req: IRoleCommonRequest, res: Response): Promise<void> => {
   try {
     const idRole = Number(req.params.idRole)
-    const body = matchedData<RoleModel>(req, {
+    const body = matchedData<IRole>(req, {
       locations: ['body'], includeOptionals: true
     })
 
-    // Model role object
-    const payload = new RoleModel()
-    Object.assign(payload, body)
-
-    const role = await roleService.roleUpdate(payload, idRole)
+    // Servide update Role
+    const role = await roleService.roleUpdate(body, idRole)
 
     res.json(role)
   } catch (error) {
@@ -84,13 +78,13 @@ export const roleUpdateStatusController = async (req: Request, res: Response): P
   }
 }
 
-export const roleGetAllController = async (req: iRoleGetCustomRequest, res: Response): Promise<void> => {
+export const roleGetAllController = async (req: IRoleGetCustomRequest, res: Response): Promise<void> => {
   try {
     const query = req.query
     // Filter params settings
     const settings = filtersettings(query)
     // Filter params role
-    const params: iRoleFilters = {
+    const params: IRoleFilters = {
       name: query.name,
       status: query.status
     }

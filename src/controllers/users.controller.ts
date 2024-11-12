@@ -3,7 +3,6 @@ import { matchedData } from 'express-validator'
 import jwt from 'jsonwebtoken'
 import envs from '../config/environment.config'
 import * as userService from '../services/users.service'
-import { UserModel } from '../models'
 import { filtersettings } from '../helpers'
 import { IDRoleNotFoundError } from '../errors/role.error'
 import {
@@ -15,24 +14,21 @@ import {
   EmailExistsError
 } from '../errors/user.error'
 import {
-  iUserJWT,
-  iUserFilters,
+  IUser,
+  IUserJWT,
+  IUserFilters,
   UserRoleEnum,
-  iUserGetCustomRequest,
-  iUserCommonRequest
+  IUserGetCustomRequest,
+  IUserCommonRequest
 } from '../interfaces'
 
-export const userSignupController = async (req: iUserCommonRequest, res: Response): Promise<void> => {
+export const userSignupController = async (req: IUserCommonRequest, res: Response): Promise<void> => {
   try {
-    const body = matchedData<UserModel>(req, {
+    const body = matchedData<IUser>(req, {
       locations: ['body'], includeOptionals: true
     })
-
-    // Model user object
-    const payload = new UserModel()
-    Object.assign(payload, body)
-
-    const { password: _, ...user } = await userService.userSignup(payload)
+    // Service create user
+    const { password: _, ...user } = await userService.userSignup(body)
 
     res.json(user)
   } catch (error) {
@@ -51,19 +47,15 @@ export const userSignupController = async (req: iUserCommonRequest, res: Respons
   }
 }
 
-export const userUpdateController = async (req: iUserCommonRequest, res: Response): Promise<void> => {
+export const userUpdateController = async (req: IUserCommonRequest, res: Response): Promise<void> => {
   try {
     const idUser = Number(req.params.idUser)
-    const jwtData = req.session as iUserJWT
-    const body = matchedData<UserModel>(req, {
+    const jwtData = req.session as IUserJWT
+    const body = matchedData<IUser>(req, {
       locations: ['body'], includeOptionals: true
     })
-
-    // Model user object
-    const payload = new UserModel()
-    Object.assign(payload, body)
-
-    const { password: _, ...user } = await userService.userUpdate(payload, idUser, jwtData)
+    // Service update user
+    const { password: _, ...user } = await userService.userUpdate(body, idUser, jwtData)
 
     res.json(user)
   } catch (error) {
@@ -91,7 +83,7 @@ export const userUpdateStatusController = async (req: Request, res: Response): P
   try {
     const idUser = Number(req.params.idUser)
     const status = Boolean(req.params.status)
-    const jwtData = req.session as iUserJWT
+    const jwtData = req.session as IUserJWT
     // update status service
     const { password: _, ...user } = await userService.userUpdateStatus(idUser, status, jwtData)
 
@@ -119,7 +111,7 @@ export const userLoginController = async (req: Request, res: Response): Promise<
     const user = await userService.userLogin(usernameOrEmail, password)
 
     // Create JWT token
-    const jwtPayload: iUserJWT = {
+    const jwtPayload: IUserJWT = {
       idUser: user.idUser as number,
       uuid: user.uuid,
       idRole: user.idRole,
@@ -163,13 +155,13 @@ export const userLogoutController = async (_: Request, res: Response): Promise<v
   })
 }
 
-export const userGetAllController = async (req: iUserGetCustomRequest, res: Response): Promise<void> => {
+export const userGetAllController = async (req: IUserGetCustomRequest, res: Response): Promise<void> => {
   try {
     const query = req.query
     // Filter params settings
     const settings = filtersettings(query)
     // Filter params user
-    const params: iUserFilters = {
+    const params: IUserFilters = {
       username: query.username,
       name: query.name,
       email: query.email,

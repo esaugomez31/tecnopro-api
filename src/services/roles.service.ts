@@ -1,24 +1,25 @@
 import { RoleModel } from '../models'
 import { logger, applyFilter } from '../helpers'
 import {
-  iFilterSettings,
-  iGetRoleByIdResponse,
-  iGetRolesResponse,
-  iRoleQueryParams,
-  iRoleFilters
+  IFilterSettings,
+  IGetRoleByIdResponse,
+  IGetRolesResponse,
+  IRoleQueryParams,
+  IRoleFilters,
+  IRole
 } from '../interfaces'
 import {
   IDRoleNotFoundError,
   NameExistsError
 } from '../errors/role.error'
 
-export const roleCreate = async (role: RoleModel): Promise<RoleModel> => {
+export const roleCreate = async (role: IRole): Promise<IRole> => {
   try {
     // Searching for name matches
     await roleRequitedValidations(role.name)
 
     // Create role
-    const createdRole = await RoleModel.save(role)
+    const createdRole = await RoleModel.save({ ...role })
     return createdRole
   } catch (error) {
     logger.error('Create role: ' + (error as Error).name)
@@ -26,7 +27,7 @@ export const roleCreate = async (role: RoleModel): Promise<RoleModel> => {
   }
 }
 
-export const roleUpdate = async (role: RoleModel, idRole: number): Promise<RoleModel> => {
+export const roleUpdate = async (role: IRole, idRole: number): Promise<IRole> => {
   try {
     // Required validations to update
     await Promise.all([
@@ -45,7 +46,7 @@ export const roleUpdate = async (role: RoleModel, idRole: number): Promise<RoleM
   }
 }
 
-export const roleUpdateStatus = async (idRole: number, status: boolean): Promise<RoleModel> => {
+export const roleUpdateStatus = async (idRole: number, status: boolean): Promise<IRole> => {
   try {
     // Existing role
     await existIdValidation(idRole)
@@ -61,7 +62,7 @@ export const roleUpdateStatus = async (idRole: number, status: boolean): Promise
   }
 }
 
-export const roleGetAll = async (filterParams: iRoleFilters, settings: iFilterSettings): Promise<iGetRolesResponse> => {
+export const roleGetAll = async (filterParams: IRoleFilters, settings: IFilterSettings): Promise<IGetRolesResponse> => {
   try {
     const filters = getFilters(filterParams)
     const [roles, totalCount] = await Promise.all([
@@ -88,7 +89,7 @@ export const roleGetAll = async (filterParams: iRoleFilters, settings: iFilterSe
   }
 }
 
-export const roleGetById = async (idRole: number): Promise<iGetRoleByIdResponse> => {
+export const roleGetById = async (idRole: number): Promise<IGetRoleByIdResponse> => {
   try {
     const role = await RoleModel.findOne({
       where: { idRole }
@@ -100,8 +101,8 @@ export const roleGetById = async (idRole: number): Promise<iGetRoleByIdResponse>
   }
 }
 
-const getFilters = (params: iRoleFilters): iRoleQueryParams => {
-  const filters: iRoleQueryParams = {}
+const getFilters = (params: IRoleFilters): IRoleQueryParams => {
+  const filters: IRoleQueryParams = {}
 
   applyFilter(filters, 'name', params.name, true)
   applyFilter(filters, 'status', params.status)
@@ -112,7 +113,7 @@ const getFilters = (params: iRoleFilters): iRoleQueryParams => {
 const roleRequitedValidations = async (name?: string, idRole?: number): Promise<void> => {
   if (name === undefined) return
 
-  const filters: iRoleQueryParams[] = [{ name }]
+  const filters: IRoleQueryParams[] = [{ name }]
 
   const existRole = await RoleModel.findOne({
     select: ['idRole', 'name'],

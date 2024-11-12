@@ -1,11 +1,12 @@
 import { MunicipalityModel } from '../../models'
 import { logger, applyFilter } from '../../helpers'
 import {
-  iFilterSettings,
-  iGetMunicipalityByIdResponse,
-  iGetMunicipalitiesResponse,
-  iMunicipalityQueryParams,
-  iMunicipalityFilters
+  IFilterSettings,
+  IGetMunicipalityByIdResponse,
+  IGetMunicipalitiesResponse,
+  IMunicipalityQueryParams,
+  IMunicipalityFilters,
+  IMunicipality
 } from '../../interfaces'
 import {
   IDMunicipalityNotFoundError,
@@ -16,7 +17,7 @@ import {
 } from '../../errors/locations/municipality.factory'
 import { countryGetById, departmentGetById } from '.'
 
-export const municipalityCreate = async (municipality: MunicipalityModel): Promise<MunicipalityModel> => {
+export const municipalityCreate = async (municipality: IMunicipality): Promise<IMunicipality> => {
   try {
     // Searching for name matches
     await existValuesValidations(
@@ -27,7 +28,7 @@ export const municipalityCreate = async (municipality: MunicipalityModel): Promi
     )
 
     // Create municipality
-    const createdMunicipality = await MunicipalityModel.save(municipality)
+    const createdMunicipality = await MunicipalityModel.save({ ...municipality })
     return createdMunicipality
   } catch (error) {
     logger.error('Create municipality: ' + (error as Error).name)
@@ -35,7 +36,7 @@ export const municipalityCreate = async (municipality: MunicipalityModel): Promi
   }
 }
 
-export const municipalityUpdate = async (municipality: MunicipalityModel, idMunicipality: number): Promise<MunicipalityModel> => {
+export const municipalityUpdate = async (municipality: IMunicipality, idMunicipality: number): Promise<IMunicipality> => {
   try {
     // Required validations to update
     await Promise.all([
@@ -60,7 +61,7 @@ export const municipalityUpdate = async (municipality: MunicipalityModel, idMuni
   }
 }
 
-export const municipalityUpdateStatus = async (idMunicipality: number, status: boolean): Promise<MunicipalityModel> => {
+export const municipalityUpdateStatus = async (idMunicipality: number, status: boolean): Promise<IMunicipality> => {
   try {
     // Existing municipality
     await existIdValidation(idMunicipality)
@@ -76,7 +77,7 @@ export const municipalityUpdateStatus = async (idMunicipality: number, status: b
   }
 }
 
-export const municipalityGetAll = async (filterParams: iMunicipalityFilters, settings: iFilterSettings): Promise<iGetMunicipalitiesResponse> => {
+export const municipalityGetAll = async (filterParams: IMunicipalityFilters, settings: IFilterSettings): Promise<IGetMunicipalitiesResponse> => {
   try {
     const filters = getFilters(filterParams)
     const [municipalities, totalCount] = await Promise.all([
@@ -103,7 +104,7 @@ export const municipalityGetAll = async (filterParams: iMunicipalityFilters, set
   }
 }
 
-export const municipalityGetById = async (idMunicipality: number): Promise<iGetMunicipalityByIdResponse> => {
+export const municipalityGetById = async (idMunicipality: number): Promise<IGetMunicipalityByIdResponse> => {
   try {
     const municipality = await MunicipalityModel.findOne({
       where: { idMunicipality }
@@ -115,8 +116,8 @@ export const municipalityGetById = async (idMunicipality: number): Promise<iGetM
   }
 }
 
-const getFilters = (params: iMunicipalityFilters): iMunicipalityQueryParams => {
-  const filters: iMunicipalityQueryParams = {}
+const getFilters = (params: IMunicipalityFilters): IMunicipalityQueryParams => {
+  const filters: IMunicipalityQueryParams = {}
 
   applyFilter(filters, 'name', params.name, true)
   applyFilter(filters, 'zipCode', params.zipCode, true)
@@ -132,7 +133,7 @@ const existValuesValidations = async (name?: string, dteCode?: string, idCountry
   const params = [name, dteCode, idCountry, idDepartment]
   if (!params.some(p => p !== undefined)) return
 
-  const filters: iMunicipalityQueryParams[] = [{ name }, { dteCode }]
+  const filters: IMunicipalityQueryParams[] = [{ name }, { dteCode }]
 
   const [existMunicipality, existCountry, existDepartment] = await Promise.all([
     MunicipalityModel.findOne({

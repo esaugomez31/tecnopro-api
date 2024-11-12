@@ -7,16 +7,17 @@ import {
   applyFilter
 } from '../helpers'
 import {
-  ProductModel,
-  PermissionModel
+  ProductModel
 } from '../models'
 import {
-  iFilterSettings,
-  iGetProductByIdResponse,
-  iGetProductsResponse,
-  iProductQueryParams,
-  iProductFilters,
-  ProductPermEnum
+  IFilterSettings,
+  IGetProductByIdResponse,
+  IGetProductsResponse,
+  IProductQueryParams,
+  IProductFilters,
+  ProductPermEnum,
+  IProduct,
+  IPermission
 } from '../interfaces'
 import {
   ProdUpdatePriceError,
@@ -36,7 +37,7 @@ import {
   userGetById
 } from '.'
 
-export const productCreate = async (product: ProductModel): Promise<ProductModel | {}> => {
+export const productCreate = async (product: IProduct): Promise<IProduct | {}> => {
   try {
     // validation id's
     await existValuesValidations(
@@ -49,7 +50,7 @@ export const productCreate = async (product: ProductModel): Promise<ProductModel
     product.uuid = uuidv4()
 
     // Create product
-    const createdProduct = await ProductModel.save(product)
+    const createdProduct = await ProductModel.save({ ...product })
 
     // return db response
     const getProduct = await ProductModel.findOne({
@@ -63,7 +64,7 @@ export const productCreate = async (product: ProductModel): Promise<ProductModel
   }
 }
 
-export const productUpdate = async (product: ProductModel, idProduct: number, permissions?: PermissionModel[]): Promise<ProductModel | {}> => {
+export const productUpdate = async (product: IProduct, idProduct: number, permissions?: IPermission[]): Promise<IProduct | {}> => {
   try {
     // Evaluate update Price's Permission
     evaluateUpdatePermission(product, permissions)
@@ -96,7 +97,7 @@ export const productUpdate = async (product: ProductModel, idProduct: number, pe
   }
 }
 
-export const productUpdateStatus = async (idProduct: number, status: boolean): Promise<ProductModel> => {
+export const productUpdateStatus = async (idProduct: number, status: boolean): Promise<IProduct> => {
   try {
     // Existing product
     await existIdValidation(idProduct)
@@ -112,7 +113,7 @@ export const productUpdateStatus = async (idProduct: number, status: boolean): P
   }
 }
 
-export const productGetAll = async (filterParams: iProductFilters, settings: iFilterSettings, permissions?: PermissionModel[]): Promise<iGetProductsResponse> => {
+export const productGetAll = async (filterParams: IProductFilters, settings: IFilterSettings, permissions?: IPermission[]): Promise<IGetProductsResponse> => {
   try {
     const filters = getFilters(filterParams)
     const [products, totalCount] = await Promise.all([
@@ -140,7 +141,7 @@ export const productGetAll = async (filterParams: iProductFilters, settings: iFi
   }
 }
 
-export const productGetById = async (idProduct: number, permissions?: PermissionModel[]): Promise<iGetProductByIdResponse> => {
+export const productGetById = async (idProduct: number, permissions?: IPermission[]): Promise<IGetProductByIdResponse> => {
   try {
     const product = await ProductModel.findOne({
       where: { idProduct }
@@ -152,7 +153,7 @@ export const productGetById = async (idProduct: number, permissions?: Permission
   }
 }
 
-export const productsGetByIds = async (ids: number[]): Promise<ProductModel[]> => {
+export const productsGetByIds = async (ids: number[]): Promise<IProduct[]> => {
   try {
     const product = await ProductModel.find({
       where: { idProduct: In(ids), status: true }
@@ -164,7 +165,7 @@ export const productsGetByIds = async (ids: number[]): Promise<ProductModel[]> =
   }
 }
 
-const getProductAvailableInfo = (product: ProductModel, permissions?: PermissionModel[]): ProductModel => {
+const getProductAvailableInfo = (product: IProduct, permissions?: IPermission[]): IProduct => {
   if (permissions !== undefined) {
     if (!hasPermission(permissions, ProductPermEnum.SEEPURCHASEDATA)) {
       delete product.purchasePrice
@@ -175,7 +176,7 @@ const getProductAvailableInfo = (product: ProductModel, permissions?: Permission
   return product
 }
 
-const evaluateUpdatePermission = (product: ProductModel, permissions?: PermissionModel[]): void => {
+const evaluateUpdatePermission = (product: IProduct, permissions?: IPermission[]): void => {
   if (permissions === undefined) return
 
   if (isValidValue(product.price)) {
@@ -200,8 +201,8 @@ const evaluateUpdatePermission = (product: ProductModel, permissions?: Permissio
   }
 }
 
-const getFilters = (params: iProductFilters): iProductQueryParams => {
-  const filters: iProductQueryParams = {}
+const getFilters = (params: IProductFilters): IProductQueryParams => {
+  const filters: IProductQueryParams = {}
 
   applyFilter(filters, 'name', params.name, true)
   applyFilter(filters, 'description', params.description, true)

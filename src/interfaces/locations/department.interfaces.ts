@@ -1,12 +1,28 @@
 import { FindOperator } from 'typeorm'
 import { Request } from 'express'
 import { ParsedQs } from 'qs'
-import { DepartmentModel } from '../../models'
-import { iFilterSettings } from '../filter.interfaces'
-import { OrmOperationAttributes } from '../orm.interfaces'
+import {
+  IFilterSettings,
+  ICountry,
+  IMunicipality
+} from '../'
+
+// Main country interface
+export interface IDepartment {
+  idDepartment?: number
+  name: string
+  zipCode?: string
+  dteCode?: string
+  idCountry: number
+  country?: ICountry
+  municipalities?: IMunicipality[]
+  createdAt?: Date
+  updatedAt?: Date
+  status?: boolean
+}
 
 // Allow filter params from API
-export interface iDepartmentFilters {
+export interface IDepartmentFilters {
   name?: string
   idCountry?: number
   dteCode?: string
@@ -15,30 +31,30 @@ export interface iDepartmentFilters {
 }
 
 // Filter options to department in typeorm
-export interface iDepartmentQueryParams extends Omit<iDepartmentFilters, 'name' | 'zipCode'> {
+export interface IDepartmentQueryParams extends Omit<IDepartmentFilters, 'name' | 'zipCode'> {
   name?: FindOperator<string> | string
   zipCode?: FindOperator<string> | string
 }
 
 // Multi Departments response interface
-export interface iGetDepartmentsResponse {
-  data: DepartmentModel[]
+export interface IGetDepartmentsResponse {
+  data: IDepartment[]
   total: number
   page: number
   totalPages: number
 }
 
 // Unique department response
-export interface iGetDepartmentByIdResponse {
-  data: DepartmentModel | null
+export interface IGetDepartmentByIdResponse {
+  data: IDepartment | null
 }
 
 // Custom request to type departments get controllers
-export interface iDepartmentGetCustomRequest extends Request {
-  query: iDepartmentFilters & iFilterSettings & ParsedQs
+export interface IDepartmentGetCustomRequest extends Request {
+  query: IDepartmentFilters & IFilterSettings & ParsedQs
 }
 
 // Custom request to type departments create controllers
-export interface iDepartmentCommonRequest extends Request {
-  body: Omit<DepartmentModel, OrmOperationAttributes> & ParsedQs
+export interface IDepartmentCommonRequest extends Request {
+  body: IDepartment
 }

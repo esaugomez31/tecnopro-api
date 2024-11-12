@@ -1,12 +1,22 @@
 import { FindOperator } from 'typeorm'
 import { Request } from 'express'
 import { ParsedQs } from 'qs'
-import { CountryModel } from '../../models'
-import { iFilterSettings } from '../filter.interfaces'
-import { OrmOperationAttributes } from '../orm.interfaces'
+import { IFilterSettings } from '../filter.interfaces'
+
+// Main country interface
+export interface ICountry {
+  idCountry?: number
+  name: string
+  code?: string
+  zipCode?: string
+  timeZone?: string
+  createdAt?: Date
+  updatedAt?: Date
+  status?: boolean
+}
 
 // Allow filter params from API
-export interface iCountryFilters {
+export interface ICountryFilters {
   name?: string
   code?: string
   zipCode?: string
@@ -14,31 +24,31 @@ export interface iCountryFilters {
 }
 
 // Filter options to country in typeorm
-export interface iCountryQueryParams extends Omit<iCountryFilters, 'name' | 'code' | 'zipCode'> {
+export interface ICountryQueryParams extends Omit<ICountryFilters, 'name' | 'code' | 'zipCode'> {
   name?: FindOperator<string> | string
   code?: FindOperator<string> | string
   zipCode?: FindOperator<string> | string
 }
 
 // Multi Countries response interface
-export interface iGetCountriesResponse {
-  data: CountryModel[]
+export interface IGetCountriesResponse {
+  data: ICountry[]
   total: number
   page: number
   totalPages: number
 }
 
 // Unique country response
-export interface iGetCountryByIdResponse {
-  data: CountryModel | null
+export interface IGetCountryByIdResponse {
+  data: ICountry | null
 }
 
 // Custom request to type countries get controllers
-export interface iCountryGetCustomRequest extends Request {
-  query: iCountryFilters & iFilterSettings & ParsedQs
+export interface ICountryGetCustomRequest extends Request {
+  query: ICountryFilters & IFilterSettings & ParsedQs
 }
 
 // Custom request to type countries create controllers
-export interface iCountryCommonRequest extends Request {
-  body: Omit<CountryModel, OrmOperationAttributes> & ParsedQs
+export interface ICountryCommonRequest extends Request {
+  body: ICountry
 }

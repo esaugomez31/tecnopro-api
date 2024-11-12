@@ -1,8 +1,7 @@
 import { FindOperator } from 'typeorm'
 import { Request } from 'express'
 import { ParsedQs } from 'qs'
-import { CustomerModel } from '../models'
-import { iFilterSettings } from './filter.interfaces'
+import { IFilterSettings } from './filter.interfaces'
 
 export enum CustomerPermEnum {
   VIEWLIST = 'view_list',
@@ -11,8 +10,29 @@ export enum CustomerPermEnum {
   UPDATESTATUS = 'update_status',
 }
 
+// Main customer interface
+export interface ICustomer {
+  idCustomer?: number
+  uuid: string
+  name: string
+  tradeName: string
+  dui: string
+  nit: string
+  nrc: string
+  phoneNumbers: string
+  whatsappNumber: string
+  email: string
+  address: string
+  idCountry?: number
+  idDepartment?: number
+  idMunicipality?: number
+  createdAt?: Date
+  updatedAt?: Date
+  status?: boolean
+}
+
 // Allow filter params from API
-export interface iCustomerFilters {
+export interface ICustomerFilters {
   name?: string
   uuid?: string
   dui?: string
@@ -28,10 +48,10 @@ export interface iCustomerFilters {
   status?: boolean
 }
 
-type paramsFilertypeLike = 'name' | 'dui' | 'nit' | 'nrc' | 'phoneNumbers' | 'whatsappNumber' | 'tradeName' | 'email'
+type ParamsFilertypeLike = 'name' | 'dui' | 'nit' | 'nrc' | 'phoneNumbers' | 'whatsappNumber' | 'tradeName' | 'email'
 
 // Filter options to customer in typeorm
-export interface iCustomerQueryParams extends Omit<iCustomerFilters, paramsFilertypeLike> {
+export interface ICustomerQueryParams extends Omit<ICustomerFilters, ParamsFilertypeLike> {
   name?: FindOperator<string> | string
   dui?: FindOperator<string> | string
   nit?: FindOperator<string> | string
@@ -43,24 +63,24 @@ export interface iCustomerQueryParams extends Omit<iCustomerFilters, paramsFiler
 }
 
 // Multi customers response interface
-export interface iGetCustomersResponse {
-  data: CustomerModel[]
+export interface IGetCustomersResponse {
+  data: ICustomer[]
   total: number
   page: number
   totalPages: number
 }
 
 // Unique customer response
-export interface iGetCustomerByIdResponse {
-  data: CustomerModel | null
+export interface IGetCustomerByIdResponse {
+  data: ICustomer | null
 }
 
 // Custom request to type customers get controllers
-export interface iCustomerGetCustomRequest extends Request {
-  query: iCustomerFilters & iFilterSettings & ParsedQs
+export interface ICustomerGetCustomRequest extends Request {
+  query: ICustomerFilters & IFilterSettings & ParsedQs
 }
 
 // Custom request to type customers create controllers
-export interface iCustomerCommonRequest extends Request {
-  body: CustomerModel & ParsedQs
+export interface ICustomerCommonRequest extends Request {
+  body: ICustomer
 }

@@ -2,18 +2,19 @@ import { v4 as uuidv4 } from 'uuid'
 import { BrandModel } from '../models'
 import { logger, applyFilter } from '../helpers'
 import {
-  iFilterSettings,
-  iGetBrandByIdResponse,
-  iGetBrandsResponse,
-  iBrandQueryParams,
-  iBrandFilters
+  IFilterSettings,
+  IGetBrandByIdResponse,
+  IGetBrandsResponse,
+  IBrandQueryParams,
+  IBrandFilters,
+  IBrand
 } from '../interfaces'
 import {
   IDBrandNotFoundError,
   NameExistsError
 } from '../errors/brand.error'
 
-export const brandCreate = async (brand: BrandModel): Promise<BrandModel> => {
+export const brandCreate = async (brand: IBrand): Promise<IBrand> => {
   try {
     // Searching for name matches
     await existNameValidations(brand.name)
@@ -22,7 +23,7 @@ export const brandCreate = async (brand: BrandModel): Promise<BrandModel> => {
     brand.uuid = uuidv4()
 
     // Create brand
-    const createdBrand = await BrandModel.save(brand)
+    const createdBrand = await BrandModel.save({ ...brand })
     return createdBrand
   } catch (error) {
     logger.error('Create brand: ' + (error as Error).name)
@@ -30,7 +31,7 @@ export const brandCreate = async (brand: BrandModel): Promise<BrandModel> => {
   }
 }
 
-export const brandUpdate = async (brand: BrandModel, idBrand: number): Promise<BrandModel> => {
+export const brandUpdate = async (brand: IBrand, idBrand: number): Promise<IBrand> => {
   try {
     // Required validations to update
     await Promise.all([
@@ -49,7 +50,7 @@ export const brandUpdate = async (brand: BrandModel, idBrand: number): Promise<B
   }
 }
 
-export const brandUpdateStatus = async (idBrand: number, status: boolean): Promise<BrandModel> => {
+export const brandUpdateStatus = async (idBrand: number, status: boolean): Promise<IBrand> => {
   try {
     // Existing brand
     await existIdValidation(idBrand)
@@ -65,7 +66,7 @@ export const brandUpdateStatus = async (idBrand: number, status: boolean): Promi
   }
 }
 
-export const brandGetAll = async (filterParams: iBrandFilters, settings: iFilterSettings): Promise<iGetBrandsResponse> => {
+export const brandGetAll = async (filterParams: IBrandFilters, settings: IFilterSettings): Promise<IGetBrandsResponse> => {
   try {
     const filters = getFilters(filterParams)
     const [brands, totalCount] = await Promise.all([
@@ -92,7 +93,7 @@ export const brandGetAll = async (filterParams: iBrandFilters, settings: iFilter
   }
 }
 
-export const brandGetById = async (idBrand: number): Promise<iGetBrandByIdResponse> => {
+export const brandGetById = async (idBrand: number): Promise<IGetBrandByIdResponse> => {
   try {
     const brand = await BrandModel.findOne({
       where: { idBrand }
@@ -104,8 +105,8 @@ export const brandGetById = async (idBrand: number): Promise<iGetBrandByIdRespon
   }
 }
 
-const getFilters = (params: iBrandFilters): iBrandQueryParams => {
-  const filters: iBrandQueryParams = {}
+const getFilters = (params: IBrandFilters): IBrandQueryParams => {
+  const filters: IBrandQueryParams = {}
 
   applyFilter(filters, 'name', params.name, true)
   applyFilter(filters, 'description', params.description, true)
@@ -118,7 +119,7 @@ const getFilters = (params: iBrandFilters): iBrandQueryParams => {
 const existNameValidations = async (name?: string, idBrand?: number): Promise<void> => {
   if (name === undefined) return
 
-  const filters: iBrandQueryParams[] = [{ name }]
+  const filters: IBrandQueryParams[] = [{ name }]
 
   const existBrand = await BrandModel.findOne({
     select: ['idBrand', 'name'],

@@ -1,29 +1,25 @@
 import { Request, Response } from 'express'
 import { matchedData } from 'express-validator'
 import * as categoryService from '../services/categories.service'
-import { CategoryModel } from '../models'
 import { filtersettings } from '../helpers'
 import {
   NameExistsError,
   IDCategoryNotFoundError
 } from '../errors/category.error'
 import {
-  iCategoryGetCustomRequest,
-  iCategoryCommonRequest,
-  iCategoryFilters
+  ICategoryGetCustomRequest,
+  ICategoryCommonRequest,
+  ICategoryFilters,
+  ICategory
 } from '../interfaces'
 
-export const categoryCreateController = async (req: iCategoryCommonRequest, res: Response): Promise<void> => {
+export const categoryCreateController = async (req: ICategoryCommonRequest, res: Response): Promise<void> => {
   try {
-    const body = matchedData<CategoryModel>(req, {
+    const body = matchedData<ICategory>(req, {
       locations: ['body'], includeOptionals: true
     })
-
-    // Model category object
-    const payload = new CategoryModel()
-    Object.assign(payload, body)
-
-    const category = await categoryService.categoryCreate(payload)
+    // Service create category
+    const category = await categoryService.categoryCreate(body)
 
     res.json(category)
   } catch (error) {
@@ -36,18 +32,14 @@ export const categoryCreateController = async (req: iCategoryCommonRequest, res:
   }
 }
 
-export const categoryUpdateController = async (req: iCategoryCommonRequest, res: Response): Promise<void> => {
+export const categoryUpdateController = async (req: ICategoryCommonRequest, res: Response): Promise<void> => {
   try {
     const idCategory = Number(req.params.idCategory)
-    const body = matchedData<CategoryModel>(req, {
+    const body = matchedData<ICategory>(req, {
       locations: ['body'], includeOptionals: true
     })
-
-    // Model category object
-    const payload = new CategoryModel()
-    Object.assign(payload, body)
-
-    const category = await categoryService.categoryUpdate(payload, idCategory)
+    // Service update category
+    const category = await categoryService.categoryUpdate(body, idCategory)
 
     res.json(category)
   } catch (error) {
@@ -84,13 +76,13 @@ export const categoryUpdateStatusController = async (req: Request, res: Response
   }
 }
 
-export const categoryGetAllController = async (req: iCategoryGetCustomRequest, res: Response): Promise<void> => {
+export const categoryGetAllController = async (req: ICategoryGetCustomRequest, res: Response): Promise<void> => {
   try {
     const query = req.query
     // Filter params settings
     const settings = filtersettings(query)
     // Filter params category
-    const params: iCategoryFilters = {
+    const params: ICategoryFilters = {
       name: query.name,
       status: query.status,
       description: query.description,

@@ -1,17 +1,19 @@
 import { v4 as uuidv4 } from 'uuid'
 import { Between, MoreThanOrEqual, LessThanOrEqual } from 'typeorm'
-import { SaleModel, SaleDetailModel, CustomerModel } from '../models'
+import { SaleModel, SaleDetailModel } from '../models'
 import { logger, numberToWords, applyFilter } from '../helpers'
 import {
-  iBranchResponse,
-  iFilterSettings,
-  iGetSaleByIdResponse,
-  iGetSalesResponse,
-  iSaleQueryParams,
-  iSaleFilters,
-  iSaleRequest,
-  iSaleProduct,
-  iSaleTotals
+  IBranchResponse,
+  IFilterSettings,
+  IGetSaleByIdResponse,
+  IGetSalesResponse,
+  ISaleQueryParams,
+  ISaleFilters,
+  ISaleRequest,
+  ISaleProduct,
+  ISaleTotals,
+  ICustomer,
+  ISale
 } from '../interfaces'
 import {
   IDSaleNotFoundError,
@@ -29,7 +31,7 @@ import {
   customerGetById
 } from '.'
 
-export const saleGenerate = async (data: iSaleRequest, idUser: number): Promise<SaleModel | {}> => {
+export const saleGenerate = async (data: ISaleRequest, idUser: number): Promise<ISale | {}> => {
   try {
     // required validations
     const { branch } = await existValuesValidations(
@@ -45,19 +47,18 @@ export const saleGenerate = async (data: iSaleRequest, idUser: number): Promise<
     )
     const { products: _, ...mainData } = data
 
-    // Sales payload
-    const salePayload = new SaleModel()
-
     // assign UUID
     const uuid = uuidv4()
-    salePayload.uuid = uuid
-
-    salePayload.idUser = idUser
-    Object.assign(salePayload, mainData)
-    Object.assign(salePayload, totals)
+    // Sales payload
+    const salePayload: ISale = {
+      ...mainData,
+      ...totals,
+      idUser,
+      uuid
+    }
 
     // Save sale
-    const newSale = await saleCreate(salePayload)
+    const newSale = await saleCreate({ ...salePayload })
 
     // Save sale-detail
     const deaildwithId: SaleDetailModel[] = details.map(detail => {
@@ -78,9 +79,9 @@ export const saleGenerate = async (data: iSaleRequest, idUser: number): Promise<
   }
 }
 
-export const saleCreate = async (sale: SaleModel): Promise<SaleModel> => {
+export const saleCreate = async (sale: ISale): Promise<ISale> => {
   try {
-    const createdSale = await SaleModel.save(sale)
+    const createdSale = await SaleModel.save({ ...sale })
     return createdSale
   } catch (error) {
     logger.error('Create sale: ' + (error as Error).name)
@@ -98,7 +99,7 @@ export const saleDetailCreate = async (detail: SaleDetailModel[]): Promise<SaleD
   }
 }
 
-export const getSaleCreated = async (idSale: number, uuid: string): Promise<SaleModel | null> => {
+export const getSaleCreated = async (idSale: number, uuid: string): Promise<ISale | null> => {
   try {
     const createdSale = await SaleModel.findOne({
       where: [{ idSale }, { uuid }],
@@ -112,8 +113,8 @@ export const getSaleCreated = async (idSale: number, uuid: string): Promise<Sale
 }
 
 const generateSaleData = async (
-  products: iSaleProduct[], shippingCost?: number, vatActived: boolean = false
-): Promise<{ details: SaleDetailModel[], totals: iSaleTotals }> => {
+  products: ISaleProduct[], shippingCost?: number, vatActived: boolean = false
+): Promise<{ details: SaleDetailModel[], totals: ISaleTotals }> => {
   const totals = {
     total: typeof shippingCost === 'number' ? shippingCost : 0,
     subtotal: 0,
@@ -178,7 +179,7 @@ const generateSaleData = async (
   }
 }
 
-export const saleUpdateStatus = async (idSale: number, status: boolean): Promise<SaleModel> => {
+export const saleUpdateStatus = async (idSale: number, status: boolean): Promise<ISale> => {
   try {
     // Existing sale
     await existIdValidation(idSale)
@@ -194,7 +195,7 @@ export const saleUpdateStatus = async (idSale: number, status: boolean): Promise
   }
 }
 
-export const saleGetAll = async (filterParams: iSaleFilters, settings: iFilterSettings): Promise<iGetSalesResponse> => {
+export const saleGetAll = async (filterParams: ISaleFilters, settings: IFilterSettings): Promise<IGetSalesResponse> => {
   try {
     const filters = getFilters(filterParams)
     const relations = getSaleIncludeFields(settings.include)
@@ -225,7 +226,7 @@ export const saleGetAll = async (filterParams: iSaleFilters, settings: iFilterSe
   }
 }
 
-export const saleGetById = async (idSale: number, settings?: iFilterSettings): Promise<iGetSaleByIdResponse> => {
+export const saleGetById = async (idSale: number, settings?: IFilterSettings): Promise<IGetSaleByIdResponse> => {
   try {
     const relations = settings?.include !== undefined ? getSaleIncludeFields(settings.include) : []
     const sale = await SaleModel.findOne({
@@ -297,8 +298,8 @@ const getSaleIncludeFields = (includes?: string[]): string[] => {
   return relations
 }
 
-const getFilters = (params: iSaleFilters): iSaleQueryParams => {
-  const filters: iSaleQueryParams = {}
+const getFilters = (params: ISaleFilters): ISaleQueryParams => {
+  const filters: ISaleQueryParams = {}
 
   applyFilter(filters, 'uuid', params.uuid)
   applyFilter(filters, 'idUser', params.idUser)
@@ -320,7 +321,7 @@ const getFilters = (params: iSaleFilters): iSaleQueryParams => {
 
 const existValuesValidations = async (
   idBranch: number, idCustomer: number
-): Promise<{ branch: iBranchResponse, customer: CustomerModel }> => {
+): Promise<{ branch: IBranchResponse, customer: ICustomer }> => {
   const [existBranch, existCustomer] = await Promise.all([
     branchGetById(idBranch), customerGetById(idCustomer)
   ])

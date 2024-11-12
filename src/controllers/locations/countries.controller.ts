@@ -1,6 +1,5 @@
 import { Request, Response } from 'express'
 import { matchedData } from 'express-validator'
-import { CountryModel } from '../../models'
 import { filtersettings } from '../../helpers'
 import * as countryService from '../../services/locations/countries.service'
 import {
@@ -9,22 +8,19 @@ import {
   IDCountryNotFoundError
 } from '../../errors/locations/country.factory'
 import {
-  iCountryGetCustomRequest,
-  iCountryCommonRequest,
-  iCountryFilters
+  ICountryGetCustomRequest,
+  ICountryCommonRequest,
+  ICountryFilters,
+  ICountry
 } from '../../interfaces'
 
-export const countryCreateController = async (req: iCountryCommonRequest, res: Response): Promise<void> => {
+export const countryCreateController = async (req: ICountryCommonRequest, res: Response): Promise<void> => {
   try {
-    const body = matchedData<CountryModel>(req, {
+    const body = matchedData<ICountry>(req, {
       locations: ['body'], includeOptionals: true
     })
-
-    // Model country object
-    const payload = new CountryModel()
-    Object.assign(payload, body)
-
-    const country = await countryService.countryCreate(payload)
+    // Service create country
+    const country = await countryService.countryCreate(body)
 
     res.json(country)
   } catch (error) {
@@ -38,18 +34,14 @@ export const countryCreateController = async (req: iCountryCommonRequest, res: R
   }
 }
 
-export const countryUpdateController = async (req: iCountryCommonRequest, res: Response): Promise<void> => {
+export const countryUpdateController = async (req: ICountryCommonRequest, res: Response): Promise<void> => {
   try {
     const idCountry = Number(req.params.idCountry)
-    const body = matchedData<CountryModel>(req, {
+    const body = matchedData<ICountry>(req, {
       locations: ['body'], includeOptionals: true
     })
-
-    // Model country object
-    const payload = new CountryModel()
-    Object.assign(payload, body)
-
-    const country = await countryService.countryUpdate(payload, idCountry)
+    // Service update country
+    const country = await countryService.countryUpdate(body, idCountry)
 
     res.json(country)
   } catch (error) {
@@ -86,13 +78,13 @@ export const countryUpdateStatusController = async (req: Request, res: Response)
   }
 }
 
-export const countryGetAllController = async (req: iCountryGetCustomRequest, res: Response): Promise<void> => {
+export const countryGetAllController = async (req: ICountryGetCustomRequest, res: Response): Promise<void> => {
   try {
     const query = req.query
     // Filter params settings
     const settings = filtersettings(query)
     // Filter params country
-    const params: iCountryFilters = {
+    const params: ICountryFilters = {
       name: query.name,
       status: query.status,
       code: query.code,

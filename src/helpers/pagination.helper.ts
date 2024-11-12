@@ -1,6 +1,6 @@
-import { iFilterSettings } from '../interfaces/filter.interfaces'
+import { IFilterSettings } from '../interfaces/filter.interfaces'
 
-export const filtersettings = (params: any): iFilterSettings => {
+export const filtersettings = (params: any): IFilterSettings => {
   const page = params.page
   const limit = params.limit
   const orderBy = params.orderBy

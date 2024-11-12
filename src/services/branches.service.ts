@@ -2,12 +2,14 @@ import { v4 as uuidv4 } from 'uuid'
 import { BranchModel } from '../models'
 import { logger, applyFilter } from '../helpers'
 import {
-  iFilterSettings,
-  iGetBranchByIdResponse,
-  iGetBranchesResponse,
-  iBranchQueryParams,
-  iBranchResponse,
-  iBranchFilters
+  IFilterSettings,
+  IGetBranchByIdResponse,
+  IGetBranchesResponse,
+  IBranchQueryParams,
+  IBranchCommonBody,
+  IBranchResponse,
+  IBranchFilters,
+  IBranch
 } from '../interfaces'
 import {
   IDBranchMunicipalityNotFoundError,
@@ -21,7 +23,7 @@ import {
   municipalityGetById
 } from './locations'
 
-export const branchCreate = async (branch: BranchModel): Promise<iBranchResponse | {}> => {
+export const branchCreate = async (branch: IBranchCommonBody): Promise<IBranchResponse | {}> => {
   try {
     // Searching for name matches
     await existValuesValidations(
@@ -30,10 +32,19 @@ export const branchCreate = async (branch: BranchModel): Promise<iBranchResponse
       branch.idMunicipality
     )
 
-    // Generate UUID
-    branch.uuid = uuidv4()
+    // Model branch object
+    const { dte: _, ...mainData } = branch
+    // DTE Fields
+    const dte = branch.dte !== null && branch.dte !== undefined ? { ...branch.dte } : {}
+
+    const payload: IBranch = {
+      ...mainData,
+      ...dte,
+      uuid: uuidv4()
+    }
+
     // Create branch
-    const createdBranch = await BranchModel.save(branch)
+    const createdBranch = await BranchModel.save({ ...payload })
 
     // return db response
     const getBranch = await BranchModel.findOne({
@@ -47,7 +58,7 @@ export const branchCreate = async (branch: BranchModel): Promise<iBranchResponse
   }
 }
 
-export const branchUpdate = async (branch: BranchModel, idBranch: number): Promise<iBranchResponse | {}> => {
+export const branchUpdate = async (branch: IBranchCommonBody, idBranch: number): Promise<IBranchResponse | {}> => {
   try {
     // Required validations to update
     await Promise.all([
@@ -59,9 +70,18 @@ export const branchUpdate = async (branch: BranchModel, idBranch: number): Promi
       )
     ])
 
+    const { dte: _, ...mainData } = branch
+    // DTE Fields
+    const dte = branch.dte !== null && branch.dte !== undefined ? { ...branch.dte } : {}
+
+    const payload: IBranch = {
+      ...mainData,
+      ...dte
+    }
+
     // update branch
     const updatedBranch = await BranchModel.save({
-      idBranch, ...branch
+      idBranch, ...payload
     })
 
     // return db response
@@ -76,7 +96,7 @@ export const branchUpdate = async (branch: BranchModel, idBranch: number): Promi
   }
 }
 
-export const branchUpdateStatus = async (idBranch: number, status: boolean): Promise<BranchModel | {}> => {
+export const branchUpdateStatus = async (idBranch: number, status: boolean): Promise<IBranch | {}> => {
   try {
     // Existing branch
     await existIdValidation(idBranch)
@@ -97,7 +117,7 @@ export const branchUpdateStatus = async (idBranch: number, status: boolean): Pro
   }
 }
 
-export const branchGetAll = async (filterParams: iBranchFilters, settings: iFilterSettings): Promise<iGetBranchesResponse> => {
+export const branchGetAll = async (filterParams: IBranchFilters, settings: IFilterSettings): Promise<IGetBranchesResponse> => {
   try {
     const filters = getFilters(filterParams)
     const [branches, totalCount] = await Promise.all([
@@ -110,7 +130,7 @@ export const branchGetAll = async (filterParams: iBranchFilters, settings: iFilt
       BranchModel.count({ where: filters })
     ])
 
-    const response: iBranchResponse[] = branches.map(branch => getBranchPayload(branch))
+    const response: IBranchResponse[] = branches.map(branch => getBranchPayload(branch))
 
     // Total pages calc
     const totalPages = Math.ceil(totalCount / settings.limit)
@@ -127,7 +147,7 @@ export const branchGetAll = async (filterParams: iBranchFilters, settings: iFilt
   }
 }
 
-export const branchGetById = async (idBranch: number): Promise<iGetBranchByIdResponse> => {
+export const branchGetById = async (idBranch: number): Promise<IGetBranchByIdResponse> => {
   try {
     const branch = await BranchModel.findOne({
       where: { idBranch }
@@ -140,8 +160,8 @@ export const branchGetById = async (idBranch: number): Promise<iGetBranchByIdRes
   }
 }
 
-const getFilters = (params: iBranchFilters): iBranchQueryParams => {
-  const filters: iBranchQueryParams = {}
+const getFilters = (params: IBranchFilters): IBranchQueryParams => {
+  const filters: IBranchQueryParams = {}
 
   applyFilter(filters, 'name', params.name, true)
   applyFilter(filters, 'description', params.description, true)
@@ -186,7 +206,7 @@ const existIdValidation = async (idBranch: number): Promise<void> => {
   if (existBranch.data === null) throw new IDBranchNotFoundError()
 }
 
-const getBranchPayload = (branch?: BranchModel): iBranchResponse => {
+const getBranchPayload = (branch?: IBranch): IBranchResponse => {
   return {
     idBranch: branch?.idBranch,
     name: branch?.name,

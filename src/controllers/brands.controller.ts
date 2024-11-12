@@ -1,29 +1,25 @@
 import { Request, Response } from 'express'
 import { matchedData } from 'express-validator'
 import * as brandService from '../services/brands.service'
-import { BrandModel } from '../models'
 import { filtersettings } from '../helpers'
 import {
   NameExistsError,
   IDBrandNotFoundError
 } from '../errors/brand.error'
 import {
-  iBrandGetCustomRequest,
-  iBrandCommonRequest,
-  iBrandFilters
+  IBrandGetCustomRequest,
+  IBrandCommonRequest,
+  IBrandFilters,
+  IBrand
 } from '../interfaces'
 
-export const brandCreateController = async (req: iBrandCommonRequest, res: Response): Promise<void> => {
+export const brandCreateController = async (req: IBrandCommonRequest, res: Response): Promise<void> => {
   try {
-    const body = matchedData<BrandModel>(req, {
+    const body = matchedData<IBrand>(req, {
       locations: ['body'], includeOptionals: true
     })
-
-    // Model brand object
-    const payload = new BrandModel()
-    Object.assign(payload, body)
-
-    const brand = await brandService.brandCreate(payload)
+    // Service create brand
+    const brand = await brandService.brandCreate(body)
 
     res.json(brand)
   } catch (error) {
@@ -36,18 +32,14 @@ export const brandCreateController = async (req: iBrandCommonRequest, res: Respo
   }
 }
 
-export const brandUpdateController = async (req: iBrandCommonRequest, res: Response): Promise<void> => {
+export const brandUpdateController = async (req: IBrandCommonRequest, res: Response): Promise<void> => {
   try {
     const idBrand = Number(req.params.idBrand)
-    const body = matchedData<BrandModel>(req, {
+    const body = matchedData<IBrand>(req, {
       locations: ['body'], includeOptionals: true
     })
-
-    // Model brand object
-    const payload = new BrandModel()
-    Object.assign(payload, body)
-
-    const brand = await brandService.brandUpdate(payload, idBrand)
+    // Service update brand
+    const brand = await brandService.brandUpdate(body, idBrand)
 
     res.json(brand)
   } catch (error) {
@@ -84,13 +76,13 @@ export const brandUpdateStatusController = async (req: Request, res: Response): 
   }
 }
 
-export const brandGetAllController = async (req: iBrandGetCustomRequest, res: Response): Promise<void> => {
+export const brandGetAllController = async (req: IBrandGetCustomRequest, res: Response): Promise<void> => {
   try {
     const query = req.query
     // Filter params settings
     const settings = filtersettings(query)
     // Filter params brand
-    const params: iBrandFilters = {
+    const params: IBrandFilters = {
       name: query.name,
       status: query.status,
       description: query.description,

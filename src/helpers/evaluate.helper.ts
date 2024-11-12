@@ -1,6 +1,6 @@
-import { PermissionModel } from '../models'
+import { IPermission } from '../interfaces'
 
-export const hasPermission = (permissions: PermissionModel[], permissionName: string): boolean => {
+export const hasPermission = (permissions: IPermission[], permissionName: string): boolean => {
   return permissions.some(permission => permission.permissionName === permissionName)
 }
 

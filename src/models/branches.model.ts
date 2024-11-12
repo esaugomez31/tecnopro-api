@@ -16,7 +16,7 @@ export class BranchModel extends BaseEntity {
     idBranch?: number
 
   @Column({ type: 'varchar', length: 36, nullable: true })
-    uuid: string | null
+    uuid: string
 
   @Column({ name: 'name', type: 'varchar', length: 100 })
     name: string

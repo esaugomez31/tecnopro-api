@@ -6,34 +6,34 @@ export class CustomerModel extends BaseEntity {
     idCustomer?: number
 
   @Column({ type: 'varchar', length: 36, nullable: true })
-    uuid: string | null
+    uuid: string
 
   @Column({ name: 'name', type: 'varchar', length: 75 })
     name: string
 
   @Column({ name: 'trade_name', type: 'varchar', length: 150, nullable: true })
-    tradeName: string | null
+    tradeName: string
 
   @Column({ name: 'dui', type: 'varchar', length: 30, nullable: true })
-    dui: string | null
+    dui: string
 
   @Column({ name: 'nit', type: 'varchar', length: 14, nullable: true })
-    nit: string | null
+    nit: string
 
   @Column({ name: 'nrc', type: 'varchar', length: 8, nullable: true })
-    nrc: string | null
+    nrc: string
 
   @Column({ name: 'phone_numbers', type: 'varchar', length: 30, nullable: true })
-    phoneNumbers: string | null
+    phoneNumbers: string
 
   @Column({ name: 'whatsapp_number', type: 'varchar', length: 17, nullable: true })
-    whatsappNumber: string | null
+    whatsappNumber: string
 
   @Column({ name: 'email', type: 'varchar', length: 100, nullable: true })
-    email: string | null
+    email: string
 
   @Column({ name: 'address', type: 'varchar', length: 200, nullable: true })
-    address: string | null
+    address: string
 
   @Column({ name: 'id_country', type: 'int', nullable: true })
     idCountry?: number

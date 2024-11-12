@@ -9,14 +9,15 @@ import {
   applyFilter
 } from '../helpers'
 import {
-  iFilterSettings,
-  iUserPublicResponse,
-  iUserFilters,
-  iUserQueryParams,
-  iGetUsersResponse,
-  iGetUserByIdResponse,
+  IFilterSettings,
+  IUserPublicResponse,
+  IUserFilters,
+  IUserQueryParams,
+  IGetUsersResponse,
+  IGetUserByIdResponse,
   UserRoleEnum,
-  iUserJWT
+  IUserJWT,
+  IUser
 } from '../interfaces'
 import {
   InvalidUserCredentialsError,
@@ -49,7 +50,7 @@ const publicSelect: Array<keyof UserModel> = [
   'idRole'
 ]
 
-export const userLogin = async (usernameOrEmail: string, password: string): Promise<iUserPublicResponse> => {
+export const userLogin = async (usernameOrEmail: string, password: string): Promise<IUserPublicResponse> => {
   try {
     // Searching for credential matches
     const user = await UserModel.findOne({
@@ -92,7 +93,7 @@ export const userLogin = async (usernameOrEmail: string, password: string): Prom
   }
 }
 
-export const userSignup = async (user: UserModel): Promise<UserModel> => {
+export const userSignup = async (user: IUser): Promise<UserModel> => {
   try {
     // Searching for username or email matches
     await userRequitedValidations(user.username, user.email, user.idRole)
@@ -102,7 +103,7 @@ export const userSignup = async (user: UserModel): Promise<UserModel> => {
     user.password = hashPassword(user.password)
 
     // Signup user
-    const newUser = await UserModel.save(user)
+    const newUser = await UserModel.save({ ...user })
     return newUser
   } catch (error) {
     logger.error('Signup user: ' + (error as Error).name)
@@ -110,7 +111,7 @@ export const userSignup = async (user: UserModel): Promise<UserModel> => {
   }
 }
 
-export const userUpdate = async (user: UserModel, idUser: number, jwtData: iUserJWT): Promise<UserModel> => {
+export const userUpdate = async (user: IUser, idUser: number, jwtData: IUserJWT): Promise<UserModel> => {
   try {
     // Evaluate hierarchy
     if (jwtData.type !== UserRoleEnum.ADMIN) await evaluateUserHierarchy(jwtData, idUser)
@@ -134,7 +135,7 @@ export const userUpdate = async (user: UserModel, idUser: number, jwtData: iUser
   }
 }
 
-export const userUpdateStatus = async (idUser: number, status: boolean, jwtData: iUserJWT): Promise<UserModel> => {
+export const userUpdateStatus = async (idUser: number, status: boolean, jwtData: IUserJWT): Promise<UserModel> => {
   try {
     // Evaluate hierarchy
     if (jwtData.type !== UserRoleEnum.ADMIN) await evaluateUserHierarchy(jwtData, idUser)
@@ -150,7 +151,7 @@ export const userUpdateStatus = async (idUser: number, status: boolean, jwtData:
   }
 }
 
-export const userGetAll = async (filterParams: iUserFilters, settings: iFilterSettings): Promise<iGetUsersResponse> => {
+export const userGetAll = async (filterParams: IUserFilters, settings: IFilterSettings): Promise<IGetUsersResponse> => {
   try {
     const filters = getFilters(filterParams)
     const [users, totalCount] = await Promise.all([
@@ -178,7 +179,7 @@ export const userGetAll = async (filterParams: iUserFilters, settings: iFilterSe
   }
 }
 
-export const userGetById = async (idUser: number): Promise<iGetUserByIdResponse> => {
+export const userGetById = async (idUser: number): Promise<IGetUserByIdResponse> => {
   try {
     const user = await UserModel.findOne({
       where: { idUser }
@@ -190,8 +191,8 @@ export const userGetById = async (idUser: number): Promise<iGetUserByIdResponse>
   }
 }
 
-const getFilters = (params: iUserFilters): iUserQueryParams => {
-  const filters: iUserQueryParams = {}
+const getFilters = (params: IUserFilters): IUserQueryParams => {
+  const filters: IUserQueryParams = {}
 
   applyFilter(filters, 'name', params.name, true)
   applyFilter(filters, 'username', params.username, true)
@@ -206,7 +207,7 @@ const getFilters = (params: iUserFilters): iUserQueryParams => {
 const userRequitedValidations = async (username?: string, email?: string, idRole?: number, idUser?: number): Promise<void> => {
   if (username === undefined && email === undefined && idRole === undefined) return
 
-  const userFilters: iUserQueryParams[] = []
+  const userFilters: IUserQueryParams[] = []
 
   if (username !== undefined) {
     userFilters.push({ username })
@@ -245,7 +246,7 @@ const userRequitedValidations = async (username?: string, email?: string, idRole
   }
 }
 
-const evaluateUserHierarchy = async (currUser: iUserJWT, idUserTarget: number): Promise<void> => {
+const evaluateUserHierarchy = async (currUser: IUserJWT, idUserTarget: number): Promise<void> => {
   // allow own actions
   if (currUser.idUser === idUserTarget) {
     return

@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from 'express'
 import jwt from 'jsonwebtoken'
 import { logger } from '../helpers'
 import envs from '../config/environment.config'
-import { iUserJWT } from '../interfaces/user.interfaces'
+import { IUserJWT } from '../interfaces/user.interfaces'
 
 export const authenticationJWT = (req: Request, res: Response, next: NextFunction): void => {
   const token: string | undefined = req.cookies.accessToken
@@ -13,7 +13,7 @@ export const authenticationJWT = (req: Request, res: Response, next: NextFunctio
   }
 
   try {
-    const data = jwt.verify(token, envs.app.secretJwtKey) as iUserJWT
+    const data = jwt.verify(token, envs.app.secretJwtKey) as IUserJWT
     if (data?.idUser === undefined || data?.uuid === undefined || data?.idRole === undefined) {
       res.status(400).json({ error: 'Invalid token' })
       return

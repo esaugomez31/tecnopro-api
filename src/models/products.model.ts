@@ -7,22 +7,22 @@ export class ProductModel extends BaseEntity {
     idProduct?: number
 
   @Column({ type: 'varchar', length: 36, nullable: true })
-    uuid: string | null
+    uuid: string
 
   @Column({ type: 'varchar', length: 50 })
     name: string
 
   @Column({ type: 'varchar', length: 100, nullable: true })
-    description: string | null
+    description: string
 
   @Column({ type: 'varchar', length: 50, nullable: true })
-    location: string | null
+    location: string
 
   @Column({ type: 'varchar', length: 20, nullable: true })
-    code: string | null
+    code: string
 
   @Column({ type: 'varchar', length: 30, nullable: true })
-    barcode: string | null
+    barcode: string
 
   @Column({ type: 'tinyint', default: 0, name: 'barcode_generated' })
     barcodeGenerated: number
@@ -31,7 +31,7 @@ export class ProductModel extends BaseEntity {
     price: number
 
   @Column({ type: 'decimal', precision: 11, scale: 4, default: 0.00, name: 'purchase_price' })
-    purchasePrice?: number | null
+    purchasePrice?: number
 
   @Column({ type: 'enum', enum: ['store', 'user'], default: 'store', name: 'purchased_by' })
     purchasedBy?: 'store' | 'user'
@@ -40,10 +40,10 @@ export class ProductModel extends BaseEntity {
     dteUnitMeasure: number
 
   @Column({ type: 'decimal', precision: 5, scale: 2, default: 0.00, name: 'user_commission_percentage' })
-    userCommissionPercent?: number | null
+    userCommissionPercent?: number
 
   @Column({ type: 'decimal', precision: 5, scale: 2, default: 100.00, name: 'branch_commission_percentage' })
-    branchCommissionPercent?: number | null
+    branchCommissionPercent?: number
 
   @Column({ type: 'decimal', precision: 11, scale: 4, default: 0.00, name: 'min_price' })
     minPrice: number
@@ -52,7 +52,7 @@ export class ProductModel extends BaseEntity {
     stock: number
 
   @Column({ type: 'varchar', length: 100, nullable: true, name: 'image_url' })
-    imageUrl: string | null
+    imageUrl: string
 
   @Column({ name: 'id_branch', nullable: false })
     idBranch: number
@@ -72,15 +72,15 @@ export class ProductModel extends BaseEntity {
 
   @ManyToOne(() => BrandModel, { nullable: true })
   @JoinColumn({ name: 'id_brand' })
-    brand?: BrandModel | null
+    brand?: BrandModel
 
   @ManyToOne(() => CategoryModel, { nullable: true })
   @JoinColumn({ name: 'id_category' })
-    category?: CategoryModel | null
+    category?: CategoryModel
 
   @ManyToOne(() => UserModel, { nullable: true })
   @JoinColumn({ name: 'id_user' })
-    user?: UserModel | null
+    user?: UserModel
 
   @CreateDateColumn({ name: 'created_at', type: 'datetime', default: () => 'CURRENT_TIMESTAMP' })
     createdAt?: Date

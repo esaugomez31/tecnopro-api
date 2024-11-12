@@ -1,4 +1,4 @@
-export interface iFilterSettings {
+export interface IFilterSettings {
   page: number
   skip: number
   limit: number

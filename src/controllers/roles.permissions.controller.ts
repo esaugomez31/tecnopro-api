@@ -4,10 +4,10 @@ import {
   IDRoleNotFoundError
 } from '../errors/role.error'
 import {
-  iRolePermissionCommonRequest
+  IRolePermissionCommonRequest
 } from '../interfaces'
 
-export const rolePermissionUpdateController = async (req: iRolePermissionCommonRequest, res: Response): Promise<void> => {
+export const rolePermissionUpdateController = async (req: IRolePermissionCommonRequest, res: Response): Promise<void> => {
   try {
     const idRole = Number(req.params.idRole)
     const permisssions = req.body.permissions

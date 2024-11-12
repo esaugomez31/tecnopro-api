@@ -1,9 +1,7 @@
 import { FindOperator } from 'typeorm'
 import { Request } from 'express'
 import { ParsedQs } from 'qs'
-import { RoleModel } from '../models'
-import { iFilterSettings } from './filter.interfaces'
-import { OrmOperationAttributes } from './orm.interfaces'
+import { IFilterSettings } from './filter.interfaces'
 
 export enum RolePermEnum {
   VIEWLIST = 'view_list',
@@ -12,36 +10,46 @@ export enum RolePermEnum {
   UPDATESTATUS = 'update_status',
 }
 
+// Main role interface
+export interface IRole {
+  idRole?: number
+  name: string
+  description?: string
+  createdAt?: Date
+  updatedAt?: Date
+  status: boolean
+}
+
 // Allow filter params from API
-export interface iRoleFilters {
+export interface IRoleFilters {
   name?: string
   status?: boolean
 }
 
 // Filter options to role in typeorm
-export interface iRoleQueryParams extends Omit<iRoleFilters, 'name'> {
+export interface IRoleQueryParams extends Omit<IRoleFilters, 'name'> {
   name?: FindOperator<string> | string
 }
 
 // Multi roles response interface
-export interface iGetRolesResponse {
-  data: RoleModel[]
+export interface IGetRolesResponse {
+  data: IRole[]
   total: number
   page: number
   totalPages: number
 }
 
 // Unique role response
-export interface iGetRoleByIdResponse {
-  data: RoleModel | null
+export interface IGetRoleByIdResponse {
+  data: IRole | null
 }
 
 // Custom request to type roles get controllers
-export interface iRoleGetCustomRequest extends Request {
-  query: iRoleFilters & iFilterSettings & ParsedQs
+export interface IRoleGetCustomRequest extends Request {
+  query: IRoleFilters & IFilterSettings & ParsedQs
 }
 
 // Custom request to type roles create controllers
-export interface iRoleCommonRequest extends Request {
-  body: Omit<RoleModel, OrmOperationAttributes> & ParsedQs
+export interface IRoleCommonRequest extends Request {
+  body: IRole
 }

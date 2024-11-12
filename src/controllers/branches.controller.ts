@@ -1,6 +1,5 @@
 import { matchedData } from 'express-validator'
 import { Request, Response } from 'express'
-import { BranchModel } from '../models'
 import { filtersettings } from '../helpers'
 import * as branchService from '../services/branches.service'
 import {
@@ -10,30 +9,20 @@ import {
   IDBranchNotFoundError
 } from '../errors/branch.error'
 import {
-  iBranchGetCustomRequest,
-  iBranchCommonRequest,
-  iBranchCommonBody,
-  iBranchFilters
+  IBranchGetCustomRequest,
+  IBranchCommonRequest,
+  IBranchCommonBody,
+  IBranchFilters
 } from '../interfaces'
 
-export const branchCreateController = async (req: iBranchCommonRequest, res: Response): Promise<void> => {
+export const branchCreateController = async (req: IBranchCommonRequest, res: Response): Promise<void> => {
   try {
-    const body = matchedData<iBranchCommonBody>(req, {
+    const body = matchedData<IBranchCommonBody>(req, {
       locations: ['body'], includeOptionals: true
     })
 
-    // Model branch object
-    const payload = new BranchModel()
-    const { dte: _, ...mainData } = body
-    // Main Fields
-    Object.assign(payload, mainData)
-
-    // DTE Fields
-    if (body.dte !== null && body.dte !== undefined) {
-      Object.assign(payload, body.dte)
-    }
     // Create Branch
-    const branch = await branchService.branchCreate(payload)
+    const branch = await branchService.branchCreate(body)
 
     res.json(branch)
   } catch (error) {
@@ -51,25 +40,15 @@ export const branchCreateController = async (req: iBranchCommonRequest, res: Res
   }
 }
 
-export const branchUpdateController = async (req: iBranchCommonRequest, res: Response): Promise<void> => {
+export const branchUpdateController = async (req: IBranchCommonRequest, res: Response): Promise<void> => {
   try {
     const idBranch = Number(req.params.idBranch)
-    const body = matchedData<iBranchCommonBody>(req, {
+    const body = matchedData<IBranchCommonBody>(req, {
       locations: ['body'], includeOptionals: true
     })
 
-    // Model branch object
-    const payload = new BranchModel()
-    const { dte: _, ...mainData } = body
-    // Main Fields
-    Object.assign(payload, mainData)
-
-    // DTE Fields
-    if (body.dte !== null && body.dte !== undefined) {
-      Object.assign(payload, body.dte)
-    }
     // Update Branch
-    const branch = await branchService.branchUpdate(payload, idBranch)
+    const branch = await branchService.branchUpdate(body, idBranch)
 
     res.json(branch)
   } catch (error) {
@@ -107,13 +86,13 @@ export const branchUpdateStatusController = async (req: Request, res: Response):
   }
 }
 
-export const branchGetAllController = async (req: iBranchGetCustomRequest, res: Response): Promise<void> => {
+export const branchGetAllController = async (req: IBranchGetCustomRequest, res: Response): Promise<void> => {
   try {
     const query = req.query
     // Filter params settings
     const settings = filtersettings(query)
     // Filter params branch
-    const params: iBranchFilters = {
+    const params: IBranchFilters = {
       name: query.name,
       uuid: query.uuid,
       description: query.description,

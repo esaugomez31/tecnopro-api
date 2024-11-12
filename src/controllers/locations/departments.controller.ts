@@ -1,6 +1,5 @@
 import { Request, Response } from 'express'
 import { matchedData } from 'express-validator'
-import { DepartmentModel } from '../../models'
 import { filtersettings } from '../../helpers'
 import * as departmentService from '../../services/locations/departments.service'
 import {
@@ -10,22 +9,19 @@ import {
   IDDepartmentNotFoundError
 } from '../../errors/locations/department.factory'
 import {
-  iDepartmentGetCustomRequest,
-  iDepartmentCommonRequest,
-  iDepartmentFilters
+  IDepartmentGetCustomRequest,
+  IDepartmentCommonRequest,
+  IDepartmentFilters,
+  IDepartment
 } from '../../interfaces'
 
-export const departmentCreateController = async (req: iDepartmentCommonRequest, res: Response): Promise<void> => {
+export const departmentCreateController = async (req: IDepartmentCommonRequest, res: Response): Promise<void> => {
   try {
-    const body = matchedData<DepartmentModel>(req, {
+    const body = matchedData<IDepartment>(req, {
       locations: ['body'], includeOptionals: true
     })
-
-    // Model department object
-    const payload = new DepartmentModel()
-    Object.assign(payload, body)
-
-    const department = await departmentService.departmentCreate(payload)
+    // Service create department
+    const department = await departmentService.departmentCreate(body)
 
     res.json(department)
   } catch (error) {
@@ -44,18 +40,14 @@ export const departmentCreateController = async (req: iDepartmentCommonRequest, 
   }
 }
 
-export const departmentUpdateController = async (req: iDepartmentCommonRequest, res: Response): Promise<void> => {
+export const departmentUpdateController = async (req: IDepartmentCommonRequest, res: Response): Promise<void> => {
   try {
     const idDepartment = Number(req.params.idDepartment)
-    const body = matchedData<DepartmentModel>(req, {
+    const body = matchedData<IDepartment>(req, {
       locations: ['body'], includeOptionals: true
     })
-
-    // Model department object
-    const payload = new DepartmentModel()
-    Object.assign(payload, body)
-
-    const department = await departmentService.departmentUpdate(payload, idDepartment)
+    // Service update department
+    const department = await departmentService.departmentUpdate(body, idDepartment)
 
     res.json(department)
   } catch (error) {
@@ -92,13 +84,13 @@ export const departmentUpdateStatusController = async (req: Request, res: Respon
   }
 }
 
-export const departmentGetAllController = async (req: iDepartmentGetCustomRequest, res: Response): Promise<void> => {
+export const departmentGetAllController = async (req: IDepartmentGetCustomRequest, res: Response): Promise<void> => {
   try {
     const query = req.query
     // Filter params settings
     const settings = filtersettings(query)
     // Filter params department
-    const params: iDepartmentFilters = {
+    const params: IDepartmentFilters = {
       name: query.name,
       status: query.status,
       dteCode: query.dteCode,

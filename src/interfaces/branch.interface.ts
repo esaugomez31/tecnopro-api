@@ -1,9 +1,12 @@
 import { FindOperator } from 'typeorm'
 import { Request } from 'express'
 import { ParsedQs } from 'qs'
-import { BranchModel } from '../models'
-import { iFilterSettings } from './filter.interfaces'
-import { OrmOperationAttributes } from './orm.interfaces'
+import {
+  IFilterSettings,
+  ICountry,
+  IDepartment,
+  IMunicipality
+} from '.'
 
 export enum BranchPermEnum {
   CREATE = 'create',
@@ -11,7 +14,41 @@ export enum BranchPermEnum {
   UPDATESTATUS = 'update_status',
 }
 
-export interface iBranchResponse {
+// Main branch model
+export interface IBranch {
+  idBranch?: number
+  uuid: string
+  name: string
+  description?: string
+  phoneNumber?: string
+  email?: string
+  address?: string
+  vatEnabled?: boolean
+  idCountry: number
+  idDepartment: number
+  idMunicipality: number
+  country?: ICountry
+  department?: IDepartment
+  municipality?: IMunicipality
+  dteActive?: boolean
+  dteEnvironment?: '01' | '00' // 01: PRODUCTION, 00: TEST
+  dteApiJwt?: string
+  dteApiJwtDate?: Date
+  dteSenderNit?: string
+  dteSenderNrc?: string
+  dteSenderEmail?: string
+  dteSenderPhone?: string
+  dteActivityCode?: string
+  dteActivityDesc?: string
+  dteSenderName?: string
+  dteSenderTradeName?: string
+  dteEstablishment?: '01' | '02' | '03' | '04' // 01: SUCURSAL, 02: CASA MATRIZ, 03: BODEGA, 04: PATIO
+  createdAt?: Date
+  updatedAt?: Date
+  status?: boolean
+}
+
+export interface IBranchResponse {
   idBranch?: number
   name?: string
   description?: string
@@ -38,7 +75,7 @@ export interface iBranchResponse {
 }
 
 // Allow filter params from API
-export interface iBranchFilters {
+export interface IBranchFilters {
   name?: string
   uuid?: string
   description?: string
@@ -51,7 +88,7 @@ export interface iBranchFilters {
 }
 
 // Filter options to branch in typeorm
-export interface iBranchQueryParams extends Omit<iBranchFilters, 'name' | 'description' | 'phoneNumber' | 'email'> {
+export interface IBranchQueryParams extends Omit<IBranchFilters, 'name' | 'description' | 'phoneNumber' | 'email'> {
   name?: FindOperator<string> | string
   description?: FindOperator<string> | string
   phoneNumber?: FindOperator<string> | string
@@ -59,24 +96,24 @@ export interface iBranchQueryParams extends Omit<iBranchFilters, 'name' | 'descr
 }
 
 // Multi branches response interface
-export interface iGetBranchesResponse {
-  data: iBranchResponse[]
+export interface IGetBranchesResponse {
+  data: IBranchResponse[]
   total: number
   page: number
   totalPages: number
 }
 
 // Unique branch response
-export interface iGetBranchByIdResponse {
-  data: iBranchResponse | null
+export interface IGetBranchByIdResponse {
+  data: IBranchResponse | null
 }
 
 // Custom request to type branches get controllers
-export interface iBranchGetCustomRequest extends Request {
-  query: iBranchFilters & iFilterSettings & ParsedQs
+export interface IBranchGetCustomRequest extends Request {
+  query: IBranchFilters & IFilterSettings & ParsedQs
 }
 
-type branchDtefields = 'dteActive' |
+type BranchDtefields = 'dteActive' |
 'dteEnvironment' |
 'dteApiJwt' |
 'dteApiJwtDate' |
@@ -90,11 +127,11 @@ type branchDtefields = 'dteActive' |
 'dteSenderTradeName' |
 'dteEstablishment'
 
-export interface iBranchCommonBody extends Omit<BranchModel, OrmOperationAttributes | branchDtefields> {
-  dte: Pick<BranchModel, branchDtefields>
+export interface IBranchCommonBody extends Omit<IBranch, BranchDtefields> {
+  dte: Pick<IBranch, BranchDtefields>
 }
 
 // Custom request to type branches create controllers
-export interface iBranchCommonRequest extends Request {
-  body: iBranchCommonBody & ParsedQs
+export interface IBranchCommonRequest extends Request {
+  body: IBranchCommonBody & ParsedQs
 }

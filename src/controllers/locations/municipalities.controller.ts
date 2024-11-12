@@ -1,6 +1,5 @@
 import { Request, Response } from 'express'
 import { matchedData } from 'express-validator'
-import { MunicipalityModel } from '../../models'
 import { filtersettings } from '../../helpers'
 import * as municipalityService from '../../services/locations/municipalities.service'
 import {
@@ -11,22 +10,19 @@ import {
   NameExistsError
 } from '../../errors/locations/municipality.factory'
 import {
-  iMunicipalityGetCustomRequest,
-  iMunicipalityCommonRequest,
-  iMunicipalityFilters
+  IMunicipalityGetCustomRequest,
+  IMunicipalityCommonRequest,
+  IMunicipalityFilters,
+  IMunicipality
 } from '../../interfaces'
 
-export const municipalityCreateController = async (req: iMunicipalityCommonRequest, res: Response): Promise<void> => {
+export const municipalityCreateController = async (req: IMunicipalityCommonRequest, res: Response): Promise<void> => {
   try {
-    const body = matchedData<MunicipalityModel>(req, {
+    const body = matchedData<IMunicipality>(req, {
       locations: ['body'], includeOptionals: true
     })
-
-    // Model municipality object
-    const payload = new MunicipalityModel()
-    Object.assign(payload, body)
-
-    const municipality = await municipalityService.municipalityCreate(payload)
+    // Service create municipality
+    const municipality = await municipalityService.municipalityCreate(body)
 
     res.json(municipality)
   } catch (error) {
@@ -45,18 +41,14 @@ export const municipalityCreateController = async (req: iMunicipalityCommonReque
   }
 }
 
-export const municipalityUpdateController = async (req: iMunicipalityCommonRequest, res: Response): Promise<void> => {
+export const municipalityUpdateController = async (req: IMunicipalityCommonRequest, res: Response): Promise<void> => {
   try {
     const idMunicipality = Number(req.params.idMunicipality)
-    const body = matchedData<MunicipalityModel>(req, {
+    const body = matchedData<IMunicipality>(req, {
       locations: ['body'], includeOptionals: true
     })
-
-    // Model municipality object
-    const payload = new MunicipalityModel()
-    Object.assign(payload, body)
-
-    const municipality = await municipalityService.municipalityUpdate(payload, idMunicipality)
+    // Service update municipality
+    const municipality = await municipalityService.municipalityUpdate(body, idMunicipality)
 
     res.json(municipality)
   } catch (error) {
@@ -93,13 +85,13 @@ export const municipalityUpdateStatusController = async (req: Request, res: Resp
   }
 }
 
-export const municipalityGetAllController = async (req: iMunicipalityGetCustomRequest, res: Response): Promise<void> => {
+export const municipalityGetAllController = async (req: IMunicipalityGetCustomRequest, res: Response): Promise<void> => {
   try {
     const query = req.query
     // Filter params settings
     const settings = filtersettings(query)
     // Filter params municipality
-    const params: iMunicipalityFilters = {
+    const params: IMunicipalityFilters = {
       name: query.name,
       status: query.status,
       dteCode: query.dteCode,
