@@ -25,6 +25,7 @@ const envs: iEnvs = {
     passwordSalt: Number(retrieveEnv('PASS_SALT_ROUNDS')),
     secretJwtKey: retrieveEnv('SECRET_JWT_KEY'),
     secretJwtRefreshKey: retrieveEnv('SECRET_JWT_REFRESH_KEY'),
+    whiteList: retrieveEnv('WHITE_LIST') ?? '',
     defaultUser: {
       name: retrieveEnv('DEFAULT_USER_NAME'),
       email: retrieveEnv('DEFAULT_USER_EMAIL'),

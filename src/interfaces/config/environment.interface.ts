@@ -9,6 +9,7 @@ interface iApp {
   db: iDB
   secretJwtKey: string
   secretJwtRefreshKey: string
+  whiteList: string
   defaultUser: {
     name: string
     email: string
