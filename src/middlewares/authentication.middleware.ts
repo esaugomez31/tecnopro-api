@@ -1,28 +1,40 @@
 import { Request, Response, NextFunction } from 'express'
-import jwt from 'jsonwebtoken'
-import { logger } from '../helpers'
-import envs from '../config/environment.config'
-import { IUserJWT } from '../interfaces/user.interfaces'
+import { logger, verifyAccessToken } from '../helpers'
+import {
+  InvalidOrExpiredTokenError,
+  AccessNotAuthorizedError,
+  InvalidTokenError
+} from '../errors/auth.error'
 
 export const authenticationJWT = (req: Request, res: Response, next: NextFunction): void => {
-  const token: string | undefined = req.cookies.accessToken
+  const authorization = req.headers.authorization?.split(' ')[1] ?? ''
 
-  if (token === undefined) {
-    res.status(403).json({ error: 'Access not authorized' })
-    return
+  if (authorization === undefined) {
+    throw new AccessNotAuthorizedError()
   }
 
   try {
-    const data = jwt.verify(token, envs.app.secretJwtKey) as IUserJWT
+    const data = verifyAccessToken(authorization)
+
     if (data?.idUser === undefined || data?.uuid === undefined || data?.idRole === undefined) {
-      res.status(400).json({ error: 'Invalid token' })
-      return
+      throw new InvalidTokenError()
     }
 
     req.session = data
     return next()
   } catch (error) {
     logger.error('Authentication error:', error)
-    res.status(401).json({ error: 'Invalid or expired token' })
+
+    if (error instanceof AccessNotAuthorizedError) {
+      res.status(403).json({ error: error.name, message: error.message })
+      return
+    }
+
+    if (error instanceof InvalidTokenError || error instanceof InvalidOrExpiredTokenError) {
+      res.status(401).json({ error: error.name, message: error.message })
+      return
+    }
+
+    res.status(500).json({ error: 'Internal server error', message: 'Authentication error' })
   }
 }

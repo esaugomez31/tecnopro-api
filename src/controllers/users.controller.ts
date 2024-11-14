@@ -1,23 +1,20 @@
 import { Request, Response } from 'express'
 import { matchedData } from 'express-validator'
-import jwt from 'jsonwebtoken'
-import envs from '../config/environment.config'
 import * as userService from '../services/users.service'
-import { filtersettings } from '../helpers'
 import { IDRoleNotFoundError } from '../errors/role.error'
 import {
-  InvalidUserCredentialsError,
+  filtersettings
+} from '../helpers'
+import {
   UserActionNotAllowedError,
   UsernameExistsError,
   UserIDNotFoundError,
-  UserNotFoundError,
   EmailExistsError
 } from '../errors/user.error'
 import {
   IUser,
   IUserJWT,
   IUserFilters,
-  UserRoleEnum,
   IUserGetCustomRequest,
   IUserCommonRequest
 } from '../interfaces'
@@ -102,57 +99,6 @@ export const userUpdateStatusController = async (req: Request, res: Response): P
     // Default error message
     res.status(500).json({ error: 'Internal server error' })
   }
-}
-
-export const userLoginController = async (req: Request, res: Response): Promise<void> => {
-  try {
-    const { usernameOrEmail, password } = req.body
-    // Login user controller
-    const user = await userService.userLogin(usernameOrEmail, password)
-
-    // Create JWT token
-    const jwtPayload: IUserJWT = {
-      idUser: user.idUser as number,
-      uuid: user.uuid,
-      idRole: user.idRole,
-      type: user.type as UserRoleEnum
-    }
-    const token = jwt.sign(
-      jwtPayload,
-      envs.app.secretJwtKey,
-      {
-        expiresIn: '1h'
-      }
-    )
-
-    // Sending cookie accessToken to client
-    user.accessToken = token
-    res.cookie('accessToken', token, {
-      httpOnly: true,
-      secure: envs.app.nodeEnv === 'production', // Only in production
-      sameSite: true,
-      maxAge: 1000 * 60 * 60 * 1 // 1h duration
-    })
-    res.json(user)
-  } catch (error) {
-    if (error instanceof InvalidUserCredentialsError) {
-      res.status(401).json({ error: error.name, message: error.message })
-      return
-    }
-
-    if (error instanceof UserNotFoundError) {
-      res.status(404).json({ error: error.name, message: error.message })
-      return
-    }
-    // Default error message
-    res.status(500).json({ error: 'Internal server error' })
-  }
-}
-
-export const userLogoutController = async (_: Request, res: Response): Promise<void> => {
-  res.clearCookie('accessToken').send({
-    message: 'Successful logout'
-  })
 }
 
 export const userGetAllController = async (req: IUserGetCustomRequest, res: Response): Promise<void> => {

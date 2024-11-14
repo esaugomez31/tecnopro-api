@@ -2,7 +2,6 @@ import { FindOperator } from 'typeorm'
 import { Request } from 'express'
 import { ParsedQs } from 'qs'
 import { IFilterSettings } from './filter.interfaces'
-import { OrmOperationAttributes } from './orm.interfaces'
 
 export enum UserRoleEnum {
   ADMIN = 'admin',
@@ -56,9 +55,7 @@ export interface IUserFilters {
 }
 
 // User public info
-export interface IUserPublicResponse extends Omit<IUser, 'password' | 'status' | OrmOperationAttributes> {
-  accessToken: string | null
-}
+export interface IUserPublicResponse extends Omit<IUser, 'password' | 'status'> {}
 
 // Filter options to use in typeorm
 export interface IUserQueryParams extends Omit<IUserFilters, 'username' | 'name' | 'email' | 'phoneNumber'> {
@@ -77,7 +74,7 @@ export interface IGetUsersResponse {
 }
 
 // Unique user response
-export interface IGetUserByIdResponse {
+export interface IGetUniqueUser {
   data: IUser | null
 }
 

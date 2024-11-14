@@ -14,6 +14,7 @@ import {
   CustomerModel,
   ProductModel,
   PermissionModel,
+  TokenModel,
   RolePermissionModel
 } from '../models'
 
@@ -42,6 +43,7 @@ export const AppDataSource = new DataSource({
     CustomerModel,
     ProductModel,
     PermissionModel,
+    TokenModel,
     RolePermissionModel
   ],
   subscribers: [],

@@ -1,4 +1,5 @@
 import express from 'express'
+import authRoutes from './auth.route'
 import userRoutes from './users.route'
 import roleRoutes from './roles.route'
 import brandRoutes from './brands.route'
@@ -11,6 +12,8 @@ import branchesRoutes from './branches.route'
 import rolesPermissionRoutes from './roles.permissions.route'
 
 const routes = express.Router()
+
+routes.use('/auth', authRoutes)
 
 routes.use('/users', userRoutes)
 

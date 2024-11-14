@@ -8,6 +8,7 @@ interface iApp {
   passwordSalt: number
   db: iDB
   secretJwtKey: string
+  secretJwtRefreshKey: string
   defaultUser: {
     name: string
     email: string

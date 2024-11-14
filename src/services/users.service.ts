@@ -1,38 +1,31 @@
 import { v4 as uuidv4 } from 'uuid'
 import envs from '../config/environment.config'
 import { UserModel } from '../models'
+import { roleGetById } from '.'
 import {
   logger,
   hashPassword,
-  comparePassword,
-  getLocalDateTimeNow,
   applyFilter
 } from '../helpers'
 import {
   IFilterSettings,
-  IUserPublicResponse,
   IUserFilters,
   IUserQueryParams,
   IGetUsersResponse,
-  IGetUserByIdResponse,
+  IGetUniqueUser,
   UserRoleEnum,
   IUserJWT,
   IUser
 } from '../interfaces'
 import {
-  InvalidUserCredentialsError,
   UserActionNotAllowedError,
   UsernameExistsError,
   UserIDNotFoundError,
-  UserNotFoundError,
   EmailExistsError
 } from '../errors/user.error'
 import {
   IDRoleNotFoundError
 } from '../errors/role.error'
-import {
-  roleGetById
-} from '.'
 
 const publicSelect: Array<keyof UserModel> = [
   'idUser',
@@ -50,50 +43,7 @@ const publicSelect: Array<keyof UserModel> = [
   'idRole'
 ]
 
-export const userLogin = async (usernameOrEmail: string, password: string): Promise<IUserPublicResponse> => {
-  try {
-    // Searching for credential matches
-    const user = await UserModel.findOne({
-      where: [
-        { username: usernameOrEmail, status: true },
-        { email: usernameOrEmail, status: true }
-      ]
-    })
-
-    if (user === null) {
-      throw new UserNotFoundError()
-    }
-    // comparing encrypted password with bcrypt
-    if (!comparePassword(password, user.password)) {
-      throw new InvalidUserCredentialsError()
-    }
-
-    // Update last login datetime
-    user.lastLogin = new Date(getLocalDateTimeNow())
-    await UserModel.save(user)
-
-    return {
-      idUser: user.idUser,
-      uuid: user.uuid,
-      name: user.name,
-      username: user.username,
-      phoneNumber: user.phoneNumber,
-      whatsappNumber: user.whatsappNumber,
-      email: user.email,
-      type: user.type,
-      notifications: user.notifications,
-      lastLogin: user.lastLogin,
-      timeZone: user.timeZone,
-      idRole: user.idRole,
-      accessToken: null
-    }
-  } catch (error) {
-    logger.error('Login user: ' + (error as Error).name)
-    throw error
-  }
-}
-
-export const userSignup = async (user: IUser): Promise<UserModel> => {
+export const userSignup = async (user: IUser): Promise<IUser> => {
   try {
     // Searching for username or email matches
     await userRequitedValidations(user.username, user.email, user.idRole)
@@ -111,7 +61,7 @@ export const userSignup = async (user: IUser): Promise<UserModel> => {
   }
 }
 
-export const userUpdate = async (user: IUser, idUser: number, jwtData: IUserJWT): Promise<UserModel> => {
+export const userUpdate = async (user: IUser, idUser: number, jwtData: IUserJWT): Promise<IUser> => {
   try {
     // Evaluate hierarchy
     if (jwtData.type !== UserRoleEnum.ADMIN) await evaluateUserHierarchy(jwtData, idUser)
@@ -135,7 +85,20 @@ export const userUpdate = async (user: IUser, idUser: number, jwtData: IUserJWT)
   }
 }
 
-export const userUpdateStatus = async (idUser: number, status: boolean, jwtData: IUserJWT): Promise<UserModel> => {
+export const userUpdateLastLogin = async (idUser: number, lastLogin: Date): Promise<IUser> => {
+  try {
+    // update user last login
+    const updatedUser = await UserModel.save({
+      idUser, lastLogin
+    })
+    return updatedUser
+  } catch (error) {
+    logger.error('Update user last status: ' + (error as Error).name)
+    throw error
+  }
+}
+
+export const userUpdateStatus = async (idUser: number, status: boolean, jwtData: IUserJWT): Promise<IUser> => {
   try {
     // Evaluate hierarchy
     if (jwtData.type !== UserRoleEnum.ADMIN) await evaluateUserHierarchy(jwtData, idUser)
@@ -179,7 +142,7 @@ export const userGetAll = async (filterParams: IUserFilters, settings: IFilterSe
   }
 }
 
-export const userGetById = async (idUser: number): Promise<IGetUserByIdResponse> => {
+export const userGetById = async (idUser: number): Promise<IGetUniqueUser> => {
   try {
     const user = await UserModel.findOne({
       where: { idUser }
@@ -187,6 +150,21 @@ export const userGetById = async (idUser: number): Promise<IGetUserByIdResponse>
     return { data: user }
   } catch (error) {
     logger.error('Get user by id: ' + (error as Error).name)
+    throw error
+  }
+}
+
+export const userGetByUserOrEmail = async (userOrEmail: string): Promise<IGetUniqueUser> => {
+  try {
+    const user = await UserModel.findOne({
+      where: [
+        { username: userOrEmail, status: true },
+        { email: userOrEmail, status: true }
+      ]
+    })
+    return { data: user }
+  } catch (error) {
+    logger.error('Get user by username or email: ' + (error as Error).name)
     throw error
   }
 }
@@ -204,7 +182,7 @@ const getFilters = (params: IUserFilters): IUserQueryParams => {
   return filters
 }
 
-const userRequitedValidations = async (username?: string, email?: string, idRole?: number, idUser?: number): Promise<void> => {
+export const userRequitedValidations = async (username?: string, email?: string, idRole?: number, idUser?: number): Promise<void> => {
   if (username === undefined && email === undefined && idRole === undefined) return
 
   const userFilters: IUserQueryParams[] = []
@@ -254,13 +232,13 @@ const evaluateUserHierarchy = async (currUser: IUserJWT, idUserTarget: number): 
 
   // Existing User
   const userTarget = await userGetById(idUserTarget)
-  if ((userTarget.data as UserModel)?.idUser === undefined) {
+  if ((userTarget.data as IUser)?.idUser === undefined) {
     throw new UserIDNotFoundError()
   }
 
   // evaluation hierarchy
   if (currUser.type === UserRoleEnum.SUBADMIN) {
-    if ((userTarget.data as UserModel).type === UserRoleEnum.ADMIN) {
+    if ((userTarget.data as IUser).type === UserRoleEnum.ADMIN) {
       throw new UserActionNotAllowedError()
     }
   } else {
