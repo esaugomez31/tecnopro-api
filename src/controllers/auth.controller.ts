@@ -21,7 +21,11 @@ export const loginController = async (req: Request, res: Response): Promise<void
     generateRefreshCookie(refreshToken.token, refreshToken.expiresIn, res)
 
     // Sending response
-    res.json({ accessToken: accessToken.token, expiresIn: accessToken.expiresIn })
+    res.json({
+      accessToken: accessToken.token,
+      expiresIn: accessToken.expiresIn,
+      refreshExpiresIn: refreshToken.expiresIn
+    })
   } catch (error) {
     if (error instanceof InvalidUserCredentialsError) {
       res.status(401).json({ error: error.name, message: error.message })
