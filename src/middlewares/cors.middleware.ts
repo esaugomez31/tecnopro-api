@@ -14,6 +14,7 @@ export const corsOptions = (): CorsOptions => {
       return callback(new Error(`CORS error: origin "${origin}" not authorized.`))
     },
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    allowedHeaders: ['Content-Type', 'Authorization']
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    credentials: true
   }
 }
