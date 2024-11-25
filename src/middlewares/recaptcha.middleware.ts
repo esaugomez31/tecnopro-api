@@ -9,7 +9,7 @@ export const verifyRecaptcha = async (req: Request, res: Response, next: NextFun
   const token = String(req.headers?.recaptchatoken ?? '')
 
   if (!app.recaptcha.enabled) {
-    next()
+    return next()
   }
 
   try {
