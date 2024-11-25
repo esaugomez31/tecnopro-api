@@ -26,6 +26,10 @@ const envs: iEnvs = {
     secretJwtKey: retrieveEnv('SECRET_JWT_KEY'),
     secretJwtRefreshKey: retrieveEnv('SECRET_JWT_REFRESH_KEY'),
     whiteList: retrieveEnv('WHITE_LIST') ?? '',
+    recaptcha: {
+      enabled: retrieveEnv('ENABLE_RECAPTCHA')?.toLocaleLowerCase() === 'true',
+      privateKey: retrieveEnv('RECAPTCHA_PRIVATE_KEY') ?? ''
+    },
     defaultUser: {
       name: retrieveEnv('DEFAULT_USER_NAME'),
       email: retrieveEnv('DEFAULT_USER_EMAIL'),

@@ -15,6 +15,10 @@ interface iApp {
     email: string
     password: string
   }
+  recaptcha: {
+    enabled: boolean
+    privateKey: string
+  }
 }
 
 interface iDB {

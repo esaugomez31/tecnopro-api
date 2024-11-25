@@ -1,4 +1,5 @@
 export * from './authentication.middleware'
 export * from './validations'
 export * from './cors.middleware'
+export * from './recaptcha.middleware'
 export * from './permission.middleware'

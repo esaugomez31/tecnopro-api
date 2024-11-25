@@ -7,13 +7,14 @@ import {
 } from '../../../controllers/auth.controller'
 import {
   authenticationJWT,
+  verifyRecaptcha,
   validateLogin
 } from '../../../middlewares'
 
 const routes = express.Router()
 
 // Authentication
-routes.post('/login', validateLogin(), loginController)
+routes.post('/login', validateLogin(), verifyRecaptcha, loginController)
 routes.post('/logout', authenticationJWT, logoutController)
 routes.post('/refresh-token', refreshTokenController)
 
