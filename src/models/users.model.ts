@@ -1,4 +1,14 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, BaseEntity } from 'typeorm'
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
+  BaseEntity,
+  ManyToOne,
+  JoinColumn
+} from 'typeorm'
+import { RoleModel } from '.'
 import { UserRoleEnum } from '../interfaces'
 
 @Entity('users')
@@ -50,4 +60,8 @@ export class UserModel extends BaseEntity {
 
   @Column({ type: 'tinyint', default: 1 })
     status: boolean
+
+  @ManyToOne(() => RoleModel, (role) => role.users)
+  @JoinColumn({ name: 'id_role' })
+    role: RoleModel
 }

@@ -160,8 +160,10 @@ export const userGetByUserOrEmail = async (userOrEmail: string): Promise<IGetUni
       where: [
         { username: userOrEmail, status: true },
         { email: userOrEmail, status: true }
-      ]
+      ],
+      relations: ['role', 'role.permissions']
     })
+
     return { data: user }
   } catch (error) {
     logger.error('Get user by username or email: ' + (error as Error).name)

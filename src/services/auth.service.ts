@@ -8,7 +8,6 @@ import {
   userUpdateLastLogin,
   userGetByUserOrEmail
 } from './users.service'
-
 import {
   logger,
   verifyRefreshToken,
@@ -41,6 +40,9 @@ export const login = async (usernameOrEmail: string, password: string): Promise<
       throw new InvalidUserCredentialsError()
     }
 
+    // new user object
+    const { password: _, ...newUser } = data
+
     // JWT payload
     const jwtPayload: IUserJWT = {
       idUser: data.idUser as number,
@@ -66,7 +68,11 @@ export const login = async (usernameOrEmail: string, password: string): Promise<
       })
     ])
 
-    return { accessToken, refreshToken }
+    return {
+      accessToken,
+      refreshToken,
+      user: newUser
+    }
   } catch (error) {
     logger.error('Login user: ' + (error as Error).name)
     throw error

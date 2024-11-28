@@ -1,4 +1,15 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, BaseEntity } from 'typeorm'
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
+  BaseEntity,
+  ManyToMany,
+  OneToMany,
+  JoinTable
+} from 'typeorm'
+import { PermissionModel, UserModel } from '.'
 
 @Entity('roles')
 export class RoleModel extends BaseEntity {
@@ -19,4 +30,15 @@ export class RoleModel extends BaseEntity {
 
   @Column({ type: 'tinyint', default: 1 })
     status: boolean
+
+  @ManyToMany(() => PermissionModel, (permission) => permission.roles)
+  @JoinTable({
+    name: 'role_permissions',
+    joinColumn: { name: 'id_role', referencedColumnName: 'idRole' },
+    inverseJoinColumn: { name: 'id_permission', referencedColumnName: 'idPermission' }
+  })
+    permissions: PermissionModel[]
+
+  @OneToMany(() => UserModel, (user) => user.role)
+    users: UserModel[]
 }

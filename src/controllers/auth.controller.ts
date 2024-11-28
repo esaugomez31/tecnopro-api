@@ -16,12 +16,13 @@ export const loginController = async (req: Request, res: Response): Promise<void
   try {
     const { usernameOrEmail, password } = req.body
     // Login user controller
-    const { refreshToken, accessToken } = await authService.login(usernameOrEmail, password)
+    const { refreshToken, accessToken, user } = await authService.login(usernameOrEmail, password)
 
     generateRefreshCookie(refreshToken.token, refreshToken.expiresIn, res)
 
     // Sending response
     res.json({
+      user,
       accessToken: accessToken.token,
       expiresIn: accessToken.expiresIn,
       refreshExpiresIn: refreshToken.expiresIn

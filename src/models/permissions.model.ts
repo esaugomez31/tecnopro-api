@@ -1,4 +1,12 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, BaseEntity } from 'typeorm'
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
+  BaseEntity, ManyToMany
+} from 'typeorm'
+import { RoleModel } from '.'
 import { SystemPageEnum } from '../interfaces'
 
 @Entity('permissions')
@@ -20,4 +28,7 @@ export class PermissionModel extends BaseEntity {
 
   @Column({ type: 'tinyint', default: 1 })
     status: boolean
+
+  @ManyToMany(() => RoleModel, (role) => role.permissions)
+    roles: RoleModel[]
 }

@@ -1,3 +1,4 @@
+import { IUserPublicResponse } from './user.interfaces'
 export interface ILoginResponse {
   accessToken: {
     token: string
@@ -7,4 +8,5 @@ export interface ILoginResponse {
     token: string
     expiresIn: number
   }
+  user: IUserPublicResponse
 }
