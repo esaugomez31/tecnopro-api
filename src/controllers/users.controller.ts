@@ -136,7 +136,7 @@ export const userGetAllController = async (
     const users = await userService.userGetAll(params, settings)
 
     res.json(users)
-  } catch (error) {
+  } catch (_error) {
     // Default error message
     res.status(500).json({ error: "Internal server error" })
   }
@@ -153,7 +153,7 @@ export const userGetByIdController = async (
     const users = await userService.userGetById(idUser)
 
     res.json(users)
-  } catch (error) {
+  } catch (_error) {
     // Default error message
     res.status(500).json({ error: "Internal server error" })
   }

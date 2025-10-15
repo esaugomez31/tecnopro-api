@@ -121,7 +121,7 @@ export const departmentGetAllController = async (
 
     const departments = await departmentService.departmentGetAll(params, settings)
     res.json(departments)
-  } catch (error) {
+  } catch (_error) {
     // Default error message
     res.status(500).json({ error: "Internal server error" })
   }
@@ -139,7 +139,7 @@ export const departmentGetByIdController = async (
     const department = await departmentService.departmentGetById(idDepartment, settings)
 
     res.json(department)
-  } catch (error) {
+  } catch (_error) {
     // Default error message
     res.status(500).json({ error: "Internal server error" })
   }

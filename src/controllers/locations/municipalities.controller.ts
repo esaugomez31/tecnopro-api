@@ -136,7 +136,7 @@ export const municipalityGetAllController = async (
 
     const municipalities = await municipalityService.municipalityGetAll(params, settings)
     res.json(municipalities)
-  } catch (error) {
+  } catch (_error) {
     // Default error message
     res.status(500).json({ error: "Internal server error" })
   }
@@ -153,7 +153,7 @@ export const municipalityGetByIdController = async (
     const municipality = await municipalityService.municipalityGetById(idMunicipality)
 
     res.json(municipality)
-  } catch (error) {
+  } catch (_error) {
     // Default error message
     res.status(500).json({ error: "Internal server error" })
   }

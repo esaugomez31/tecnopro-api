@@ -108,7 +108,7 @@ export const countryGetAllController = async (
 
     const countries = await countryService.countryGetAll(params, settings)
     res.json(countries)
-  } catch (error) {
+  } catch (_error) {
     // Default error message
     res.status(500).json({ error: "Internal server error" })
   }
@@ -126,7 +126,7 @@ export const countryGetByIdController = async (
     const country = await countryService.countryGetById(idCountry, settings)
 
     res.json(country)
-  } catch (error) {
+  } catch (_error) {
     // Default error message
     res.status(500).json({ error: "Internal server error" })
   }

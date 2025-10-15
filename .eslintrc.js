@@ -18,7 +18,15 @@ module.exports = {
       ],
       rules: {
         "@typescript-eslint/no-extra-semi": "off",
-        "@typescript-eslint/no-unused-vars": "error",
+        "@typescript-eslint/no-unused-vars": [
+          "error",
+          {
+            "argsIgnorePattern": "^_",
+            "varsIgnorePattern": "^_",
+            "caughtErrors": "all",
+            "caughtErrorsIgnorePattern": "^_"
+          }
+        ],
         "@typescript-eslint/prefer-for-of": "error",
         "@typescript-eslint/unified-signatures": "error",
         "@typescript-eslint/explicit-module-boundary-types": "off",

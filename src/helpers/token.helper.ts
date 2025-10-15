@@ -39,7 +39,7 @@ export const generateRefreshCookie = (
 export const verifyAccessToken = (token: string): IUserJWT => {
   try {
     return jwt.verify(token, envs.app.secretJwtKey) as IUserJWT
-  } catch (error) {
+  } catch (_error) {
     throw new InvalidOrExpiredTokenError()
   }
 }
@@ -47,7 +47,7 @@ export const verifyAccessToken = (token: string): IUserJWT => {
 export const verifyRefreshToken = (token: string): IUserJWT => {
   try {
     return jwt.verify(token, envs.app.secretJwtRefreshKey) as IUserJWT
-  } catch (error) {
+  } catch (_error) {
     throw new InvalidOrExpiredTokenError()
   }
 }
