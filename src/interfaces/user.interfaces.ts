@@ -56,7 +56,7 @@ export interface IUserFilters {
 }
 
 // User public info
-export interface IUserPublicResponse extends Omit<IUser, "password" | "status"> {}
+export type IUserPublicResponse = Omit<IUser, "password" | "status">
 
 // Filter options to use in typeorm
 export interface IUserQueryParams
