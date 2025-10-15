@@ -121,7 +121,7 @@ export const branchGetAllController = async (
 
     const branches = await branchService.branchGetAll(params, settings)
     res.json(branches)
-  } catch (error) {
+  } catch (_error) {
     // Default error message
     res.status(500).json({ error: "Internal server error" })
   }
@@ -138,7 +138,7 @@ export const branchGetByIdController = async (
     const branch = await branchService.branchGetById(idBranch)
 
     res.json(branch)
-  } catch (error) {
+  } catch (_error) {
     // Default error message
     res.status(500).json({ error: "Internal server error" })
   }

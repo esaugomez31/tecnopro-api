@@ -103,7 +103,7 @@ export const categoryGetAllController = async (
 
     const categories = await categoryService.categoryGetAll(params, settings)
     res.json(categories)
-  } catch (error) {
+  } catch (_error) {
     // Default error message
     res.status(500).json({ error: "Internal server error" })
   }
@@ -120,7 +120,7 @@ export const categoryGetByIdController = async (
     const category = await categoryService.categoryGetById(idCategory)
 
     res.json(category)
-  } catch (error) {
+  } catch (_error) {
     // Default error message
     res.status(500).json({ error: "Internal server error" })
   }

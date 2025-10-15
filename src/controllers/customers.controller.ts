@@ -113,7 +113,7 @@ export const customerGetAllController = async (
 
     const customers = await customerService.customerGetAll(params, settings)
     res.json(customers)
-  } catch (error) {
+  } catch (_error) {
     // Default error message
     res.status(500).json({ error: "Internal server error" })
   }
@@ -130,7 +130,7 @@ export const customerGetByIdController = async (
     const customer = await customerService.customerGetById(idCustomer)
 
     res.json(customer)
-  } catch (error) {
+  } catch (_error) {
     // Default error message
     res.status(500).json({ error: "Internal server error" })
   }

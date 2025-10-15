@@ -107,7 +107,7 @@ export const saleGetAllController = async (
 
     const sales = await saleService.saleGetAll(params, settings)
     res.json(sales)
-  } catch (error) {
+  } catch (_error) {
     // Default error message
     res.status(500).json({ error: "Internal server error" })
   }
@@ -126,7 +126,7 @@ export const saleGetByIdController = async (
     const sale = await saleService.saleGetById(idSale, settings)
 
     res.json(sale)
-  } catch (error) {
+  } catch (_error) {
     // Default error message
     res.status(500).json({ error: "Internal server error" })
   }

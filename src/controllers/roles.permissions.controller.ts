@@ -37,7 +37,7 @@ export const rolePermissionGetByIdController = async (
     const roles = await rolePermissionService.rolePermissionGetById(idRole)
 
     res.json(roles)
-  } catch (error) {
+  } catch (_error) {
     // Default error message
     res.status(500).json({ error: "Internal server error" })
   }

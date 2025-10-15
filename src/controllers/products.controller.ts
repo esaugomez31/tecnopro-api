@@ -141,7 +141,7 @@ export const productGetAllController = async (
 
     const products = await productService.productGetAll(params, settings, permissions)
     res.json(products)
-  } catch (error) {
+  } catch (_error) {
     // Default error message
     res.status(500).json({ error: "Internal server error" })
   }
@@ -159,7 +159,7 @@ export const productGetByIdController = async (
     const product = await productService.productGetById(idProduct, permissions)
 
     res.json(product)
-  } catch (error) {
+  } catch (_error) {
     // Default error message
     res.status(500).json({ error: "Internal server error" })
   }

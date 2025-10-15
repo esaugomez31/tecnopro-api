@@ -104,7 +104,7 @@ export const roleGetAllController = async (
     const roles = await roleService.roleGetAll(params, settings)
 
     res.json(roles)
-  } catch (error) {
+  } catch (_error) {
     // Default error message
     res.status(500).json({ error: "Internal server error" })
   }
@@ -121,7 +121,7 @@ export const roleGetByIdController = async (
     const roles = await roleService.roleGetById(idRole)
 
     res.json(roles)
-  } catch (error) {
+  } catch (_error) {
     // Default error message
     res.status(500).json({ error: "Internal server error" })
   }

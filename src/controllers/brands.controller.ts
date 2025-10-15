@@ -103,7 +103,7 @@ export const brandGetAllController = async (
 
     const brands = await brandService.brandGetAll(params, settings)
     res.json(brands)
-  } catch (error) {
+  } catch (_error) {
     // Default error message
     res.status(500).json({ error: "Internal server error" })
   }
@@ -120,7 +120,7 @@ export const brandGetByIdController = async (
     const brand = await brandService.brandGetById(idBrand)
 
     res.json(brand)
-  } catch (error) {
+  } catch (_error) {
     // Default error message
     res.status(500).json({ error: "Internal server error" })
   }
