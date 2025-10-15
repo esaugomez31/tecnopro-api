@@ -1,4 +1,4 @@
-import { IUserPublicResponse } from './user.interfaces'
+import { IUserPublicResponse } from "./user.interfaces"
 export interface ILoginResponse {
   accessToken: {
     token: string

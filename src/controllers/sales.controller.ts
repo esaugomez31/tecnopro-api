@@ -1,7 +1,8 @@
-import { Request, Response } from 'express'
-import { matchedData } from 'express-validator'
-import * as saleService from '../services/sales.service'
-import { filtersettings } from '../helpers'
+import { Request, Response } from "express"
+import { matchedData } from "express-validator"
+
+import * as saleService from "../services/sales.service"
+import { filtersettings } from "../helpers"
 import {
   IDSaleNotFoundError,
   IDSaleBranchNotFoundError,
@@ -10,27 +11,30 @@ import {
   GetSaleCreatedDetailError,
   SaleProductNotFoundError,
   CreateSaleDetailError,
-  CreateSaleError
-
-} from '../errors/sale.error'
+  CreateSaleError,
+} from "../errors/sale.error"
 import {
   ISaleGetCustomRequest,
   ISaleCommonRequest,
   ISaleRequest,
-  ISaleFilters
-} from '../interfaces'
+  ISaleFilters,
+} from "../interfaces"
 
-export const saleCreateController = async (req: ISaleCommonRequest, res: Response): Promise<void> => {
+export const saleCreateController = async (
+  req: ISaleCommonRequest,
+  res: Response,
+): Promise<void> => {
   try {
     const idUser = req.session?.idUser as number
     const body = matchedData<ISaleRequest>(req, {
-      locations: ['body'], includeOptionals: true
+      locations: ["body"],
+      includeOptionals: true,
     })
 
     // Service to generate sale
     const sale = await saleService.saleGenerate(body, idUser)
 
-    res.json(sale)
+    res.json(sale ?? {})
   } catch (error) {
     if (
       error instanceof IDSaleBranchNotFoundError ||
@@ -56,11 +60,14 @@ export const saleCreateController = async (req: ISaleCommonRequest, res: Respons
     }
 
     // Default error message
-    res.status(500).json({ error: 'Internal server error' })
+    res.status(500).json({ error: "Internal server error" })
   }
 }
 
-export const saleUpdateStatusController = async (req: Request, res: Response): Promise<void> => {
+export const saleUpdateStatusController = async (
+  req: Request,
+  res: Response,
+): Promise<void> => {
   try {
     const idSale = Number(req.params.idSale)
     const status = Boolean(req.params.status)
@@ -75,11 +82,14 @@ export const saleUpdateStatusController = async (req: Request, res: Response): P
     }
 
     // Default error message
-    res.status(500).json({ error: 'Internal server error' })
+    res.status(500).json({ error: "Internal server error" })
   }
 }
 
-export const saleGetAllController = async (req: ISaleGetCustomRequest, res: Response): Promise<void> => {
+export const saleGetAllController = async (
+  req: ISaleGetCustomRequest,
+  res: Response,
+): Promise<void> => {
   try {
     const query = req.query
     // Filter params settings
@@ -92,18 +102,21 @@ export const saleGetAllController = async (req: ISaleGetCustomRequest, res: Resp
       idBranch: query.idBranch,
       startDate: query.startDate,
       endDate: query.endDate,
-      status: query.status
+      status: query.status,
     }
 
     const sales = await saleService.saleGetAll(params, settings)
     res.json(sales)
-  } catch (error) {
+  } catch (_error) {
     // Default error message
-    res.status(500).json({ error: 'Internal server error' })
+    res.status(500).json({ error: "Internal server error" })
   }
 }
 
-export const saleGetByIdController = async (req: Request, res: Response): Promise<void> => {
+export const saleGetByIdController = async (
+  req: Request,
+  res: Response,
+): Promise<void> => {
   try {
     // Get sale id param
     const idSale: number = Number(req.params.idSale)
@@ -113,8 +126,8 @@ export const saleGetByIdController = async (req: Request, res: Response): Promis
     const sale = await saleService.saleGetById(idSale, settings)
 
     res.json(sale)
-  } catch (error) {
+  } catch (_error) {
     // Default error message
-    res.status(500).json({ error: 'Internal server error' })
+    res.status(500).json({ error: "Internal server error" })
   }
 }

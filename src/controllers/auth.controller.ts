@@ -1,22 +1,23 @@
-import { Request, Response } from 'express'
-import * as authService from '../services/auth.service'
-import { generateRefreshCookie } from '../helpers'
+import { Request, Response } from "express"
+
+import * as authService from "../services/auth.service"
+import { generateRefreshCookie } from "../helpers"
 import {
   InvalidOrExpiredTokenError,
   AccessNotAuthorizedError,
   InvalidTokenError,
-  ExpiredTokenError
-} from '../errors/auth.error'
-import {
-  InvalidUserCredentialsError,
-  UserNotFoundError
-} from '../errors/user.error'
+  ExpiredTokenError,
+} from "../errors/auth.error"
+import { InvalidUserCredentialsError, UserNotFoundError } from "../errors/user.error"
 
 export const loginController = async (req: Request, res: Response): Promise<void> => {
   try {
     const { usernameOrEmail, password } = req.body
     // Login user controller
-    const { refreshToken, accessToken, user } = await authService.login(usernameOrEmail, password)
+    const { refreshToken, accessToken, user } = await authService.login(
+      usernameOrEmail,
+      password,
+    )
 
     generateRefreshCookie(refreshToken.token, refreshToken.expiresIn, res)
 
@@ -25,7 +26,7 @@ export const loginController = async (req: Request, res: Response): Promise<void
       user,
       accessToken: accessToken.token,
       expiresIn: accessToken.expiresIn,
-      refreshExpiresIn: refreshToken.expiresIn
+      refreshExpiresIn: refreshToken.expiresIn,
     })
   } catch (error) {
     if (error instanceof InvalidUserCredentialsError) {
@@ -38,11 +39,14 @@ export const loginController = async (req: Request, res: Response): Promise<void
       return
     }
     // Default error message
-    res.status(500).json({ error: 'Internal server error' })
+    res.status(500).json({ error: "Internal server error" })
   }
 }
 
-export const refreshTokenController = async (req: Request, res: Response): Promise<void> => {
+export const refreshTokenController = async (
+  req: Request,
+  res: Response,
+): Promise<void> => {
   try {
     const refreshToken: string | undefined = req.cookies.refreshToken
 
@@ -66,7 +70,7 @@ export const refreshTokenController = async (req: Request, res: Response): Promi
     }
 
     // Default error message
-    res.status(500).json({ error: 'Internal server error' })
+    res.status(500).json({ error: "Internal server error" })
   }
 }
 
@@ -77,8 +81,8 @@ export const logoutController = async (req: Request, res: Response): Promise<voi
     // logout service
     await authService.logout(refreshToken)
 
-    res.clearCookie('refreshToken').json({
-      message: 'Successful logout'
+    res.clearCookie("refreshToken").json({
+      message: "Successful logout",
     })
   } catch (error) {
     if (
@@ -96,6 +100,6 @@ export const logoutController = async (req: Request, res: Response): Promise<voi
     }
 
     // Default error message
-    res.status(500).json({ error: 'Internal server error' })
+    res.status(500).json({ error: "Internal server error" })
   }
 }

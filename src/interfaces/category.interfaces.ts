@@ -1,13 +1,14 @@
-import { FindOperator } from 'typeorm'
-import { Request } from 'express'
-import { ParsedQs } from 'qs'
-import { IFilterSettings } from './filter.interfaces'
+import { FindOperator } from "typeorm"
+import { Request } from "express"
+import type { ParsedQs } from "qs"
+
+import { IFilterSettings } from "./filter.interfaces"
 
 export enum CategoryPermEnum {
-  VIEWLIST = 'view_list',
-  CREATE = 'create',
-  UPDATE = 'update',
-  UPDATESTATUS = 'update_status',
+  VIEWLIST = "view_list",
+  CREATE = "create",
+  UPDATE = "update",
+  UPDATESTATUS = "update_status",
 }
 
 // Main category interface
@@ -30,7 +31,8 @@ export interface ICategoryFilters {
 }
 
 // Filter options to category in typeorm
-export interface ICategoryQueryParams extends Omit<ICategoryFilters, 'name' | 'description'> {
+export interface ICategoryQueryParams
+  extends Omit<ICategoryFilters, "name" | "description"> {
   name?: FindOperator<string> | string
   description?: FindOperator<string> | string
 }

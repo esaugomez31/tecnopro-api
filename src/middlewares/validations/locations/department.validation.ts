@@ -1,63 +1,71 @@
-import { body, query, param } from 'express-validator'
-import { handleValidationErrors, stringToBoolean } from '../../../helpers'
-import { validateFilterParams, validateIncludeParams } from '../filter.validation'
+import { body, query, param } from "express-validator"
 
-const validSortFields = ['idDepartment', 'name', 'dteCode', 'zipCode', 'idCountry']
-const validIncludeFields = ['municipalities']
+import { handleValidationErrors, stringToBoolean } from "../../../helpers"
+import { validateFilterParams, validateIncludeParams } from "../filter.validation"
+
+const validSortFields = ["idDepartment", "name", "dteCode", "zipCode", "idCountry"]
+const validIncludeFields = ["municipalities"]
 
 const departmentCommonValidations = (optional = false): any => [
-  body('name')
+  body("name")
     .optional(optional)
-    .isString().withMessage('name must be a string')
-    .isLength({ min: 1, max: 85 }).withMessage('name must be between 1 and 85 characters long'),
+    .isString()
+    .withMessage("name must be a string")
+    .isLength({ min: 1, max: 85 })
+    .withMessage("name must be between 1 and 85 characters long"),
 
-  body('zipCode')
+  body("zipCode")
     .optional({ checkFalsy: true })
-    .isString().withMessage('zipCode must be a string')
-    .isLength({ min: 1, max: 10 }).withMessage('zipCode must be between 1 and 10 characters long'),
+    .isString()
+    .withMessage("zipCode must be a string")
+    .isLength({ min: 1, max: 10 })
+    .withMessage("zipCode must be between 1 and 10 characters long"),
 
-  body('dteCode')
+  body("dteCode")
     .optional({ checkFalsy: true })
-    .isString().withMessage('dteCode must be a string')
-    .isLength({ min: 1, max: 2 }).withMessage('dteCode must be between 1 and 2 characters long'),
+    .isString()
+    .withMessage("dteCode must be a string")
+    .isLength({ min: 1, max: 2 })
+    .withMessage("dteCode must be between 1 and 2 characters long"),
 
-  body('idCountry')
+  body("idCountry")
     .optional(optional)
-    .isInt({ min: 1, max: 99999999999 }).withMessage('idCountry must be a integer between 1 and 99999999999')
-    .notEmpty().withMessage('idCountry is required')
+    .isInt({ min: 1, max: 99999999999 })
+    .withMessage("idCountry must be a integer between 1 and 99999999999")
+    .notEmpty()
+    .withMessage("idCountry is required"),
 ]
 
 export const validateDepartmentCreation = (): any => {
-  return [
-    ...departmentCommonValidations(),
-
-    handleValidationErrors
-  ]
+  return [...departmentCommonValidations(), handleValidationErrors]
 }
 
 export const validateDepartmentUpdate = (): any => {
   return [
-    param('idDepartment')
-      .isInt().withMessage('idDepartment must be an integer')
+    param("idDepartment")
+      .isInt()
+      .withMessage("idDepartment must be an integer")
       .customSanitizer(Number),
 
     ...departmentCommonValidations(true),
 
-    handleValidationErrors
+    handleValidationErrors,
   ]
 }
 
 export const validateDepartmentUpdateStatus = (): any => {
   return [
-    param('idDepartment')
-      .isInt().withMessage('idDepartment must be an integer')
+    param("idDepartment")
+      .isInt()
+      .withMessage("idDepartment must be an integer")
       .customSanitizer(Number),
 
-    param('status')
-      .isBoolean().withMessage('status must be a boolean')
+    param("status")
+      .isBoolean()
+      .withMessage("status must be a boolean")
       .customSanitizer(stringToBoolean),
 
-    handleValidationErrors
+    handleValidationErrors,
   ]
 }
 
@@ -65,45 +73,51 @@ export const validateGetDepartments = (): any => {
   return [
     ...validateFilterParams(validSortFields),
 
-    query('name')
+    query("name")
       .optional()
-      .isString().withMessage('name must be a string')
-      .customSanitizer(value => value as string | undefined),
+      .isString()
+      .withMessage("name must be a string")
+      .customSanitizer((value) => value as string | undefined),
 
-    query('status')
+    query("status")
       .optional()
-      .isBoolean().withMessage('status must be a boolean')
+      .isBoolean()
+      .withMessage("status must be a boolean")
       .customSanitizer(stringToBoolean),
 
-    query('dteCode')
+    query("dteCode")
       .optional()
-      .isString().withMessage('dteCode must be a string')
-      .customSanitizer(value => value as string | undefined),
+      .isString()
+      .withMessage("dteCode must be a string")
+      .customSanitizer((value) => value as string | undefined),
 
-    query('zipCode')
+    query("zipCode")
       .optional()
-      .isString().withMessage('zipCode must be a string')
-      .customSanitizer(value => value as string | undefined),
+      .isString()
+      .withMessage("zipCode must be a string")
+      .customSanitizer((value) => value as string | undefined),
 
-    query('idCountry')
+    query("idCountry")
       .optional()
-      .isInt().withMessage('idCountry must be a integer')
+      .isInt()
+      .withMessage("idCountry must be a integer")
       .customSanitizer(Number),
 
     ...validateIncludeParams(validIncludeFields),
 
-    handleValidationErrors
+    handleValidationErrors,
   ]
 }
 
 export const validateGetDepartmentById = (): any => {
   return [
-    param('idDepartment')
-      .isInt().withMessage('idDepartment must be an integer')
+    param("idDepartment")
+      .isInt()
+      .withMessage("idDepartment must be an integer")
       .customSanitizer(Number),
 
     ...validateIncludeParams(validIncludeFields),
 
-    handleValidationErrors
+    handleValidationErrors,
   ]
 }

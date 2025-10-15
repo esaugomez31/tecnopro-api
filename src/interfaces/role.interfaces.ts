@@ -1,13 +1,14 @@
-import { FindOperator } from 'typeorm'
-import { Request } from 'express'
-import { ParsedQs } from 'qs'
-import { IFilterSettings } from './filter.interfaces'
+import { FindOperator } from "typeorm"
+import { Request } from "express"
+import type { ParsedQs } from "qs"
+
+import { IFilterSettings } from "./filter.interfaces"
 
 export enum RolePermEnum {
-  VIEWLIST = 'view_list',
-  CREATE = 'create',
-  UPDATE = 'update',
-  UPDATESTATUS = 'update_status',
+  VIEWLIST = "view_list",
+  CREATE = "create",
+  UPDATE = "update",
+  UPDATESTATUS = "update_status",
 }
 
 // Main role interface
@@ -27,7 +28,7 @@ export interface IRoleFilters {
 }
 
 // Filter options to role in typeorm
-export interface IRoleQueryParams extends Omit<IRoleFilters, 'name'> {
+export interface IRoleQueryParams extends Omit<IRoleFilters, "name"> {
   name?: FindOperator<string> | string
 }
 

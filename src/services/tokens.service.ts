@@ -1,6 +1,6 @@
-import { TokenModel } from '../models'
-import { IToken } from '../interfaces'
-import { logger } from '../helpers'
+import { TokenModel } from "../models"
+import { IToken } from "../interfaces"
+import { logger } from "../helpers"
 
 export const tokenCreate = async (token: IToken): Promise<IToken> => {
   try {
@@ -8,14 +8,17 @@ export const tokenCreate = async (token: IToken): Promise<IToken> => {
     const createdToken = await TokenModel.save({ ...token })
     return createdToken
   } catch (error) {
-    logger.error('Create token: ' + (error as Error).name)
+    logger.error("Create token: " + (error as Error).name)
     throw error
   }
 }
 
-export const getActiveUSerToken = async (idUser: number, token?: string): Promise<IToken | null> => {
+export const getActiveUSerToken = async (
+  idUser: number,
+  token?: string,
+): Promise<IToken | null> => {
   const tokenUser = await TokenModel.findOne({
-    where: { idUser, token, status: true }
+    where: { idUser, token, status: true },
   })
 
   return tokenUser

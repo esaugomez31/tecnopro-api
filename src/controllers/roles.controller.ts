@@ -1,22 +1,24 @@
-import { Request, Response } from 'express'
-import { matchedData } from 'express-validator'
-import * as roleService from '../services/roles.service'
-import { filtersettings } from '../helpers'
-import {
-  IDRoleNotFoundError,
-  NameExistsError
-} from '../errors/role.error'
+import { Request, Response } from "express"
+import { matchedData } from "express-validator"
+
+import * as roleService from "../services/roles.service"
+import { filtersettings } from "../helpers"
+import { IDRoleNotFoundError, NameExistsError } from "../errors/role.error"
 import {
   IRoleGetCustomRequest,
   IRoleCommonRequest,
   IRoleFilters,
-  IRole
-} from '../interfaces'
+  IRole,
+} from "../interfaces"
 
-export const roleCreateController = async (req: IRoleCommonRequest, res: Response): Promise<void> => {
+export const roleCreateController = async (
+  req: IRoleCommonRequest,
+  res: Response,
+): Promise<void> => {
   try {
     const body = matchedData<IRole>(req, {
-      locations: ['body'], includeOptionals: true
+      locations: ["body"],
+      includeOptionals: true,
     })
 
     // Service create Role
@@ -29,15 +31,19 @@ export const roleCreateController = async (req: IRoleCommonRequest, res: Respons
       return
     }
     // Default error message
-    res.status(500).json({ error: 'Internal server error' })
+    res.status(500).json({ error: "Internal server error" })
   }
 }
 
-export const roleUpdateController = async (req: IRoleCommonRequest, res: Response): Promise<void> => {
+export const roleUpdateController = async (
+  req: IRoleCommonRequest,
+  res: Response,
+): Promise<void> => {
   try {
     const idRole = Number(req.params.idRole)
     const body = matchedData<IRole>(req, {
-      locations: ['body'], includeOptionals: true
+      locations: ["body"],
+      includeOptionals: true,
     })
 
     // Servide update Role
@@ -55,11 +61,14 @@ export const roleUpdateController = async (req: IRoleCommonRequest, res: Respons
       return
     }
     // Default error message
-    res.status(500).json({ error: 'Internal server error' })
+    res.status(500).json({ error: "Internal server error" })
   }
 }
 
-export const roleUpdateStatusController = async (req: Request, res: Response): Promise<void> => {
+export const roleUpdateStatusController = async (
+  req: Request,
+  res: Response,
+): Promise<void> => {
   try {
     const idRole = Number(req.params.idRole)
     const status = Boolean(req.params.status)
@@ -74,11 +83,14 @@ export const roleUpdateStatusController = async (req: Request, res: Response): P
     }
 
     // Default error message
-    res.status(500).json({ error: 'Internal server error' })
+    res.status(500).json({ error: "Internal server error" })
   }
 }
 
-export const roleGetAllController = async (req: IRoleGetCustomRequest, res: Response): Promise<void> => {
+export const roleGetAllController = async (
+  req: IRoleGetCustomRequest,
+  res: Response,
+): Promise<void> => {
   try {
     const query = req.query
     // Filter params settings
@@ -86,19 +98,22 @@ export const roleGetAllController = async (req: IRoleGetCustomRequest, res: Resp
     // Filter params role
     const params: IRoleFilters = {
       name: query.name,
-      status: query.status
+      status: query.status,
     }
 
     const roles = await roleService.roleGetAll(params, settings)
 
     res.json(roles)
-  } catch (error) {
+  } catch (_error) {
     // Default error message
-    res.status(500).json({ error: 'Internal server error' })
+    res.status(500).json({ error: "Internal server error" })
   }
 }
 
-export const roleGetByIdController = async (req: Request, res: Response): Promise<void> => {
+export const roleGetByIdController = async (
+  req: Request,
+  res: Response,
+): Promise<void> => {
   try {
     // Get role id param
     const idRole: number = Number(req.params.idRole)
@@ -106,8 +121,8 @@ export const roleGetByIdController = async (req: Request, res: Response): Promis
     const roles = await roleService.roleGetById(idRole)
 
     res.json(roles)
-  } catch (error) {
+  } catch (_error) {
     // Default error message
-    res.status(500).json({ error: 'Internal server error' })
+    res.status(500).json({ error: "Internal server error" })
   }
 }

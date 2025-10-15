@@ -1,13 +1,14 @@
-import { FindOperator } from 'typeorm'
-import { Request } from 'express'
-import { ParsedQs } from 'qs'
-import { IFilterSettings } from './filter.interfaces'
+import { FindOperator } from "typeorm"
+import { Request } from "express"
+import type { ParsedQs } from "qs"
+
+import { IFilterSettings } from "./filter.interfaces"
 
 export enum BrandPermEnum {
-  VIEWLIST = 'view_list',
-  CREATE = 'create',
-  UPDATE = 'update',
-  UPDATESTATUS = 'update_status',
+  VIEWLIST = "view_list",
+  CREATE = "create",
+  UPDATE = "update",
+  UPDATESTATUS = "update_status",
 }
 
 // Main brand interface
@@ -30,7 +31,7 @@ export interface IBrandFilters {
 }
 
 // Filter options to brand in typeorm
-export interface IBrandQueryParams extends Omit<IBrandFilters, 'name' | 'description'> {
+export interface IBrandQueryParams extends Omit<IBrandFilters, "name" | "description"> {
   name?: FindOperator<string> | string
   description?: FindOperator<string> | string
 }

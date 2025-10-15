@@ -1,7 +1,8 @@
-import { matchedData } from 'express-validator'
-import { Request, Response } from 'express'
-import * as productService from '../services/products.service'
-import { filtersettings } from '../helpers'
+import { matchedData } from "express-validator"
+import { Request, Response } from "express"
+
+import * as productService from "../services/products.service"
+import { filtersettings } from "../helpers"
 import {
   ProdUpdatePriceError,
   ProdUpdatePurchaseDataError,
@@ -11,26 +12,30 @@ import {
   IDProdBranchNotFoundError,
   IDProdCategoryNotFoundError,
   IDProdBrandNotFoundError,
-  IDProdUserNotFoundError
-} from '../errors/product.error'
+  IDProdUserNotFoundError,
+} from "../errors/product.error"
 import {
   IPermission,
   IProductGetCustomRequest,
   IProductCommonRequest,
   IProductFilters,
-  IProduct
-} from '../interfaces'
+  IProduct,
+} from "../interfaces"
 
-export const productCreateController = async (req: IProductCommonRequest, res: Response): Promise<void> => {
+export const productCreateController = async (
+  req: IProductCommonRequest,
+  res: Response,
+): Promise<void> => {
   try {
     const body = matchedData<IProduct>(req, {
-      locations: ['body'], includeOptionals: true
+      locations: ["body"],
+      includeOptionals: true,
     })
 
     // Service create product
     const product = await productService.productCreate(body)
 
-    res.json(product)
+    res.json(product ?? {})
   } catch (error) {
     if (
       error instanceof IDProdBranchNotFoundError ||
@@ -42,22 +47,26 @@ export const productCreateController = async (req: IProductCommonRequest, res: R
       return
     }
     // Default error message
-    res.status(500).json({ error: 'Internal server error' })
+    res.status(500).json({ error: "Internal server error" })
   }
 }
 
-export const productUpdateController = async (req: IProductCommonRequest, res: Response): Promise<void> => {
+export const productUpdateController = async (
+  req: IProductCommonRequest,
+  res: Response,
+): Promise<void> => {
   try {
     const permissions: IPermission[] = req.permissions
     const idProduct = Number(req.params.idProduct)
     const body = matchedData<IProduct>(req, {
-      locations: ['body'], includeOptionals: true
+      locations: ["body"],
+      includeOptionals: true,
     })
 
     // Service update product
     const product = await productService.productUpdate(body, idProduct, permissions)
 
-    res.json(product)
+    res.json(product ?? {})
   } catch (error) {
     if (
       error instanceof ProdUpdatePriceError ||
@@ -81,11 +90,14 @@ export const productUpdateController = async (req: IProductCommonRequest, res: R
     }
 
     // Default error message
-    res.status(500).json({ error: 'Internal server error' })
+    res.status(500).json({ error: "Internal server error" })
   }
 }
 
-export const productUpdateStatusController = async (req: Request, res: Response): Promise<void> => {
+export const productUpdateStatusController = async (
+  req: Request,
+  res: Response,
+): Promise<void> => {
   try {
     const idProduct = Number(req.params.idProduct)
     const status = Boolean(req.params.status)
@@ -100,11 +112,14 @@ export const productUpdateStatusController = async (req: Request, res: Response)
     }
 
     // Default error message
-    res.status(500).json({ error: 'Internal server error' })
+    res.status(500).json({ error: "Internal server error" })
   }
 }
 
-export const productGetAllController = async (req: IProductGetCustomRequest, res: Response): Promise<void> => {
+export const productGetAllController = async (
+  req: IProductGetCustomRequest,
+  res: Response,
+): Promise<void> => {
   try {
     const query = req.query
     const permissions: IPermission[] = req.permissions
@@ -121,18 +136,21 @@ export const productGetAllController = async (req: IProductGetCustomRequest, res
       idBranch: query.idBranch,
       idCategory: query.idCategory,
       idBrand: query.idBrand,
-      idUser: query.idUser
+      idUser: query.idUser,
     }
 
     const products = await productService.productGetAll(params, settings, permissions)
     res.json(products)
-  } catch (error) {
+  } catch (_error) {
     // Default error message
-    res.status(500).json({ error: 'Internal server error' })
+    res.status(500).json({ error: "Internal server error" })
   }
 }
 
-export const productGetByIdController = async (req: Request, res: Response): Promise<void> => {
+export const productGetByIdController = async (
+  req: Request,
+  res: Response,
+): Promise<void> => {
   try {
     const permissions: IPermission[] = req.permissions
     // Get product id param
@@ -141,8 +159,8 @@ export const productGetByIdController = async (req: Request, res: Response): Pro
     const product = await productService.productGetById(idProduct, permissions)
 
     res.json(product)
-  } catch (error) {
+  } catch (_error) {
     // Default error message
-    res.status(500).json({ error: 'Internal server error' })
+    res.status(500).json({ error: "Internal server error" })
   }
 }

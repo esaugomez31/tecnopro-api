@@ -4,20 +4,20 @@
     "esModuleInterop": true,
     "target": "es6",
     "moduleResolution": "node",
+    "noImplicitAny": true,
+    "resolveJsonModule": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noImplicitReturns": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "strictPropertyInitialization": false,
     "sourceMap": true,
-		"rootDir": "./src",
+    "rootDir": "./src",
     "outDir": "build",
-		"strict": true,
-    "typeRoots": [
-      "./node_module/@types",
-      "./src/types"
-    ],
+    "strict": true,
+    "typeRoots": ["./node_modules/@types", "./src/types"],
+    "lib": ["es2015"]
   },
-  "lib": ["es2015"]
+  "include": ["src/**/*.ts"],
+  "exclude": ["node_modules", "build", "dist", "**/*.js", "**/*.cjs", "**/*.mjs"]
 }

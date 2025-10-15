@@ -1,8 +1,8 @@
-import envs from './config/environment.config'
-import { AppDataSource } from './config/conection.config'
-import { generateFirstUser } from './services/users.service'
-import { logger } from './helpers'
-import app from './app'
+import envs from "./config/environment.config"
+import { AppDataSource } from "./config/conection.config"
+import { generateFirstUser } from "./services/users.service"
+import { logger } from "./helpers"
+import app from "./app"
 
 const main = async (): Promise<void> => {
   try {
@@ -25,5 +25,5 @@ const main = async (): Promise<void> => {
 }
 
 main().catch((error) => {
-  logger.error('Unknow error: ', error)
+  logger.error("Unknow error: ", error)
 })

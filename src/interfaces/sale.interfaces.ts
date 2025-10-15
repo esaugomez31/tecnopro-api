@@ -1,19 +1,14 @@
 // import { FindOperator } from 'typeorm'
-import { Request } from 'express'
-import { FindOperator } from 'typeorm'
-import { ParsedQs } from 'qs'
-import {
-  IFilterSettings,
-  IUser,
-  ICustomer,
-  IBranch,
-  ISaleDetail
-} from '.'
+import { Request } from "express"
+import { FindOperator } from "typeorm"
+import type { ParsedQs } from "qs"
+
+import { IFilterSettings, IUser, ICustomer, IBranch, ISaleDetail } from "."
 
 export enum SalePermEnum {
-  VIEWLIST = 'view_list',
-  CREATE = 'create',
-  UPDATESTATUS = 'update_status',
+  VIEWLIST = "view_list",
+  CREATE = "create",
+  UPDATESTATUS = "update_status",
 }
 
 // Main sale inteface
@@ -37,7 +32,7 @@ export interface ISale {
   dteControlNumber?: string
   dteRequestSentAt?: Date
   dteObservations?: string
-  dteOperationCondition?: '1' | '2' | '3'
+  dteOperationCondition?: "1" | "2" | "3"
   dteSeal?: string
   idUser: number
   idCustomer?: number

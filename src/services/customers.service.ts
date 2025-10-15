@@ -1,33 +1,31 @@
-import { v4 as uuidv4 } from 'uuid'
-import { logger, applyFilter } from '../helpers'
-import { CustomerModel } from '../models'
+import { v4 as uuidv4 } from "uuid"
+
+import { logger, applyFilter } from "../helpers"
+import { CustomerModel } from "../models"
 import {
   IFilterSettings,
   IGetCustomerByIdResponse,
   IGetCustomersResponse,
   ICustomerQueryParams,
   ICustomerFilters,
-  ICustomer
-} from '../interfaces'
+  ICustomer,
+} from "../interfaces"
 import {
   IDCountryNotFoundError,
   IDDepartmentNotFoundError,
   IDMunicipalityNotFoundError,
-  IDCustNotFoundError
-} from '../errors/customer.error'
-import {
-  countryGetById,
-  departmentGetById,
-  municipalityGetById
-} from './locations'
+  IDCustNotFoundError,
+} from "../errors/customer.error"
 
-export const customerCreate = async (customer: ICustomer): Promise<ICustomer | {}> => {
+import { countryGetById, departmentGetById, municipalityGetById } from "./locations"
+
+export const customerCreate = async (customer: ICustomer): Promise<ICustomer | null> => {
   try {
     // Searching for name matches
     await existValuesValidations(
       customer.idCountry,
       customer.idDepartment,
-      customer.idMunicipality
+      customer.idMunicipality,
     )
 
     // Generate UUID
@@ -37,17 +35,20 @@ export const customerCreate = async (customer: ICustomer): Promise<ICustomer | {
 
     // return db response
     const getCustomer = await CustomerModel.findOne({
-      where: { idCustomer: createdCustomer.idCustomer }
+      where: { idCustomer: createdCustomer.idCustomer },
     })
 
-    return getCustomer ?? {}
+    return getCustomer
   } catch (error) {
-    logger.error('Create customer: ' + (error as Error).name)
+    logger.error("Create customer: " + (error as Error).name)
     throw error
   }
 }
 
-export const customerUpdate = async (customer: ICustomer, idCustomer: number): Promise<ICustomer | {}> => {
+export const customerUpdate = async (
+  customer: ICustomer,
+  idCustomer: number,
+): Promise<ICustomer | null> => {
   try {
     // Required validations to update
     await Promise.all([
@@ -55,49 +56,57 @@ export const customerUpdate = async (customer: ICustomer, idCustomer: number): P
       existValuesValidations(
         customer.idCountry,
         customer.idDepartment,
-        customer.idMunicipality
-      )
+        customer.idMunicipality,
+      ),
     ])
 
     // update customer
     const updatedCustomer = await CustomerModel.save({
-      idCustomer, ...customer
+      idCustomer,
+      ...customer,
     })
 
     // return db response
     const getCustomer = await CustomerModel.findOne({
-      where: { idCustomer: updatedCustomer.idCustomer }
+      where: { idCustomer: updatedCustomer.idCustomer },
     })
 
-    return getCustomer ?? {}
+    return getCustomer
   } catch (error) {
-    logger.error('Update customer: ' + (error as Error).name)
+    logger.error("Update customer: " + (error as Error).name)
     throw error
   }
 }
 
-export const customerUpdateStatus = async (idCustomer: number, status: boolean): Promise<ICustomer | {}> => {
+export const customerUpdateStatus = async (
+  idCustomer: number,
+  status: boolean,
+): Promise<ICustomer | null> => {
   try {
     // Existing customer
     await existIdValidation(idCustomer)
 
     // update customer status
     const updatedCustomer = await CustomerModel.save({
-      idCustomer, status
+      idCustomer,
+      status,
     })
 
     // return db response
     const getCustomer = await CustomerModel.findOne({
-      where: { idCustomer: updatedCustomer.idCustomer }
+      where: { idCustomer: updatedCustomer.idCustomer },
     })
-    return getCustomer ?? {}
+    return getCustomer
   } catch (error) {
-    logger.error('Update customer status: ' + (error as Error).name)
+    logger.error("Update customer status: " + (error as Error).name)
     throw error
   }
 }
 
-export const customerGetAll = async (filterParams: ICustomerFilters, settings: IFilterSettings): Promise<IGetCustomersResponse> => {
+export const customerGetAll = async (
+  filterParams: ICustomerFilters,
+  settings: IFilterSettings,
+): Promise<IGetCustomersResponse> => {
   try {
     const filters = getFilters(filterParams)
     const [customers, totalCount] = await Promise.all([
@@ -105,9 +114,9 @@ export const customerGetAll = async (filterParams: ICustomerFilters, settings: I
         where: filters,
         take: settings.limit,
         skip: settings.skip,
-        order: settings.order
+        order: settings.order,
       }),
-      CustomerModel.count({ where: filters })
+      CustomerModel.count({ where: filters }),
     ])
 
     // Total pages calc
@@ -117,23 +126,25 @@ export const customerGetAll = async (filterParams: ICustomerFilters, settings: I
       data: customers,
       total: totalCount,
       page: totalPages > 0 ? settings.page : 0,
-      totalPages
+      totalPages,
     }
   } catch (error) {
-    logger.error('Get customers: ' + (error as Error).name)
+    logger.error("Get customers: " + (error as Error).name)
     throw error
   }
 }
 
-export const customerGetById = async (idCustomer: number): Promise<IGetCustomerByIdResponse> => {
+export const customerGetById = async (
+  idCustomer: number,
+): Promise<IGetCustomerByIdResponse> => {
   try {
     const customer = await CustomerModel.findOne({
-      where: { idCustomer }
+      where: { idCustomer },
     })
 
     return { data: customer }
   } catch (error) {
-    logger.error('Get customer by id: ' + (error as Error).name)
+    logger.error("Get customer by id: " + (error as Error).name)
     throw error
   }
 }
@@ -141,31 +152,35 @@ export const customerGetById = async (idCustomer: number): Promise<IGetCustomerB
 const getFilters = (params: ICustomerFilters): ICustomerQueryParams => {
   const filters: ICustomerQueryParams = {}
 
-  applyFilter(filters, 'name', params.name, true)
-  applyFilter(filters, 'dui', params.dui, true)
-  applyFilter(filters, 'nit', params.nit, true)
-  applyFilter(filters, 'nrc', params.nrc, true)
-  applyFilter(filters, 'phoneNumbers', params.phoneNumbers, true)
-  applyFilter(filters, 'whatsappNumber', params.whatsappNumber, true)
-  applyFilter(filters, 'tradeName', params.tradeName, true)
-  applyFilter(filters, 'email', params.email, true)
-  applyFilter(filters, 'uuid', params.uuid)
-  applyFilter(filters, 'idCountry', params.idCountry)
-  applyFilter(filters, 'idDepartment', params.idDepartment)
-  applyFilter(filters, 'idMunicipality', params.idMunicipality)
-  applyFilter(filters, 'status', params.status)
+  applyFilter(filters, "name", params.name, true)
+  applyFilter(filters, "dui", params.dui, true)
+  applyFilter(filters, "nit", params.nit, true)
+  applyFilter(filters, "nrc", params.nrc, true)
+  applyFilter(filters, "phoneNumbers", params.phoneNumbers, true)
+  applyFilter(filters, "whatsappNumber", params.whatsappNumber, true)
+  applyFilter(filters, "tradeName", params.tradeName, true)
+  applyFilter(filters, "email", params.email, true)
+  applyFilter(filters, "uuid", params.uuid)
+  applyFilter(filters, "idCountry", params.idCountry)
+  applyFilter(filters, "idDepartment", params.idDepartment)
+  applyFilter(filters, "idMunicipality", params.idMunicipality)
+  applyFilter(filters, "status", params.status)
 
   return filters
 }
 
-const existValuesValidations = async (idCountry?: number, idDepartment?: number, idMunicipality?: number): Promise<void> => {
+const existValuesValidations = async (
+  idCountry?: number,
+  idDepartment?: number,
+  idMunicipality?: number,
+): Promise<void> => {
   const ids = [idCountry, idDepartment, idMunicipality]
-  if (!ids.some(id => id !== undefined)) return
+  if (!ids.some((id) => id !== undefined)) return
 
   const [existCountry, existDepartment, existMunicipality] = await Promise.all([
     idCountry !== undefined ? countryGetById(idCountry) : null,
     idDepartment !== undefined ? departmentGetById(idDepartment) : null,
-    idMunicipality !== undefined ? municipalityGetById(idMunicipality) : null
+    idMunicipality !== undefined ? municipalityGetById(idMunicipality) : null,
   ])
 
   if (idCountry !== undefined && existCountry?.data === null) {

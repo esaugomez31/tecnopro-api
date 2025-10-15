@@ -1,14 +1,8 @@
-import { v4 as uuidv4 } from 'uuid'
-import { In } from 'typeorm'
-import {
-  logger,
-  hasPermission,
-  isValidValue,
-  applyFilter
-} from '../helpers'
-import {
-  ProductModel
-} from '../models'
+import { v4 as uuidv4 } from "uuid"
+import { In } from "typeorm"
+
+import { logger, hasPermission, isValidValue, applyFilter } from "../helpers"
+import { ProductModel } from "../models"
 import {
   IFilterSettings,
   IGetProductByIdResponse,
@@ -17,8 +11,8 @@ import {
   IProductFilters,
   ProductPermEnum,
   IProduct,
-  IPermission
-} from '../interfaces'
+  IPermission,
+} from "../interfaces"
 import {
   ProdUpdatePriceError,
   ProdUpdatePurchaseDataError,
@@ -28,23 +22,19 @@ import {
   IDProdBranchNotFoundError,
   IDProdCategoryNotFoundError,
   IDProdBrandNotFoundError,
-  IDProdUserNotFoundError
-} from '../errors/product.error'
-import {
-  branchGetById,
-  brandGetById,
-  categoryGetById,
-  userGetById
-} from '.'
+  IDProdUserNotFoundError,
+} from "../errors/product.error"
 
-export const productCreate = async (product: IProduct): Promise<IProduct | {}> => {
+import { branchGetById, brandGetById, categoryGetById, userGetById } from "."
+
+export const productCreate = async (product: IProduct): Promise<IProduct | null> => {
   try {
     // validation id's
     await existValuesValidations(
       product.idBranch,
       product.idCategory,
       product.idBrand,
-      product.idUser
+      product.idUser,
     )
     // assign UUID
     product.uuid = uuidv4()
@@ -54,17 +44,21 @@ export const productCreate = async (product: IProduct): Promise<IProduct | {}> =
 
     // return db response
     const getProduct = await ProductModel.findOne({
-      where: { idBranch: createdProduct.idProduct }
+      where: { idBranch: createdProduct.idProduct },
     })
 
-    return getProduct !== null ? getProduct : {}
+    return getProduct
   } catch (error) {
-    logger.error('Create product: ' + (error as Error).name)
+    logger.error("Create product: " + (error as Error).name)
     throw error
   }
 }
 
-export const productUpdate = async (product: IProduct, idProduct: number, permissions?: IPermission[]): Promise<IProduct | {}> => {
+export const productUpdate = async (
+  product: IProduct,
+  idProduct: number,
+  permissions?: IPermission[],
+): Promise<IProduct | null> => {
   try {
     // Evaluate update Price's Permission
     evaluateUpdatePermission(product, permissions)
@@ -76,44 +70,53 @@ export const productUpdate = async (product: IProduct, idProduct: number, permis
         product.idBranch,
         product.idCategory,
         product.idBrand,
-        product.idUser
-      )
+        product.idUser,
+      ),
     ])
 
     // update product
     const updatedProduct = await ProductModel.save({
-      idProduct, ...product
+      idProduct,
+      ...product,
     })
 
     // return db response
     const getProduct = await ProductModel.findOne({
-      where: { idBranch: updatedProduct.idProduct }
+      where: { idBranch: updatedProduct.idProduct },
     })
 
-    return getProduct !== null ? getProductAvailableInfo(getProduct, permissions) : {}
+    return getProduct !== null ? getProductAvailableInfo(getProduct, permissions) : null
   } catch (error) {
-    logger.error('Update product: ' + (error as Error).name)
+    logger.error("Update product: " + (error as Error).name)
     throw error
   }
 }
 
-export const productUpdateStatus = async (idProduct: number, status: boolean): Promise<IProduct> => {
+export const productUpdateStatus = async (
+  idProduct: number,
+  status: boolean,
+): Promise<IProduct> => {
   try {
     // Existing product
     await existIdValidation(idProduct)
 
     // update product status
     const updatedProduct = await ProductModel.save({
-      idProduct, status
+      idProduct,
+      status,
     })
     return updatedProduct
   } catch (error) {
-    logger.error('Update product status: ' + (error as Error).name)
+    logger.error("Update product status: " + (error as Error).name)
     throw error
   }
 }
 
-export const productGetAll = async (filterParams: IProductFilters, settings: IFilterSettings, permissions?: IPermission[]): Promise<IGetProductsResponse> => {
+export const productGetAll = async (
+  filterParams: IProductFilters,
+  settings: IFilterSettings,
+  permissions?: IPermission[],
+): Promise<IGetProductsResponse> => {
   try {
     const filters = getFilters(filterParams)
     const [products, totalCount] = await Promise.all([
@@ -121,34 +124,41 @@ export const productGetAll = async (filterParams: IProductFilters, settings: IFi
         where: filters,
         take: settings.limit,
         skip: settings.skip,
-        order: settings.order
+        order: settings.order,
       }),
-      ProductModel.count({ where: filters })
+      ProductModel.count({ where: filters }),
     ])
     // Total pages calc
     const totalPages = Math.ceil(totalCount / settings.limit)
-    const response = products.map(product => getProductAvailableInfo(product, permissions))
+    const response = products.map((product) =>
+      getProductAvailableInfo(product, permissions),
+    )
 
     return {
       data: response,
       total: totalCount,
       page: totalPages > 0 ? settings.page : 0,
-      totalPages
+      totalPages,
     }
   } catch (error) {
-    logger.error('Get products: ' + (error as Error).name)
+    logger.error("Get products: " + (error as Error).name)
     throw error
   }
 }
 
-export const productGetById = async (idProduct: number, permissions?: IPermission[]): Promise<IGetProductByIdResponse> => {
+export const productGetById = async (
+  idProduct: number,
+  permissions?: IPermission[],
+): Promise<IGetProductByIdResponse> => {
   try {
     const product = await ProductModel.findOne({
-      where: { idProduct }
+      where: { idProduct },
     })
-    return { data: product !== null ? getProductAvailableInfo(product, permissions) : null }
+    return {
+      data: product !== null ? getProductAvailableInfo(product, permissions) : null,
+    }
   } catch (error) {
-    logger.error('Get product by id: ' + (error as Error).name)
+    logger.error("Get product by id: " + (error as Error).name)
     throw error
   }
 }
@@ -156,16 +166,19 @@ export const productGetById = async (idProduct: number, permissions?: IPermissio
 export const productsGetByIds = async (ids: number[]): Promise<IProduct[]> => {
   try {
     const product = await ProductModel.find({
-      where: { idProduct: In(ids), status: true }
+      where: { idProduct: In(ids), status: true },
     })
     return product
   } catch (error) {
-    logger.error('Get products by ids: ' + (error as Error).name)
+    logger.error("Get products by ids: " + (error as Error).name)
     throw error
   }
 }
 
-const getProductAvailableInfo = (product: IProduct, permissions?: IPermission[]): IProduct => {
+const getProductAvailableInfo = (
+  product: IProduct,
+  permissions?: IPermission[],
+): IProduct => {
   if (permissions !== undefined) {
     if (!hasPermission(permissions, ProductPermEnum.SEEPURCHASEDATA)) {
       delete product.purchasePrice
@@ -176,7 +189,10 @@ const getProductAvailableInfo = (product: IProduct, permissions?: IPermission[])
   return product
 }
 
-const evaluateUpdatePermission = (product: IProduct, permissions?: IPermission[]): void => {
+const evaluateUpdatePermission = (
+  product: IProduct,
+  permissions?: IPermission[],
+): void => {
   if (permissions === undefined) return
 
   if (isValidValue(product.price)) {
@@ -184,7 +200,10 @@ const evaluateUpdatePermission = (product: IProduct, permissions?: IPermission[]
       throw new ProdUpdatePriceError()
     }
   }
-  if (isValidValue(product.branchCommissionPercent) || isValidValue(product.userCommissionPercent)) {
+  if (
+    isValidValue(product.branchCommissionPercent) ||
+    isValidValue(product.userCommissionPercent)
+  ) {
     if (!hasPermission(permissions, ProductPermEnum.UPDTCOMMISSIONS)) {
       throw new ProdUpdateCommissionsError()
     }
@@ -204,17 +223,17 @@ const evaluateUpdatePermission = (product: IProduct, permissions?: IPermission[]
 const getFilters = (params: IProductFilters): IProductQueryParams => {
   const filters: IProductQueryParams = {}
 
-  applyFilter(filters, 'name', params.name, true)
-  applyFilter(filters, 'description', params.description, true)
-  applyFilter(filters, 'location', params.location, true)
-  applyFilter(filters, 'code', params.code, true)
-  applyFilter(filters, 'uuid', params.uuid)
-  applyFilter(filters, 'barcode', params.barcode)
-  applyFilter(filters, 'idBranch', params.idBranch)
-  applyFilter(filters, 'idBrand', params.idBrand)
-  applyFilter(filters, 'idCategory', params.idCategory)
-  applyFilter(filters, 'idUser', params.idUser)
-  applyFilter(filters, 'status', params.status)
+  applyFilter(filters, "name", params.name, true)
+  applyFilter(filters, "description", params.description, true)
+  applyFilter(filters, "location", params.location, true)
+  applyFilter(filters, "code", params.code, true)
+  applyFilter(filters, "uuid", params.uuid)
+  applyFilter(filters, "barcode", params.barcode)
+  applyFilter(filters, "idBranch", params.idBranch)
+  applyFilter(filters, "idBrand", params.idBrand)
+  applyFilter(filters, "idCategory", params.idCategory)
+  applyFilter(filters, "idUser", params.idUser)
+  applyFilter(filters, "status", params.status)
 
   return filters
 }
@@ -230,15 +249,16 @@ const existValuesValidations = async (
   idBranch?: number,
   idCategory?: number,
   idBrand?: number,
-  idUser?: number): Promise<void> => {
+  idUser?: number,
+): Promise<void> => {
   const ids = [idBranch, idCategory, idBrand, idUser]
-  if (!ids.some(id => id !== undefined)) return
+  if (!ids.some((id) => id !== undefined)) return
 
   const [existBranch, existCategory, existBrand, existUser] = await Promise.all([
     idBranch !== undefined ? branchGetById(idBranch) : null,
     idCategory !== undefined ? categoryGetById(idCategory) : null,
     idBrand !== undefined ? brandGetById(idBrand) : null,
-    idUser !== undefined ? userGetById(idUser) : null
+    idUser !== undefined ? userGetById(idUser) : null,
   ])
 
   if (idBranch !== undefined && existBranch?.data === null) {

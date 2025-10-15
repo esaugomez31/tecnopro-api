@@ -1,1 +1,7 @@
-export type OrmOperationAttributes = 'hasId' | 'save' | 'remove' | 'softRemove' | 'recover' | 'reload'
+export type OrmOperationAttributes =
+  | "hasId"
+  | "save"
+  | "remove"
+  | "softRemove"
+  | "recover"
+  | "reload"

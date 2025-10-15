@@ -1,4 +1,4 @@
-import { IUserJWT, IPermission } from '../interfaces'
+import { IUserJWT, IPermission } from "../interfaces"
 
 declare global {
   namespace Express {
