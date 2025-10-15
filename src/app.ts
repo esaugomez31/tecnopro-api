@@ -1,3 +1,4 @@
+// eslint-disable-next-line import/no-unassigned-import
 import "reflect-metadata"
 import cors from "cors"
 import express from "express"
