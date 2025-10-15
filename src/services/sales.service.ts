@@ -32,7 +32,7 @@ import { productsGetByIds, branchGetById, customerGetById } from "."
 export const saleGenerate = async (
   data: ISaleRequest,
   idUser: number,
-): Promise<ISale | {}> => {
+): Promise<ISale | null> => {
   try {
     // required validations
     const { branch } = await existValuesValidations(
@@ -73,7 +73,7 @@ export const saleGenerate = async (
     // find new sale
     const sale = await getSaleCreated(newSale.idSale as number, uuid)
 
-    return sale !== null ? sale : {}
+    return sale
   } catch (error) {
     logger.error("Generate sale: " + (error as Error).name)
     throw error

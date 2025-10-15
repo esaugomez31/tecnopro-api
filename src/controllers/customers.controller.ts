@@ -29,7 +29,7 @@ export const customerCreateController = async (
     // Create Customer
     const customer = await customerService.customerCreate(body)
 
-    res.json(customer)
+    res.json(customer ?? {})
   } catch (error) {
     if (
       error instanceof IDMunicipalityNotFoundError ||
@@ -59,7 +59,7 @@ export const customerUpdateController = async (
     // Update Customer
     const customer = await customerService.customerUpdate(body, idCustomer)
 
-    res.json(customer)
+    res.json(customer ?? {})
   } catch (error) {
     if (
       error instanceof IDMunicipalityNotFoundError ||

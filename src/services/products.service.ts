@@ -27,7 +27,7 @@ import {
 
 import { branchGetById, brandGetById, categoryGetById, userGetById } from "."
 
-export const productCreate = async (product: IProduct): Promise<IProduct | {}> => {
+export const productCreate = async (product: IProduct): Promise<IProduct | null> => {
   try {
     // validation id's
     await existValuesValidations(
@@ -47,7 +47,7 @@ export const productCreate = async (product: IProduct): Promise<IProduct | {}> =
       where: { idBranch: createdProduct.idProduct },
     })
 
-    return getProduct !== null ? getProduct : {}
+    return getProduct
   } catch (error) {
     logger.error("Create product: " + (error as Error).name)
     throw error
@@ -58,7 +58,7 @@ export const productUpdate = async (
   product: IProduct,
   idProduct: number,
   permissions?: IPermission[],
-): Promise<IProduct | {}> => {
+): Promise<IProduct | null> => {
   try {
     // Evaluate update Price's Permission
     evaluateUpdatePermission(product, permissions)
@@ -85,7 +85,7 @@ export const productUpdate = async (
       where: { idBranch: updatedProduct.idProduct },
     })
 
-    return getProduct !== null ? getProductAvailableInfo(getProduct, permissions) : {}
+    return getProduct !== null ? getProductAvailableInfo(getProduct, permissions) : null
   } catch (error) {
     logger.error("Update product: " + (error as Error).name)
     throw error

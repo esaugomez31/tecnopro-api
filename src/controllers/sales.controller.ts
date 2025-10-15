@@ -34,7 +34,7 @@ export const saleCreateController = async (
     // Service to generate sale
     const sale = await saleService.saleGenerate(body, idUser)
 
-    res.json(sale)
+    res.json(sale ?? {})
   } catch (error) {
     if (
       error instanceof IDSaleBranchNotFoundError ||

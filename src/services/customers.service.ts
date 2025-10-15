@@ -19,7 +19,7 @@ import {
 
 import { countryGetById, departmentGetById, municipalityGetById } from "./locations"
 
-export const customerCreate = async (customer: ICustomer): Promise<ICustomer | {}> => {
+export const customerCreate = async (customer: ICustomer): Promise<ICustomer | null> => {
   try {
     // Searching for name matches
     await existValuesValidations(
@@ -38,7 +38,7 @@ export const customerCreate = async (customer: ICustomer): Promise<ICustomer | {
       where: { idCustomer: createdCustomer.idCustomer },
     })
 
-    return getCustomer ?? {}
+    return getCustomer
   } catch (error) {
     logger.error("Create customer: " + (error as Error).name)
     throw error
@@ -48,7 +48,7 @@ export const customerCreate = async (customer: ICustomer): Promise<ICustomer | {
 export const customerUpdate = async (
   customer: ICustomer,
   idCustomer: number,
-): Promise<ICustomer | {}> => {
+): Promise<ICustomer | null> => {
   try {
     // Required validations to update
     await Promise.all([
@@ -71,7 +71,7 @@ export const customerUpdate = async (
       where: { idCustomer: updatedCustomer.idCustomer },
     })
 
-    return getCustomer ?? {}
+    return getCustomer
   } catch (error) {
     logger.error("Update customer: " + (error as Error).name)
     throw error
@@ -81,7 +81,7 @@ export const customerUpdate = async (
 export const customerUpdateStatus = async (
   idCustomer: number,
   status: boolean,
-): Promise<ICustomer | {}> => {
+): Promise<ICustomer | null> => {
   try {
     // Existing customer
     await existIdValidation(idCustomer)
@@ -96,7 +96,7 @@ export const customerUpdateStatus = async (
     const getCustomer = await CustomerModel.findOne({
       where: { idCustomer: updatedCustomer.idCustomer },
     })
-    return getCustomer ?? {}
+    return getCustomer
   } catch (error) {
     logger.error("Update customer status: " + (error as Error).name)
     throw error

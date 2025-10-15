@@ -23,7 +23,7 @@ import { countryGetById, departmentGetById, municipalityGetById } from "./locati
 
 export const branchCreate = async (
   branch: IBranchCommonBody,
-): Promise<IBranchResponse | {}> => {
+): Promise<IBranchResponse | null> => {
   try {
     // Searching for name matches
     await existValuesValidations(
@@ -51,7 +51,7 @@ export const branchCreate = async (
       where: { idBranch: createdBranch.idBranch },
     })
 
-    return getBranch !== null ? getBranchPayload(getBranch) : {}
+    return getBranch !== null ? getBranchPayload(getBranch) : null
   } catch (error) {
     logger.error("Create branch: " + (error as Error).name)
     throw error
@@ -61,7 +61,7 @@ export const branchCreate = async (
 export const branchUpdate = async (
   branch: IBranchCommonBody,
   idBranch: number,
-): Promise<IBranchResponse | {}> => {
+): Promise<IBranchResponse | null> => {
   try {
     // Required validations to update
     await Promise.all([
@@ -93,7 +93,7 @@ export const branchUpdate = async (
       where: { idBranch: updatedBranch.idBranch },
     })
 
-    return getBranch !== null ? getBranchPayload(getBranch) : {}
+    return getBranch !== null ? getBranchPayload(getBranch) : null
   } catch (error) {
     logger.error("Update branch: " + (error as Error).name)
     throw error
@@ -103,7 +103,7 @@ export const branchUpdate = async (
 export const branchUpdateStatus = async (
   idBranch: number,
   status: boolean,
-): Promise<IBranch | {}> => {
+): Promise<IBranchResponse | null> => {
   try {
     // Existing branch
     await existIdValidation(idBranch)
@@ -118,7 +118,7 @@ export const branchUpdateStatus = async (
     const getBranch = await BranchModel.findOne({
       where: { idBranch: updatedBranch.idBranch },
     })
-    return getBranch !== null ? getBranchPayload(getBranch) : {}
+    return getBranch !== null ? getBranchPayload(getBranch) : null
   } catch (error) {
     logger.error("Update branch status: " + (error as Error).name)
     throw error

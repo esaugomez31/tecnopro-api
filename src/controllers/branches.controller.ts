@@ -29,7 +29,7 @@ export const branchCreateController = async (
     // Create Branch
     const branch = await branchService.branchCreate(body)
 
-    res.json(branch)
+    res.json(branch ?? {})
   } catch (error) {
     if (
       error instanceof IDBranchMunicipalityNotFoundError ||
@@ -59,7 +59,7 @@ export const branchUpdateController = async (
     // Update Branch
     const branch = await branchService.branchUpdate(body, idBranch)
 
-    res.json(branch)
+    res.json(branch ?? {})
   } catch (error) {
     if (
       error instanceof IDBranchMunicipalityNotFoundError ||
@@ -86,7 +86,7 @@ export const branchUpdateStatusController = async (
     // update status service
     const branch = await branchService.branchUpdateStatus(idBranch, status)
 
-    res.json(branch)
+    res.json(branch ?? {})
   } catch (error) {
     if (error instanceof IDBranchNotFoundError) {
       res.status(404).json({ error: error.name, message: error.message })

@@ -35,7 +35,7 @@ export const productCreateController = async (
     // Service create product
     const product = await productService.productCreate(body)
 
-    res.json(product)
+    res.json(product ?? {})
   } catch (error) {
     if (
       error instanceof IDProdBranchNotFoundError ||
@@ -66,7 +66,7 @@ export const productUpdateController = async (
     // Service update product
     const product = await productService.productUpdate(body, idProduct, permissions)
 
-    res.json(product)
+    res.json(product ?? {})
   } catch (error) {
     if (
       error instanceof ProdUpdatePriceError ||
