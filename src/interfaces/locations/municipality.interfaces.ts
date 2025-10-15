@@ -1,11 +1,8 @@
-import { FindOperator } from 'typeorm'
-import { Request } from 'express'
-import { ParsedQs } from 'qs'
+import { FindOperator } from "typeorm"
+import { Request } from "express"
+import { ParsedQs } from "qs"
 
-import {
-  IFilterSettings,
-  IDepartment
-} from '../index'
+import { IFilterSettings, IDepartment } from "../index"
 
 // Main municipality interface
 export interface IMunicipality {
@@ -32,7 +29,8 @@ export interface IMunicipalityFilters {
 }
 
 // Filter options to municipality in typeorm
-export interface IMunicipalityQueryParams extends Omit<IMunicipalityFilters, 'name' | 'zipCode'> {
+export interface IMunicipalityQueryParams
+  extends Omit<IMunicipalityFilters, "name" | "zipCode"> {
   name?: FindOperator<string> | string
   zipCode?: FindOperator<string> | string
 }

@@ -1,14 +1,14 @@
-import { FindOperator } from 'typeorm'
-import { Request } from 'express'
-import { ParsedQs } from 'qs'
+import { FindOperator } from "typeorm"
+import { Request } from "express"
+import { ParsedQs } from "qs"
 
-import { IFilterSettings } from './filter.interfaces'
+import { IFilterSettings } from "./filter.interfaces"
 
 export enum CustomerPermEnum {
-  VIEWLIST = 'view_list',
-  CREATE = 'create',
-  UPDATE = 'update',
-  UPDATESTATUS = 'update_status',
+  VIEWLIST = "view_list",
+  CREATE = "create",
+  UPDATE = "update",
+  UPDATESTATUS = "update_status",
 }
 
 // Main customer interface
@@ -49,10 +49,19 @@ export interface ICustomerFilters {
   status?: boolean
 }
 
-type ParamsFilertypeLike = 'name' | 'dui' | 'nit' | 'nrc' | 'phoneNumbers' | 'whatsappNumber' | 'tradeName' | 'email'
+type ParamsFilertypeLike =
+  | "name"
+  | "dui"
+  | "nit"
+  | "nrc"
+  | "phoneNumbers"
+  | "whatsappNumber"
+  | "tradeName"
+  | "email"
 
 // Filter options to customer in typeorm
-export interface ICustomerQueryParams extends Omit<ICustomerFilters, ParamsFilertypeLike> {
+export interface ICustomerQueryParams
+  extends Omit<ICustomerFilters, ParamsFilertypeLike> {
   name?: FindOperator<string> | string
   dui?: FindOperator<string> | string
   nit?: FindOperator<string> | string

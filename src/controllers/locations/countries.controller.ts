@@ -1,24 +1,28 @@
-import { Request, Response } from 'express'
-import { matchedData } from 'express-validator'
+import { Request, Response } from "express"
+import { matchedData } from "express-validator"
 
-import { filtersettings } from '../../helpers'
-import * as countryService from '../../services/locations/countries.service'
+import { filtersettings } from "../../helpers"
+import * as countryService from "../../services/locations/countries.service"
 import {
   NameExistsError,
   CountryCodeExistsError,
-  IDCountryNotFoundError
-} from '../../errors/locations/country.factory'
+  IDCountryNotFoundError,
+} from "../../errors/locations/country.factory"
 import {
   ICountryGetCustomRequest,
   ICountryCommonRequest,
   ICountryFilters,
-  ICountry
-} from '../../interfaces'
+  ICountry,
+} from "../../interfaces"
 
-export const countryCreateController = async (req: ICountryCommonRequest, res: Response): Promise<void> => {
+export const countryCreateController = async (
+  req: ICountryCommonRequest,
+  res: Response,
+): Promise<void> => {
   try {
     const body = matchedData<ICountry>(req, {
-      locations: ['body'], includeOptionals: true
+      locations: ["body"],
+      includeOptionals: true,
     })
     // Service create country
     const country = await countryService.countryCreate(body)
@@ -31,15 +35,19 @@ export const countryCreateController = async (req: ICountryCommonRequest, res: R
     }
 
     // Default error message
-    res.status(500).json({ error: 'Internal server error' })
+    res.status(500).json({ error: "Internal server error" })
   }
 }
 
-export const countryUpdateController = async (req: ICountryCommonRequest, res: Response): Promise<void> => {
+export const countryUpdateController = async (
+  req: ICountryCommonRequest,
+  res: Response,
+): Promise<void> => {
   try {
     const idCountry = Number(req.params.idCountry)
     const body = matchedData<ICountry>(req, {
-      locations: ['body'], includeOptionals: true
+      locations: ["body"],
+      includeOptionals: true,
     })
     // Service update country
     const country = await countryService.countryUpdate(body, idCountry)
@@ -56,11 +64,14 @@ export const countryUpdateController = async (req: ICountryCommonRequest, res: R
       return
     }
     // Default error message
-    res.status(500).json({ error: 'Internal server error' })
+    res.status(500).json({ error: "Internal server error" })
   }
 }
 
-export const countryUpdateStatusController = async (req: Request, res: Response): Promise<void> => {
+export const countryUpdateStatusController = async (
+  req: Request,
+  res: Response,
+): Promise<void> => {
   try {
     const idCountry = Number(req.params.idCountry)
     const status = Boolean(req.params.status)
@@ -75,11 +86,14 @@ export const countryUpdateStatusController = async (req: Request, res: Response)
     }
 
     // Default error message
-    res.status(500).json({ error: 'Internal server error' })
+    res.status(500).json({ error: "Internal server error" })
   }
 }
 
-export const countryGetAllController = async (req: ICountryGetCustomRequest, res: Response): Promise<void> => {
+export const countryGetAllController = async (
+  req: ICountryGetCustomRequest,
+  res: Response,
+): Promise<void> => {
   try {
     const query = req.query
     // Filter params settings
@@ -89,18 +103,21 @@ export const countryGetAllController = async (req: ICountryGetCustomRequest, res
       name: query.name,
       status: query.status,
       code: query.code,
-      zipCode: query.zipCode
+      zipCode: query.zipCode,
     }
 
     const countries = await countryService.countryGetAll(params, settings)
     res.json(countries)
   } catch (error) {
     // Default error message
-    res.status(500).json({ error: 'Internal server error' })
+    res.status(500).json({ error: "Internal server error" })
   }
 }
 
-export const countryGetByIdController = async (req: Request, res: Response): Promise<void> => {
+export const countryGetByIdController = async (
+  req: Request,
+  res: Response,
+): Promise<void> => {
   try {
     // Get country id param
     const idCountry: number = Number(req.params.idCountry)
@@ -111,6 +128,6 @@ export const countryGetByIdController = async (req: Request, res: Response): Pro
     res.json(country)
   } catch (error) {
     // Default error message
-    res.status(500).json({ error: 'Internal server error' })
+    res.status(500).json({ error: "Internal server error" })
   }
 }

@@ -6,63 +6,78 @@ import {
   UpdateDateColumn,
   BaseEntity,
   ManyToOne,
-  JoinColumn
-} from 'typeorm'
+  JoinColumn,
+} from "typeorm"
 
-import { RoleModel } from '.'
-import { UserRoleEnum } from '../interfaces'
+import { UserRoleEnum } from "../interfaces"
 
-@Entity('users')
+import { RoleModel } from "."
+
+@Entity("users")
 export class UserModel extends BaseEntity {
-  @PrimaryGeneratedColumn({ type: 'int', name: 'id_user' })
-    idUser?: number
+  @PrimaryGeneratedColumn({ type: "int", name: "id_user" })
+  idUser?: number
 
-  @Column({ type: 'varchar', length: 36, nullable: true })
-    uuid: string
+  @Column({ type: "varchar", length: 36, nullable: true })
+  uuid: string
 
-  @Column({ type: 'varchar', length: 40 })
-    name: string
+  @Column({ type: "varchar", length: 40 })
+  name: string
 
-  @Column({ type: 'varchar', length: 20 })
-    username: string
+  @Column({ type: "varchar", length: 20 })
+  username: string
 
-  @Column({ type: 'varchar', length: 70 })
-    password: string
+  @Column({ type: "varchar", length: 70 })
+  password: string
 
-  @Column({ type: 'varchar', length: 17, nullable: true, name: 'phone_number' })
-    phoneNumber: string
+  @Column({ type: "varchar", length: 17, nullable: true, name: "phone_number" })
+  phoneNumber: string
 
-  @Column({ type: 'varchar', length: 15, nullable: true, name: 'whatsapp_number' })
-    whatsappNumber: string
+  @Column({ type: "varchar", length: 15, nullable: true, name: "whatsapp_number" })
+  whatsappNumber: string
 
-  @Column({ type: 'varchar', length: 100, nullable: true })
-    email: string
+  @Column({ type: "varchar", length: 100, nullable: true })
+  email: string
 
-  @Column({ type: 'enum', enum: UserRoleEnum, default: UserRoleEnum.USER, nullable: true })
-    type?: UserRoleEnum
+  @Column({
+    type: "enum",
+    enum: UserRoleEnum,
+    default: UserRoleEnum.USER,
+    nullable: true,
+  })
+  type?: UserRoleEnum
 
-  @Column({ type: 'tinyint', default: 0 })
-    notifications: boolean
+  @Column({ type: "tinyint", default: 0 })
+  notifications: boolean
 
-  @Column({ type: 'datetime', nullable: true, name: 'last_login' })
-    lastLogin: Date
+  @Column({ type: "datetime", nullable: true, name: "last_login" })
+  lastLogin: Date
 
-  @Column({ type: 'varchar', default: 'America/El_Salvador', name: 'time_zone' })
-    timeZone?: string
+  @Column({ type: "varchar", default: "America/El_Salvador", name: "time_zone" })
+  timeZone?: string
 
-  @Column({ name: 'id_role', nullable: true })
-    idRole?: number
+  @Column({ name: "id_role", nullable: true })
+  idRole?: number
 
-  @CreateDateColumn({ name: 'created_at', type: 'datetime', default: () => 'CURRENT_TIMESTAMP' })
-    createdAt?: Date
+  @CreateDateColumn({
+    name: "created_at",
+    type: "datetime",
+    default: () => "CURRENT_TIMESTAMP",
+  })
+  createdAt?: Date
 
-  @UpdateDateColumn({ name: 'updated_at', type: 'datetime', default: () => 'CURRENT_TIMESTAMP', onUpdate: 'CURRENT_TIMESTAMP' })
-    updatedAt?: Date
+  @UpdateDateColumn({
+    name: "updated_at",
+    type: "datetime",
+    default: () => "CURRENT_TIMESTAMP",
+    onUpdate: "CURRENT_TIMESTAMP",
+  })
+  updatedAt?: Date
 
-  @Column({ type: 'tinyint', default: 1 })
-    status: boolean
+  @Column({ type: "tinyint", default: 1 })
+  status: boolean
 
   @ManyToOne(() => RoleModel, (role) => role.users)
-  @JoinColumn({ name: 'id_role' })
-    role: RoleModel
+  @JoinColumn({ name: "id_role" })
+  role: RoleModel
 }

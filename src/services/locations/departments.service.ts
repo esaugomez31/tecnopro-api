@@ -1,72 +1,92 @@
-
-import { countryGetById } from './countries.service'
-import { logger, applyFilter } from '../../helpers'
-import { DepartmentModel } from '../../models'
+import { logger, applyFilter } from "../../helpers"
+import { DepartmentModel } from "../../models"
 import {
   IFilterSettings,
   IGetDepartmentByIdResponse,
   IGetDepartmentsResponse,
   IDepartmentQueryParams,
   IDepartmentFilters,
-  IDepartment
-} from '../../interfaces'
+  IDepartment,
+} from "../../interfaces"
 import {
   IDDepartmentNotFoundError,
   DepartmentCodeExistsError,
   IDDepCountryNotFoundError,
-  NameExistsError
-} from '../../errors/locations/department.factory'
+  NameExistsError,
+} from "../../errors/locations/department.factory"
+
+import { countryGetById } from "./countries.service"
 
 export const departmentCreate = async (department: IDepartment): Promise<IDepartment> => {
   try {
     // Searching for name matches
-    await existValuesValidations(department.name, department.dteCode, department.idCountry)
+    await existValuesValidations(
+      department.name,
+      department.dteCode,
+      department.idCountry,
+    )
 
     // Create department
     const createdDepartment = await DepartmentModel.save({ ...department })
     return createdDepartment
   } catch (error) {
-    logger.error('Create department: ' + (error as Error).name)
+    logger.error("Create department: " + (error as Error).name)
     throw error
   }
 }
 
-export const departmentUpdate = async (department: IDepartment, idDepartment: number): Promise<IDepartment> => {
+export const departmentUpdate = async (
+  department: IDepartment,
+  idDepartment: number,
+): Promise<IDepartment> => {
   try {
     // Required validations to update
     await Promise.all([
       existIdValidation(idDepartment),
-      existValuesValidations(department.name, department.dteCode, department.idCountry, idDepartment)
+      existValuesValidations(
+        department.name,
+        department.dteCode,
+        department.idCountry,
+        idDepartment,
+      ),
     ])
 
     // update department
     const updatedDepartment = await DepartmentModel.save({
-      idDepartment, ...department
+      idDepartment,
+      ...department,
     })
     return updatedDepartment
   } catch (error) {
-    logger.error('Update department: ' + (error as Error).name)
+    logger.error("Update department: " + (error as Error).name)
     throw error
   }
 }
 
-export const departmentUpdateStatus = async (idDepartment: number, status: boolean): Promise<IDepartment> => {
+export const departmentUpdateStatus = async (
+  idDepartment: number,
+  status: boolean,
+): Promise<IDepartment> => {
   try {
     // Existing department
     await existIdValidation(idDepartment)
 
     // update department status
     const updatedDepartment = await DepartmentModel.save({
-      idDepartment, status
+      idDepartment,
+      status,
     })
     return updatedDepartment
   } catch (error) {
-    logger.error('Update department status: ' + (error as Error).name)
+    logger.error("Update department status: " + (error as Error).name)
     throw error
   }
 }
 
-export const departmentGetAll = async (filterParams: IDepartmentFilters, settings: IFilterSettings): Promise<IGetDepartmentsResponse> => {
+export const departmentGetAll = async (
+  filterParams: IDepartmentFilters,
+  settings: IFilterSettings,
+): Promise<IGetDepartmentsResponse> => {
   try {
     const filters = getFilters(filterParams)
     const relations = getDepartmentIncludeFields(settings.include)
@@ -77,9 +97,9 @@ export const departmentGetAll = async (filterParams: IDepartmentFilters, setting
         take: settings.limit,
         skip: settings.skip,
         order: settings.order,
-        relations
+        relations,
       }),
-      DepartmentModel.count({ where: filters, relations })
+      DepartmentModel.count({ where: filters, relations }),
     ])
     // Total pages calc
     const totalPages = Math.ceil(totalCount / settings.limit)
@@ -88,23 +108,28 @@ export const departmentGetAll = async (filterParams: IDepartmentFilters, setting
       data: departments,
       total: totalCount,
       page: totalPages > 0 ? settings.page : 0,
-      totalPages
+      totalPages,
     }
   } catch (error) {
-    logger.error('Get departments: ' + (error as Error).name)
+    logger.error("Get departments: " + (error as Error).name)
     throw error
   }
 }
 
-export const departmentGetById = async (idDepartment: number, settings?: IFilterSettings): Promise<IGetDepartmentByIdResponse> => {
+export const departmentGetById = async (
+  idDepartment: number,
+  settings?: IFilterSettings,
+): Promise<IGetDepartmentByIdResponse> => {
   try {
-    const relations = settings !== undefined ? getDepartmentIncludeFields(settings.include) : []
+    const relations =
+      settings !== undefined ? getDepartmentIncludeFields(settings.include) : []
     const department = await DepartmentModel.findOne({
-      where: { idDepartment }, relations
+      where: { idDepartment },
+      relations,
     })
     return { data: department }
   } catch (error) {
-    logger.error('Get department by id: ' + (error as Error).name)
+    logger.error("Get department by id: " + (error as Error).name)
     throw error
   }
 }
@@ -112,8 +137,8 @@ export const departmentGetById = async (idDepartment: number, settings?: IFilter
 const getDepartmentIncludeFields = (includes?: string[]): string[] => {
   const relations = []
   if (includes !== undefined) {
-    if (includes.includes('municipalities')) {
-      relations.push('municipalities')
+    if (includes.includes("municipalities")) {
+      relations.push("municipalities")
     }
   }
   return relations
@@ -122,26 +147,31 @@ const getDepartmentIncludeFields = (includes?: string[]): string[] => {
 const getFilters = (params: IDepartmentFilters): IDepartmentQueryParams => {
   const filters: IDepartmentQueryParams = {}
 
-  applyFilter(filters, 'name', params.name, true)
-  applyFilter(filters, 'zipCode', params.zipCode, true)
-  applyFilter(filters, 'dteCode', params.dteCode)
-  applyFilter(filters, 'idCountry', params.idCountry)
-  applyFilter(filters, 'status', params.status)
+  applyFilter(filters, "name", params.name, true)
+  applyFilter(filters, "zipCode", params.zipCode, true)
+  applyFilter(filters, "dteCode", params.dteCode)
+  applyFilter(filters, "idCountry", params.idCountry)
+  applyFilter(filters, "status", params.status)
 
   return filters
 }
 
-const existValuesValidations = async (name?: string, dteCode?: string, idCountry?: number, idDepartment?: number): Promise<void> => {
+const existValuesValidations = async (
+  name?: string,
+  dteCode?: string,
+  idCountry?: number,
+  idDepartment?: number,
+): Promise<void> => {
   if (name === undefined && dteCode === undefined && idCountry === undefined) return
 
   const filters: IDepartmentQueryParams[] = [{ name }, { dteCode }]
 
   const [existDepartment, existCountry] = await Promise.all([
     DepartmentModel.findOne({
-      select: ['idDepartment', 'name', 'dteCode'],
-      where: filters
+      select: ["idDepartment", "name", "dteCode"],
+      where: filters,
     }),
-    idCountry !== undefined ? countryGetById(idCountry) : null
+    idCountry !== undefined ? countryGetById(idCountry) : null,
   ])
 
   if (idCountry !== undefined && existCountry?.data === null) {
@@ -154,7 +184,10 @@ const existValuesValidations = async (name?: string, dteCode?: string, idCountry
       throw new NameExistsError()
     }
     // Searching for code matches
-    if (existDepartment.dteCode === dteCode && existDepartment.idDepartment !== idDepartment) {
+    if (
+      existDepartment.dteCode === dteCode &&
+      existDepartment.idDepartment !== idDepartment
+    ) {
       throw new DepartmentCodeExistsError()
     }
   }

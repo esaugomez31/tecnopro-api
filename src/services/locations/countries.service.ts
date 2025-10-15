@@ -1,18 +1,18 @@
-import { CountryModel } from '../../models'
-import { logger, applyFilter } from '../../helpers'
+import { CountryModel } from "../../models"
+import { logger, applyFilter } from "../../helpers"
 import {
   IFilterSettings,
   IGetCountryByIdResponse,
   IGetCountriesResponse,
   ICountryQueryParams,
   ICountryFilters,
-  ICountry
-} from '../../interfaces'
+  ICountry,
+} from "../../interfaces"
 import {
   IDCountryNotFoundError,
   CountryCodeExistsError,
-  NameExistsError
-} from '../../errors/locations/country.factory'
+  NameExistsError,
+} from "../../errors/locations/country.factory"
 
 export const countryCreate = async (country: ICountry): Promise<ICountry> => {
   try {
@@ -23,47 +23,58 @@ export const countryCreate = async (country: ICountry): Promise<ICountry> => {
     const createdCountry = await CountryModel.save({ ...country })
     return createdCountry
   } catch (error) {
-    logger.error('Create country: ' + (error as Error).name)
+    logger.error("Create country: " + (error as Error).name)
     throw error
   }
 }
 
-export const countryUpdate = async (country: ICountry, idCountry: number): Promise<ICountry> => {
+export const countryUpdate = async (
+  country: ICountry,
+  idCountry: number,
+): Promise<ICountry> => {
   try {
     // Required validations to update
     await Promise.all([
       existIdValidation(idCountry),
-      existValuesValidations(country.name, country.code, idCountry)
+      existValuesValidations(country.name, country.code, idCountry),
     ])
 
     // update country
     const updatedCountry = await CountryModel.save({
-      idCountry, ...country
+      idCountry,
+      ...country,
     })
     return updatedCountry
   } catch (error) {
-    logger.error('Update country: ' + (error as Error).name)
+    logger.error("Update country: " + (error as Error).name)
     throw error
   }
 }
 
-export const countryUpdateStatus = async (idCountry: number, status: boolean): Promise<ICountry> => {
+export const countryUpdateStatus = async (
+  idCountry: number,
+  status: boolean,
+): Promise<ICountry> => {
   try {
     // Existing country
     await existIdValidation(idCountry)
 
     // update country status
     const updatedCountry = await CountryModel.save({
-      idCountry, status
+      idCountry,
+      status,
     })
     return updatedCountry
   } catch (error) {
-    logger.error('Update country status: ' + (error as Error).name)
+    logger.error("Update country status: " + (error as Error).name)
     throw error
   }
 }
 
-export const countryGetAll = async (filterParams: ICountryFilters, settings: IFilterSettings): Promise<IGetCountriesResponse> => {
+export const countryGetAll = async (
+  filterParams: ICountryFilters,
+  settings: IFilterSettings,
+): Promise<IGetCountriesResponse> => {
   try {
     const filters = getFilters(filterParams)
     const relations = getCountryIncludeFields(settings.include)
@@ -74,9 +85,9 @@ export const countryGetAll = async (filterParams: ICountryFilters, settings: IFi
         take: settings.limit,
         skip: settings.skip,
         order: settings.order,
-        relations
+        relations,
       }),
-      CountryModel.count({ where: filters, relations })
+      CountryModel.count({ where: filters, relations }),
     ])
     // Total pages calc
     const totalPages = Math.ceil(totalCount / settings.limit)
@@ -85,24 +96,28 @@ export const countryGetAll = async (filterParams: ICountryFilters, settings: IFi
       data: countries,
       total: totalCount,
       page: totalPages > 0 ? settings.page : 0,
-      totalPages
+      totalPages,
     }
   } catch (error) {
-    logger.error('Get countries: ' + (error as Error).name)
+    logger.error("Get countries: " + (error as Error).name)
     throw error
   }
 }
 
-export const countryGetById = async (idCountry: number, settings?: IFilterSettings): Promise<IGetCountryByIdResponse> => {
+export const countryGetById = async (
+  idCountry: number,
+  settings?: IFilterSettings,
+): Promise<IGetCountryByIdResponse> => {
   try {
-    const relations = settings !== undefined ? getCountryIncludeFields(settings.include) : []
+    const relations =
+      settings !== undefined ? getCountryIncludeFields(settings.include) : []
     const country = await CountryModel.findOne({
       where: { idCountry },
-      relations
+      relations,
     })
     return { data: country }
   } catch (error) {
-    logger.error('Get country by id: ' + (error as Error).name)
+    logger.error("Get country by id: " + (error as Error).name)
     throw error
   }
 }
@@ -110,11 +125,11 @@ export const countryGetById = async (idCountry: number, settings?: IFilterSettin
 const getCountryIncludeFields = (includes?: string[]): string[] => {
   const relations = []
   if (includes !== undefined) {
-    if (includes.includes('departments')) {
-      relations.push('departments')
+    if (includes.includes("departments")) {
+      relations.push("departments")
     }
-    if (includes.includes('municipalities')) {
-      relations.push('departments.municipalities')
+    if (includes.includes("municipalities")) {
+      relations.push("departments.municipalities")
     }
   }
   return relations
@@ -123,22 +138,26 @@ const getCountryIncludeFields = (includes?: string[]): string[] => {
 const getFilters = (params: ICountryFilters): ICountryQueryParams => {
   const filters: ICountryQueryParams = {}
 
-  applyFilter(filters, 'name', params.name, true)
-  applyFilter(filters, 'code', params.code, true)
-  applyFilter(filters, 'zipCode', params.zipCode, true)
-  applyFilter(filters, 'status', params.status)
+  applyFilter(filters, "name", params.name, true)
+  applyFilter(filters, "code", params.code, true)
+  applyFilter(filters, "zipCode", params.zipCode, true)
+  applyFilter(filters, "status", params.status)
 
   return filters
 }
 
-const existValuesValidations = async (name?: string, code?: string, idCountry?: number): Promise<void> => {
+const existValuesValidations = async (
+  name?: string,
+  code?: string,
+  idCountry?: number,
+): Promise<void> => {
   if (name === undefined && code === undefined) return
 
   const filters: ICountryQueryParams[] = [{ name }, { code }]
 
   const existCountry = await CountryModel.findOne({
-    select: ['idCountry', 'name', 'code'],
-    where: filters
+    select: ["idCountry", "name", "code"],
+    where: filters,
   })
 
   if (existCountry !== null) {
@@ -156,7 +175,8 @@ const existValuesValidations = async (name?: string, code?: string, idCountry?: 
 const existIdValidation = async (idCountry: number): Promise<void> => {
   // Existing country per ID
   const existCountry = await CountryModel.findOne({
-    select: ['idCountry'], where: { idCountry }
+    select: ["idCountry"],
+    where: { idCountry },
   })
 
   if (existCountry === null) throw new IDCountryNotFoundError()

@@ -1,16 +1,16 @@
-import { IFilterSettings } from '../interfaces/filter.interfaces'
+import { IFilterSettings } from "../interfaces/filter.interfaces"
 
 export const filtersettings = (params: any): IFilterSettings => {
   const page = params.page
   const limit = params.limit
   const orderBy = params.orderBy
   const orderDirection = params.orderDirection
-  const include = params.include?.split(',')
+  const include = params.include?.split(",")
 
   // Sorting settings
-  const order: { [key: string]: 'ASC' | 'DESC' } = {}
+  const order: { [key: string]: "ASC" | "DESC" } = {}
   if (orderBy !== undefined) {
-    order[orderBy] = orderDirection === 'ASC' ? 'ASC' : 'DESC'
+    order[orderBy] = orderDirection === "ASC" ? "ASC" : "DESC"
   }
 
   // pagination settings

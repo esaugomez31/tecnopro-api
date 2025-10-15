@@ -1,25 +1,19 @@
-import { FindOperator } from 'typeorm'
-import { Request } from 'express'
-import { ParsedQs } from 'qs'
+import { FindOperator } from "typeorm"
+import { Request } from "express"
+import { ParsedQs } from "qs"
 
-import {
-  IFilterSettings,
-  IBranch,
-  IBrand,
-  ICategory,
-  IUser
-} from '.'
+import { IFilterSettings, IBranch, IBrand, ICategory, IUser } from "."
 
 export enum ProductPermEnum {
-  VIEWLIST = 'view_list',
-  CREATE = 'create',
-  UPDATE = 'update',
-  UPDATESTATUS = 'update_status',
-  SEEPURCHASEDATA = 'see_purchase_data',
-  UPDTPURCHASEDATA = 'update_purchase_data',
-  UPDTCOMMISSIONS = 'update_commissions',
-  UPDTSTOCK = 'update_stock',
-  UPDTPRICE = 'update_price'
+  VIEWLIST = "view_list",
+  CREATE = "create",
+  UPDATE = "update",
+  UPDATESTATUS = "update_status",
+  SEEPURCHASEDATA = "see_purchase_data",
+  UPDTPURCHASEDATA = "update_purchase_data",
+  UPDTCOMMISSIONS = "update_commissions",
+  UPDTSTOCK = "update_stock",
+  UPDTPRICE = "update_price",
 }
 
 // Main product interface
@@ -34,7 +28,7 @@ export interface IProduct {
   barcodeGenerated: number
   price: number
   purchasePrice?: number
-  purchasedBy?: 'store' | 'user'
+  purchasedBy?: "store" | "user"
   dteUnitMeasure: number
   userCommissionPercent?: number
   branchCommissionPercent?: number
@@ -70,7 +64,8 @@ export interface IProductFilters {
 }
 
 // Filter options to product in typeorm
-export interface IProductQueryParams extends Omit<IProductFilters, 'name' | 'description' | 'location' | 'code'> {
+export interface IProductQueryParams
+  extends Omit<IProductFilters, "name" | "description" | "location" | "code"> {
   name?: FindOperator<string> | string
   description?: FindOperator<string> | string
   location?: FindOperator<string> | string

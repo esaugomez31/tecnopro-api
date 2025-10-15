@@ -1,64 +1,71 @@
-import { body, query, param } from 'express-validator'
+import { body, query, param } from "express-validator"
 
-import { handleValidationErrors, stringToBoolean } from '../../../helpers'
-import { validateFilterParams, validateIncludeParams } from '../filter.validation'
+import { handleValidationErrors, stringToBoolean } from "../../../helpers"
+import { validateFilterParams, validateIncludeParams } from "../filter.validation"
 
-const validSortFields = ['idCountry', 'name', 'code', 'zipCode']
-const validIncludeFields = ['departments', 'municipalities']
+const validSortFields = ["idCountry", "name", "code", "zipCode"]
+const validIncludeFields = ["departments", "municipalities"]
 
 const countryCommonValidations = (optional = false): any => [
-  body('name')
+  body("name")
     .optional(optional)
-    .isString().withMessage('name must be a string')
-    .isLength({ min: 1, max: 50 }).withMessage('name must be between 1 and 50 characters long'),
+    .isString()
+    .withMessage("name must be a string")
+    .isLength({ min: 1, max: 50 })
+    .withMessage("name must be between 1 and 50 characters long"),
 
-  body('code')
+  body("code")
     .optional({ checkFalsy: true })
-    .isString().withMessage('code must be a string')
-    .isLength({ min: 1, max: 3 }).withMessage('code must be between 1 and 3 characters long'),
+    .isString()
+    .withMessage("code must be a string")
+    .isLength({ min: 1, max: 3 })
+    .withMessage("code must be between 1 and 3 characters long"),
 
-  body('zipCode')
+  body("zipCode")
     .optional({ checkFalsy: true })
-    .isString().withMessage('zipCode must be a string')
-    .isLength({ min: 1, max: 10 }).withMessage('zipCode must be between 1 and 10 characters long'),
+    .isString()
+    .withMessage("zipCode must be a string")
+    .isLength({ min: 1, max: 10 })
+    .withMessage("zipCode must be between 1 and 10 characters long"),
 
-  body('timeZone')
+  body("timeZone")
     .optional({ checkFalsy: true })
-    .isString().withMessage('timeZone must be a string')
-    .isLength({ min: 1, max: 50 }).withMessage('timeZone must be between 1 and 50 characters long')
+    .isString()
+    .withMessage("timeZone must be a string")
+    .isLength({ min: 1, max: 50 })
+    .withMessage("timeZone must be between 1 and 50 characters long"),
 ]
 
 export const validateCountryCreation = (): any => {
-  return [
-    ...countryCommonValidations(),
-
-    handleValidationErrors
-  ]
+  return [...countryCommonValidations(), handleValidationErrors]
 }
 
 export const validateCountryUpdate = (): any => {
   return [
-    param('idCountry')
-      .isInt().withMessage('idCountry must be an integer')
+    param("idCountry")
+      .isInt()
+      .withMessage("idCountry must be an integer")
       .customSanitizer(Number),
 
     ...countryCommonValidations(true),
 
-    handleValidationErrors
+    handleValidationErrors,
   ]
 }
 
 export const validateCountryUpdateStatus = (): any => {
   return [
-    param('idCountry')
-      .isInt().withMessage('idCountry must be an integer')
+    param("idCountry")
+      .isInt()
+      .withMessage("idCountry must be an integer")
       .customSanitizer(Number),
 
-    param('status')
-      .isBoolean().withMessage('status must be a boolean')
+    param("status")
+      .isBoolean()
+      .withMessage("status must be a boolean")
       .customSanitizer(stringToBoolean),
 
-    handleValidationErrors
+    handleValidationErrors,
   ]
 }
 
@@ -66,40 +73,45 @@ export const validateGetCountries = (): any => {
   return [
     ...validateFilterParams(validSortFields),
 
-    query('name')
+    query("name")
       .optional()
-      .isString().withMessage('name must be a string')
-      .customSanitizer(value => value as string | undefined),
+      .isString()
+      .withMessage("name must be a string")
+      .customSanitizer((value) => value as string | undefined),
 
-    query('status')
+    query("status")
       .optional()
-      .isBoolean().withMessage('status must be a boolean')
+      .isBoolean()
+      .withMessage("status must be a boolean")
       .customSanitizer(stringToBoolean),
 
-    query('code')
+    query("code")
       .optional()
-      .isString().withMessage('code must be a string')
-      .customSanitizer(value => value as string | undefined),
+      .isString()
+      .withMessage("code must be a string")
+      .customSanitizer((value) => value as string | undefined),
 
-    query('zipCode')
+    query("zipCode")
       .optional()
-      .isString().withMessage('zipCode must be a string')
-      .customSanitizer(value => value as string | undefined),
+      .isString()
+      .withMessage("zipCode must be a string")
+      .customSanitizer((value) => value as string | undefined),
 
     ...validateIncludeParams(validIncludeFields),
 
-    handleValidationErrors
+    handleValidationErrors,
   ]
 }
 
 export const validateGetCountryById = (): any => {
   return [
-    param('idCountry')
-      .isInt().withMessage('idCountry must be an integer')
+    param("idCountry")
+      .isInt()
+      .withMessage("idCountry must be an integer")
       .customSanitizer(Number),
 
     ...validateIncludeParams(validIncludeFields),
 
-    handleValidationErrors
+    handleValidationErrors,
   ]
 }

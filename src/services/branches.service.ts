@@ -1,12 +1,7 @@
-import { v4 as uuidv4 } from 'uuid'
+import { v4 as uuidv4 } from "uuid"
 
-import {
-  countryGetById,
-  departmentGetById,
-  municipalityGetById
-} from './locations'
-import { BranchModel } from '../models'
-import { logger, applyFilter } from '../helpers'
+import { BranchModel } from "../models"
+import { logger, applyFilter } from "../helpers"
 import {
   IFilterSettings,
   IGetBranchByIdResponse,
@@ -15,22 +10,26 @@ import {
   IBranchCommonBody,
   IBranchResponse,
   IBranchFilters,
-  IBranch
-} from '../interfaces'
+  IBranch,
+} from "../interfaces"
 import {
   IDBranchMunicipalityNotFoundError,
   IDBranchCountryNotFoundError,
   IDBranchDepartmentNotFoundError,
-  IDBranchNotFoundError
-} from '../errors/branch.error'
+  IDBranchNotFoundError,
+} from "../errors/branch.error"
 
-export const branchCreate = async (branch: IBranchCommonBody): Promise<IBranchResponse | {}> => {
+import { countryGetById, departmentGetById, municipalityGetById } from "./locations"
+
+export const branchCreate = async (
+  branch: IBranchCommonBody,
+): Promise<IBranchResponse | {}> => {
   try {
     // Searching for name matches
     await existValuesValidations(
       branch.idCountry,
       branch.idDepartment,
-      branch.idMunicipality
+      branch.idMunicipality,
     )
 
     // Model branch object
@@ -41,7 +40,7 @@ export const branchCreate = async (branch: IBranchCommonBody): Promise<IBranchRe
     const payload: IBranch = {
       ...mainData,
       ...dte,
-      uuid: uuidv4()
+      uuid: uuidv4(),
     }
 
     // Create branch
@@ -49,17 +48,20 @@ export const branchCreate = async (branch: IBranchCommonBody): Promise<IBranchRe
 
     // return db response
     const getBranch = await BranchModel.findOne({
-      where: { idBranch: createdBranch.idBranch }
+      where: { idBranch: createdBranch.idBranch },
     })
 
     return getBranch !== null ? getBranchPayload(getBranch) : {}
   } catch (error) {
-    logger.error('Create branch: ' + (error as Error).name)
+    logger.error("Create branch: " + (error as Error).name)
     throw error
   }
 }
 
-export const branchUpdate = async (branch: IBranchCommonBody, idBranch: number): Promise<IBranchResponse | {}> => {
+export const branchUpdate = async (
+  branch: IBranchCommonBody,
+  idBranch: number,
+): Promise<IBranchResponse | {}> => {
   try {
     // Required validations to update
     await Promise.all([
@@ -67,8 +69,8 @@ export const branchUpdate = async (branch: IBranchCommonBody, idBranch: number):
       existValuesValidations(
         branch.idCountry,
         branch.idDepartment,
-        branch.idMunicipality
-      )
+        branch.idMunicipality,
+      ),
     ])
 
     const { dte: _, ...mainData } = branch
@@ -77,48 +79,56 @@ export const branchUpdate = async (branch: IBranchCommonBody, idBranch: number):
 
     const payload: IBranch = {
       ...mainData,
-      ...dte
+      ...dte,
     }
 
     // update branch
     const updatedBranch = await BranchModel.save({
-      idBranch, ...payload
+      idBranch,
+      ...payload,
     })
 
     // return db response
     const getBranch = await BranchModel.findOne({
-      where: { idBranch: updatedBranch.idBranch }
+      where: { idBranch: updatedBranch.idBranch },
     })
 
     return getBranch !== null ? getBranchPayload(getBranch) : {}
   } catch (error) {
-    logger.error('Update branch: ' + (error as Error).name)
+    logger.error("Update branch: " + (error as Error).name)
     throw error
   }
 }
 
-export const branchUpdateStatus = async (idBranch: number, status: boolean): Promise<IBranch | {}> => {
+export const branchUpdateStatus = async (
+  idBranch: number,
+  status: boolean,
+): Promise<IBranch | {}> => {
   try {
     // Existing branch
     await existIdValidation(idBranch)
 
     // update branch status
     const updatedBranch = await BranchModel.save({
-      idBranch, status
+      idBranch,
+      status,
     })
 
     // return db response
     const getBranch = await BranchModel.findOne({
-      where: { idBranch: updatedBranch.idBranch }
+      where: { idBranch: updatedBranch.idBranch },
     })
     return getBranch !== null ? getBranchPayload(getBranch) : {}
   } catch (error) {
-    logger.error('Update branch status: ' + (error as Error).name)
+    logger.error("Update branch status: " + (error as Error).name)
     throw error
   }
 }
 
-export const branchGetAll = async (filterParams: IBranchFilters, settings: IFilterSettings): Promise<IGetBranchesResponse> => {
+export const branchGetAll = async (
+  filterParams: IBranchFilters,
+  settings: IFilterSettings,
+): Promise<IGetBranchesResponse> => {
   try {
     const filters = getFilters(filterParams)
     const [branches, totalCount] = await Promise.all([
@@ -126,12 +136,12 @@ export const branchGetAll = async (filterParams: IBranchFilters, settings: IFilt
         where: filters,
         take: settings.limit,
         skip: settings.skip,
-        order: settings.order
+        order: settings.order,
       }),
-      BranchModel.count({ where: filters })
+      BranchModel.count({ where: filters }),
     ])
 
-    const response: IBranchResponse[] = branches.map(branch => getBranchPayload(branch))
+    const response: IBranchResponse[] = branches.map((branch) => getBranchPayload(branch))
 
     // Total pages calc
     const totalPages = Math.ceil(totalCount / settings.limit)
@@ -140,23 +150,25 @@ export const branchGetAll = async (filterParams: IBranchFilters, settings: IFilt
       data: response,
       total: totalCount,
       page: totalPages > 0 ? settings.page : 0,
-      totalPages
+      totalPages,
     }
   } catch (error) {
-    logger.error('Get branches: ' + (error as Error).name)
+    logger.error("Get branches: " + (error as Error).name)
     throw error
   }
 }
 
-export const branchGetById = async (idBranch: number): Promise<IGetBranchByIdResponse> => {
+export const branchGetById = async (
+  idBranch: number,
+): Promise<IGetBranchByIdResponse> => {
   try {
     const branch = await BranchModel.findOne({
-      where: { idBranch }
+      where: { idBranch },
     })
 
     return { data: branch !== null ? getBranchPayload(branch) : null }
   } catch (error) {
-    logger.error('Get branch by id: ' + (error as Error).name)
+    logger.error("Get branch by id: " + (error as Error).name)
     throw error
   }
 }
@@ -164,27 +176,31 @@ export const branchGetById = async (idBranch: number): Promise<IGetBranchByIdRes
 const getFilters = (params: IBranchFilters): IBranchQueryParams => {
   const filters: IBranchQueryParams = {}
 
-  applyFilter(filters, 'name', params.name, true)
-  applyFilter(filters, 'description', params.description, true)
-  applyFilter(filters, 'email', params.email, true)
-  applyFilter(filters, 'phoneNumber', params.phoneNumber, true)
-  applyFilter(filters, 'uuid', params.uuid)
-  applyFilter(filters, 'idCountry', params.idCountry)
-  applyFilter(filters, 'idDepartment', params.idDepartment)
-  applyFilter(filters, 'idMunicipality', params.idMunicipality)
-  applyFilter(filters, 'status', params.status)
+  applyFilter(filters, "name", params.name, true)
+  applyFilter(filters, "description", params.description, true)
+  applyFilter(filters, "email", params.email, true)
+  applyFilter(filters, "phoneNumber", params.phoneNumber, true)
+  applyFilter(filters, "uuid", params.uuid)
+  applyFilter(filters, "idCountry", params.idCountry)
+  applyFilter(filters, "idDepartment", params.idDepartment)
+  applyFilter(filters, "idMunicipality", params.idMunicipality)
+  applyFilter(filters, "status", params.status)
 
   return filters
 }
 
-const existValuesValidations = async (idCountry?: number, idDepartment?: number, idMunicipality?: number): Promise<void> => {
+const existValuesValidations = async (
+  idCountry?: number,
+  idDepartment?: number,
+  idMunicipality?: number,
+): Promise<void> => {
   const ids = [idCountry, idDepartment, idMunicipality]
-  if (!ids.some(id => id !== undefined)) return
+  if (!ids.some((id) => id !== undefined)) return
 
   const [existCountry, existDepartment, existMunicipality] = await Promise.all([
     idCountry !== undefined ? countryGetById(idCountry) : null,
     idDepartment !== undefined ? departmentGetById(idDepartment) : null,
-    idMunicipality !== undefined ? municipalityGetById(idMunicipality) : null
+    idMunicipality !== undefined ? municipalityGetById(idMunicipality) : null,
   ])
 
   if (idCountry !== undefined && existCountry?.data === null) {
@@ -232,7 +248,7 @@ const getBranchPayload = (branch?: IBranch): IBranchResponse => {
       dteActivityDesc: branch?.dteActivityDesc,
       dteSenderName: branch?.dteSenderName,
       dteSenderTradeName: branch?.dteSenderTradeName,
-      dteEstablishment: branch?.dteEstablishment
-    }
+      dteEstablishment: branch?.dteEstablishment,
+    },
   }
 }

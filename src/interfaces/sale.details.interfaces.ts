@@ -1,7 +1,4 @@
-import {
-  ISale,
-  IProduct
-} from '.'
+import { ISale, IProduct } from "."
 
 export interface ISaleDetail {
   idSaleDetail?: number

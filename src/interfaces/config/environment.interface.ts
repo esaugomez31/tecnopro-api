@@ -29,4 +29,4 @@ interface iDB {
   password: string
 }
 
-export type TypeNodeEnv = 'production' | 'development' | 'production-local'
+export type TypeNodeEnv = "production" | "development" | "production-local"

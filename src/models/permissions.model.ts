@@ -4,32 +4,43 @@ import {
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
-  BaseEntity, ManyToMany
-} from 'typeorm'
+  BaseEntity,
+  ManyToMany,
+} from "typeorm"
 
-import { RoleModel } from '.'
-import { SystemPageEnum } from '../interfaces'
+import { SystemPageEnum } from "../interfaces"
 
-@Entity('permissions')
+import { RoleModel } from "."
+
+@Entity("permissions")
 export class PermissionModel extends BaseEntity {
-  @PrimaryGeneratedColumn({ type: 'int', name: 'id_permission' })
-    idPermission?: number
+  @PrimaryGeneratedColumn({ type: "int", name: "id_permission" })
+  idPermission?: number
 
-  @Column({ type: 'enum', enum: SystemPageEnum, name: 'system_page' })
-    systemPage: SystemPageEnum
+  @Column({ type: "enum", enum: SystemPageEnum, name: "system_page" })
+  systemPage: SystemPageEnum
 
-  @Column({ type: 'varchar', length: 25, name: 'permission_name' })
-    permissionName: string
+  @Column({ type: "varchar", length: 25, name: "permission_name" })
+  permissionName: string
 
-  @CreateDateColumn({ name: 'created_at', type: 'datetime', default: () => 'CURRENT_TIMESTAMP' })
-    createdAt?: Date
+  @CreateDateColumn({
+    name: "created_at",
+    type: "datetime",
+    default: () => "CURRENT_TIMESTAMP",
+  })
+  createdAt?: Date
 
-  @UpdateDateColumn({ name: 'updated_at', type: 'datetime', default: () => 'CURRENT_TIMESTAMP', onUpdate: 'CURRENT_TIMESTAMP' })
-    updatedAt?: Date
+  @UpdateDateColumn({
+    name: "updated_at",
+    type: "datetime",
+    default: () => "CURRENT_TIMESTAMP",
+    onUpdate: "CURRENT_TIMESTAMP",
+  })
+  updatedAt?: Date
 
-  @Column({ type: 'tinyint', default: 1 })
-    status: boolean
+  @Column({ type: "tinyint", default: 1 })
+  status: boolean
 
   @ManyToMany(() => RoleModel, (role) => role.permissions)
-    roles: RoleModel[]
+  roles: RoleModel[]
 }

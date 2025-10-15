@@ -1,18 +1,13 @@
-import { FindOperator } from 'typeorm'
-import { Request } from 'express'
-import { ParsedQs } from 'qs'
+import { FindOperator } from "typeorm"
+import { Request } from "express"
+import { ParsedQs } from "qs"
 
-import {
-  IFilterSettings,
-  ICountry,
-  IDepartment,
-  IMunicipality
-} from '.'
+import { IFilterSettings, ICountry, IDepartment, IMunicipality } from "."
 
 export enum BranchPermEnum {
-  CREATE = 'create',
-  UPDATE = 'update',
-  UPDATESTATUS = 'update_status',
+  CREATE = "create",
+  UPDATE = "update",
+  UPDATESTATUS = "update_status",
 }
 
 // Main branch model
@@ -32,7 +27,7 @@ export interface IBranch {
   department?: IDepartment
   municipality?: IMunicipality
   dteActive?: boolean
-  dteEnvironment?: '01' | '00' // 01: PRODUCTION, 00: TEST
+  dteEnvironment?: "01" | "00" // 01: PRODUCTION, 00: TEST
   dteApiJwt?: string
   dteApiJwtDate?: Date
   dteSenderNit?: string
@@ -43,7 +38,7 @@ export interface IBranch {
   dteActivityDesc?: string
   dteSenderName?: string
   dteSenderTradeName?: string
-  dteEstablishment?: '01' | '02' | '03' | '04' // 01: SUCURSAL, 02: CASA MATRIZ, 03: BODEGA, 04: PATIO
+  dteEstablishment?: "01" | "02" | "03" | "04" // 01: SUCURSAL, 02: CASA MATRIZ, 03: BODEGA, 04: PATIO
   createdAt?: Date
   updatedAt?: Date
   status?: boolean
@@ -89,7 +84,8 @@ export interface IBranchFilters {
 }
 
 // Filter options to branch in typeorm
-export interface IBranchQueryParams extends Omit<IBranchFilters, 'name' | 'description' | 'phoneNumber' | 'email'> {
+export interface IBranchQueryParams
+  extends Omit<IBranchFilters, "name" | "description" | "phoneNumber" | "email"> {
   name?: FindOperator<string> | string
   description?: FindOperator<string> | string
   phoneNumber?: FindOperator<string> | string
@@ -114,19 +110,20 @@ export interface IBranchGetCustomRequest extends Request {
   query: IBranchFilters & IFilterSettings & ParsedQs
 }
 
-type BranchDtefields = 'dteActive' |
-'dteEnvironment' |
-'dteApiJwt' |
-'dteApiJwtDate' |
-'dteSenderNit' |
-'dteSenderNrc' |
-'dteSenderEmail' |
-'dteSenderPhone' |
-'dteActivityCode' |
-'dteActivityDesc' |
-'dteSenderName' |
-'dteSenderTradeName' |
-'dteEstablishment'
+type BranchDtefields =
+  | "dteActive"
+  | "dteEnvironment"
+  | "dteApiJwt"
+  | "dteApiJwtDate"
+  | "dteSenderNit"
+  | "dteSenderNrc"
+  | "dteSenderEmail"
+  | "dteSenderPhone"
+  | "dteActivityCode"
+  | "dteActivityDesc"
+  | "dteSenderName"
+  | "dteSenderTradeName"
+  | "dteEstablishment"
 
 export interface IBranchCommonBody extends Omit<IBranch, BranchDtefields> {
   dte: Pick<IBranch, BranchDtefields>

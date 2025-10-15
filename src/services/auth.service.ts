@@ -1,32 +1,27 @@
-import { IUserJWT, ILoginResponse, UserRoleEnum } from '../interfaces'
-import {
-  tokenCreate,
-  getActiveUSerToken,
-  deleteTokenById
-} from './tokens.service'
-import {
-  userUpdateLastLogin,
-  userGetByUserOrEmail
-} from './users.service'
+import { IUserJWT, ILoginResponse, UserRoleEnum } from "../interfaces"
+
 import {
   logger,
   verifyRefreshToken,
   generateAccessToken,
   getLocalDateTimeNow,
   comparePassword,
-  generateRefreshToken
-} from '../helpers'
+  generateRefreshToken,
+} from "../helpers"
 import {
   AccessNotAuthorizedError,
   InvalidTokenError,
-  ExpiredTokenError
-} from '../errors/auth.error'
-import {
-  InvalidUserCredentialsError,
-  UserNotFoundError
-} from '../errors/user.error'
+  ExpiredTokenError,
+} from "../errors/auth.error"
+import { InvalidUserCredentialsError, UserNotFoundError } from "../errors/user.error"
 
-export const login = async (usernameOrEmail: string, password: string): Promise<ILoginResponse> => {
+import { userUpdateLastLogin, userGetByUserOrEmail } from "./users.service"
+import { tokenCreate, getActiveUSerToken, deleteTokenById } from "./tokens.service"
+
+export const login = async (
+  usernameOrEmail: string,
+  password: string,
+): Promise<ILoginResponse> => {
   try {
     // Searching for credential matches
     const { data } = await userGetByUserOrEmail(usernameOrEmail)
@@ -48,7 +43,7 @@ export const login = async (usernameOrEmail: string, password: string): Promise<
       idUser: data.idUser as number,
       uuid: data.uuid,
       idRole: data.idRole,
-      type: data.type as UserRoleEnum
+      type: data.type as UserRoleEnum,
     }
 
     // Generate access and refresh token
@@ -64,17 +59,17 @@ export const login = async (usernameOrEmail: string, password: string): Promise<
       tokenCreate({
         idUser: Number(data?.idUser),
         token: refreshToken.token,
-        expiredAt
-      })
+        expiredAt,
+      }),
     ])
 
     return {
       accessToken,
       refreshToken,
-      user: newUser
+      user: newUser,
     }
   } catch (error) {
-    logger.error('Login user: ' + (error as Error).name)
+    logger.error("Login user: " + (error as Error).name)
     throw error
   }
 }
@@ -87,7 +82,11 @@ export const logout = async (refreshToken?: string): Promise<boolean> => {
 
     // Eval refresh token
     const data = verifyRefreshToken(refreshToken)
-    if (data?.idUser === undefined || data?.uuid === undefined || data?.type === undefined) {
+    if (
+      data?.idUser === undefined ||
+      data?.uuid === undefined ||
+      data?.type === undefined
+    ) {
       throw new InvalidTokenError()
     }
 
@@ -105,12 +104,14 @@ export const logout = async (refreshToken?: string): Promise<boolean> => {
 
     return tokenDeleted
   } catch (error) {
-    logger.error('Logout user: ' + (error as Error).name)
+    logger.error("Logout user: " + (error as Error).name)
     throw error
   }
 }
 
-export const refresh = async (refreshToken?: string): Promise<{ token: string, expiresIn: number }> => {
+export const refresh = async (
+  refreshToken?: string,
+): Promise<{ token: string; expiresIn: number }> => {
   try {
     if (refreshToken === undefined) {
       throw new AccessNotAuthorizedError()
@@ -118,7 +119,11 @@ export const refresh = async (refreshToken?: string): Promise<{ token: string, e
 
     // Eval refresh token
     const data = verifyRefreshToken(refreshToken)
-    if (data?.idUser === undefined || data?.uuid === undefined || data?.type === undefined) {
+    if (
+      data?.idUser === undefined ||
+      data?.uuid === undefined ||
+      data?.type === undefined
+    ) {
       throw new InvalidTokenError()
     }
 
@@ -134,12 +139,12 @@ export const refresh = async (refreshToken?: string): Promise<{ token: string, e
       idUser: data.idUser,
       uuid: data.uuid,
       idRole: data.idRole,
-      type: data.type
+      type: data.type,
     })
 
     return { token, expiresIn }
   } catch (error) {
-    logger.error('Refresh token: ' + (error as Error).name)
+    logger.error("Refresh token: " + (error as Error).name)
     throw error
   }
 }

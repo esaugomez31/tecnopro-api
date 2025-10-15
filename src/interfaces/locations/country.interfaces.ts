@@ -1,8 +1,8 @@
-import { FindOperator } from 'typeorm'
-import { Request } from 'express'
-import { ParsedQs } from 'qs'
+import { FindOperator } from "typeorm"
+import { Request } from "express"
+import { ParsedQs } from "qs"
 
-import { IFilterSettings } from '../filter.interfaces'
+import { IFilterSettings } from "../filter.interfaces"
 
 // Main country interface
 export interface ICountry {
@@ -25,7 +25,8 @@ export interface ICountryFilters {
 }
 
 // Filter options to country in typeorm
-export interface ICountryQueryParams extends Omit<ICountryFilters, 'name' | 'code' | 'zipCode'> {
+export interface ICountryQueryParams
+  extends Omit<ICountryFilters, "name" | "code" | "zipCode"> {
   name?: FindOperator<string> | string
   code?: FindOperator<string> | string
   zipCode?: FindOperator<string> | string

@@ -1,20 +1,20 @@
-import { FindOperator } from 'typeorm'
-import { Request } from 'express'
-import { ParsedQs } from 'qs'
+import { FindOperator } from "typeorm"
+import { Request } from "express"
+import { ParsedQs } from "qs"
 
-import { IFilterSettings } from './filter.interfaces'
+import { IFilterSettings } from "./filter.interfaces"
 
 export enum UserRoleEnum {
-  ADMIN = 'admin',
-  SUBADMIN = 'sub_admin',
-  USER = 'user'
+  ADMIN = "admin",
+  SUBADMIN = "sub_admin",
+  USER = "user",
 }
 
 export enum UserPermEnum {
-  VIEWLIST = 'view_list',
-  CREATE = 'create',
-  UPDATE = 'update',
-  UPDATESTATUS = 'update_status',
+  VIEWLIST = "view_list",
+  CREATE = "create",
+  UPDATE = "update",
+  UPDATESTATUS = "update_status",
 }
 
 // Main user interface
@@ -56,10 +56,11 @@ export interface IUserFilters {
 }
 
 // User public info
-export interface IUserPublicResponse extends Omit<IUser, 'password' | 'status'> {}
+export interface IUserPublicResponse extends Omit<IUser, "password" | "status"> {}
 
 // Filter options to use in typeorm
-export interface IUserQueryParams extends Omit<IUserFilters, 'username' | 'name' | 'email' | 'phoneNumber'> {
+export interface IUserQueryParams
+  extends Omit<IUserFilters, "username" | "name" | "email" | "phoneNumber"> {
   username?: FindOperator<string> | string
   name?: FindOperator<string> | string
   email?: FindOperator<string> | string

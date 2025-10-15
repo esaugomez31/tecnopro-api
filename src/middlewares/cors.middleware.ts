@@ -1,9 +1,9 @@
-import { CorsOptions } from 'cors'
+import { CorsOptions } from "cors"
 
-import envs from '../config/environment.config'
+import envs from "../config/environment.config"
 
 export const corsOptions = (): CorsOptions => {
-  const whiteList = envs.app.whiteList?.split(',') ?? []
+  const whiteList = envs.app.whiteList?.split(",") ?? []
 
   return {
     origin: (origin, callback) => {
@@ -14,8 +14,8 @@ export const corsOptions = (): CorsOptions => {
       // Throw cors error
       return callback(new Error(`CORS error: origin "${origin}" not authorized.`))
     },
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'Recaptchatoken'],
-    credentials: true
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization", "Recaptchatoken"],
+    credentials: true,
   }
 }

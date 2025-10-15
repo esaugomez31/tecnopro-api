@@ -1,7 +1,11 @@
-import { Request, Response, NextFunction } from 'express'
-import { validationResult } from 'express-validator'
+import { Request, Response, NextFunction } from "express"
+import { validationResult } from "express-validator"
 
-export const handleValidationErrors = (req: Request, res: Response, next: NextFunction): void => {
+export const handleValidationErrors = (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): void => {
   const errors = validationResult(req)
   // const errors = validationResult(req).array({ onlyFirstError: true })
   if (!errors.isEmpty()) {
@@ -9,7 +13,7 @@ export const handleValidationErrors = (req: Request, res: Response, next: NextFu
       error: error.msg,
       field: error.path,
       location: error.location,
-      value: error.value
+      value: error.value,
     }))
 
     res.status(400).json({ errors: formattedErrors })

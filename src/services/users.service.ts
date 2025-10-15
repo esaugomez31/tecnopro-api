@@ -1,13 +1,8 @@
-import { v4 as uuidv4 } from 'uuid'
+import { v4 as uuidv4 } from "uuid"
 
-import { roleGetById } from '.'
-import envs from '../config/environment.config'
-import { UserModel } from '../models'
-import {
-  logger,
-  hashPassword,
-  applyFilter
-} from '../helpers'
+import envs from "../config/environment.config"
+import { UserModel } from "../models"
+import { logger, hashPassword, applyFilter } from "../helpers"
 import {
   IFilterSettings,
   IUserFilters,
@@ -16,32 +11,32 @@ import {
   IGetUniqueUser,
   UserRoleEnum,
   IUserJWT,
-  IUser
-} from '../interfaces'
+  IUser,
+} from "../interfaces"
 import {
   UserActionNotAllowedError,
   UsernameExistsError,
   UserIDNotFoundError,
-  EmailExistsError
-} from '../errors/user.error'
-import {
-  IDRoleNotFoundError
-} from '../errors/role.error'
+  EmailExistsError,
+} from "../errors/user.error"
+import { IDRoleNotFoundError } from "../errors/role.error"
+
+import { roleGetById } from "."
 
 const publicSelect: Array<keyof UserModel> = [
-  'idUser',
-  'uuid',
-  'name',
-  'username',
-  'email',
-  'phoneNumber',
-  'whatsappNumber',
-  'type',
-  'notifications',
-  'status',
-  'lastLogin',
-  'timeZone',
-  'idRole'
+  "idUser",
+  "uuid",
+  "name",
+  "username",
+  "email",
+  "phoneNumber",
+  "whatsappNumber",
+  "type",
+  "notifications",
+  "status",
+  "lastLogin",
+  "timeZone",
+  "idRole",
 ]
 
 export const userSignup = async (user: IUser): Promise<IUser> => {
@@ -57,12 +52,16 @@ export const userSignup = async (user: IUser): Promise<IUser> => {
     const newUser = await UserModel.save({ ...user })
     return newUser
   } catch (error) {
-    logger.error('Signup user: ' + (error as Error).name)
+    logger.error("Signup user: " + (error as Error).name)
     throw error
   }
 }
 
-export const userUpdate = async (user: IUser, idUser: number, jwtData: IUserJWT): Promise<IUser> => {
+export const userUpdate = async (
+  user: IUser,
+  idUser: number,
+  jwtData: IUserJWT,
+): Promise<IUser> => {
   try {
     // Evaluate hierarchy
     if (jwtData.type !== UserRoleEnum.ADMIN) await evaluateUserHierarchy(jwtData, idUser)
@@ -77,45 +76,58 @@ export const userUpdate = async (user: IUser, idUser: number, jwtData: IUserJWT)
 
     // update user
     const updatedUser = await UserModel.save({
-      idUser, ...user
+      idUser,
+      ...user,
     })
     return updatedUser
   } catch (error) {
-    logger.error('Update user: ' + (error as Error).name)
+    logger.error("Update user: " + (error as Error).name)
     throw error
   }
 }
 
-export const userUpdateLastLogin = async (idUser: number, lastLogin: Date): Promise<IUser> => {
+export const userUpdateLastLogin = async (
+  idUser: number,
+  lastLogin: Date,
+): Promise<IUser> => {
   try {
     // update user last login
     const updatedUser = await UserModel.save({
-      idUser, lastLogin
+      idUser,
+      lastLogin,
     })
     return updatedUser
   } catch (error) {
-    logger.error('Update user last status: ' + (error as Error).name)
+    logger.error("Update user last status: " + (error as Error).name)
     throw error
   }
 }
 
-export const userUpdateStatus = async (idUser: number, status: boolean, jwtData: IUserJWT): Promise<IUser> => {
+export const userUpdateStatus = async (
+  idUser: number,
+  status: boolean,
+  jwtData: IUserJWT,
+): Promise<IUser> => {
   try {
     // Evaluate hierarchy
     if (jwtData.type !== UserRoleEnum.ADMIN) await evaluateUserHierarchy(jwtData, idUser)
 
     // update user status
     const updatedUser = await UserModel.save({
-      idUser, status
+      idUser,
+      status,
     })
     return updatedUser
   } catch (error) {
-    logger.error('Update user status: ' + (error as Error).name)
+    logger.error("Update user status: " + (error as Error).name)
     throw error
   }
 }
 
-export const userGetAll = async (filterParams: IUserFilters, settings: IFilterSettings): Promise<IGetUsersResponse> => {
+export const userGetAll = async (
+  filterParams: IUserFilters,
+  settings: IFilterSettings,
+): Promise<IGetUsersResponse> => {
   try {
     const filters = getFilters(filterParams)
     const [users, totalCount] = await Promise.all([
@@ -124,9 +136,9 @@ export const userGetAll = async (filterParams: IUserFilters, settings: IFilterSe
         where: filters,
         take: settings.limit,
         skip: settings.skip,
-        order: settings.order
+        order: settings.order,
       }),
-      UserModel.count({ where: filters })
+      UserModel.count({ where: filters }),
     ])
     // Total pages calc
     const totalPages = Math.ceil(totalCount / settings.limit)
@@ -135,10 +147,10 @@ export const userGetAll = async (filterParams: IUserFilters, settings: IFilterSe
       data: users,
       total: totalCount,
       page: totalPages > 0 ? settings.page : 0,
-      totalPages
+      totalPages,
     }
   } catch (error) {
-    logger.error('Get users: ' + (error as Error).name)
+    logger.error("Get users: " + (error as Error).name)
     throw error
   }
 }
@@ -146,28 +158,30 @@ export const userGetAll = async (filterParams: IUserFilters, settings: IFilterSe
 export const userGetById = async (idUser: number): Promise<IGetUniqueUser> => {
   try {
     const user = await UserModel.findOne({
-      where: { idUser }
+      where: { idUser },
     })
     return { data: user }
   } catch (error) {
-    logger.error('Get user by id: ' + (error as Error).name)
+    logger.error("Get user by id: " + (error as Error).name)
     throw error
   }
 }
 
-export const userGetByUserOrEmail = async (userOrEmail: string): Promise<IGetUniqueUser> => {
+export const userGetByUserOrEmail = async (
+  userOrEmail: string,
+): Promise<IGetUniqueUser> => {
   try {
     const user = await UserModel.findOne({
       where: [
         { username: userOrEmail, status: true },
-        { email: userOrEmail, status: true }
+        { email: userOrEmail, status: true },
       ],
-      relations: ['role', 'role.permissions']
+      relations: ["role", "role.permissions"],
     })
 
     return { data: user }
   } catch (error) {
-    logger.error('Get user by username or email: ' + (error as Error).name)
+    logger.error("Get user by username or email: " + (error as Error).name)
     throw error
   }
 }
@@ -175,17 +189,22 @@ export const userGetByUserOrEmail = async (userOrEmail: string): Promise<IGetUni
 const getFilters = (params: IUserFilters): IUserQueryParams => {
   const filters: IUserQueryParams = {}
 
-  applyFilter(filters, 'name', params.name, true)
-  applyFilter(filters, 'username', params.username, true)
-  applyFilter(filters, 'email', params.email, true)
-  applyFilter(filters, 'phoneNumber', params.phoneNumber, true)
-  applyFilter(filters, 'idRole', params.idRole)
-  applyFilter(filters, 'status', params.status)
+  applyFilter(filters, "name", params.name, true)
+  applyFilter(filters, "username", params.username, true)
+  applyFilter(filters, "email", params.email, true)
+  applyFilter(filters, "phoneNumber", params.phoneNumber, true)
+  applyFilter(filters, "idRole", params.idRole)
+  applyFilter(filters, "status", params.status)
 
   return filters
 }
 
-export const userRequitedValidations = async (username?: string, email?: string, idRole?: number, idUser?: number): Promise<void> => {
+export const userRequitedValidations = async (
+  username?: string,
+  email?: string,
+  idRole?: number,
+  idUser?: number,
+): Promise<void> => {
   if (username === undefined && email === undefined && idRole === undefined) return
 
   const userFilters: IUserQueryParams[] = []
@@ -199,14 +218,14 @@ export const userRequitedValidations = async (username?: string, email?: string,
   }
 
   const [existUser, existRole] = await Promise.all([
-    (username !== undefined || email !== undefined)
+    username !== undefined || email !== undefined
       ? UserModel.findOne({
-        select: ['idUser', 'email', 'username'],
-        where: userFilters
-      })
+          select: ["idUser", "email", "username"],
+          where: userFilters,
+        })
       : Promise.resolve(null),
 
-    (idRole !== undefined) ? roleGetById(idRole) : Promise.resolve(null)
+    idRole !== undefined ? roleGetById(idRole) : Promise.resolve(null),
   ])
 
   // Conditions for user and email
@@ -227,7 +246,10 @@ export const userRequitedValidations = async (username?: string, email?: string,
   }
 }
 
-const evaluateUserHierarchy = async (currUser: IUserJWT, idUserTarget: number): Promise<void> => {
+const evaluateUserHierarchy = async (
+  currUser: IUserJWT,
+  idUserTarget: number,
+): Promise<void> => {
   // allow own actions
   if (currUser.idUser === idUserTarget) {
     return
@@ -257,7 +279,7 @@ export const generateFirstUser = async (): Promise<void> => {
     const user = new UserModel()
     // User payload
     user.uuid = uuidv4()
-    user.username = 'admin'
+    user.username = "admin"
     user.name = envs.app.defaultUser.name
     user.email = envs.app.defaultUser.email
     user.notifications = true
@@ -265,6 +287,6 @@ export const generateFirstUser = async (): Promise<void> => {
     user.password = hashPassword(envs.app.defaultUser.password)
     // Create default and first user
     await UserModel.save(user)
-    logger.info('Default user created successfully')
+    logger.info("Default user created successfully")
   }
 }

@@ -1,6 +1,5 @@
-import { DataSource } from 'typeorm'
+import { DataSource } from "typeorm"
 
-import envs from './environment.config'
 import {
   UserModel,
   RoleModel,
@@ -16,13 +15,15 @@ import {
   ProductModel,
   PermissionModel,
   TokenModel,
-  RolePermissionModel
-} from '../models'
+  RolePermissionModel,
+} from "../models"
+
+import envs from "./environment.config"
 
 const { host, username, password, database, port } = envs.app.db
 
 export const AppDataSource = new DataSource({
-  type: 'mysql',
+  type: "mysql",
   host,
   port,
   username,
@@ -45,8 +46,8 @@ export const AppDataSource = new DataSource({
     ProductModel,
     PermissionModel,
     TokenModel,
-    RolePermissionModel
+    RolePermissionModel,
   ],
   subscribers: [],
-  migrations: []
+  migrations: [],
 })

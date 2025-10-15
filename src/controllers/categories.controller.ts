@@ -1,23 +1,24 @@
-import { Request, Response } from 'express'
-import { matchedData } from 'express-validator'
+import { Request, Response } from "express"
+import { matchedData } from "express-validator"
 
-import * as categoryService from '../services/categories.service'
-import { filtersettings } from '../helpers'
-import {
-  NameExistsError,
-  IDCategoryNotFoundError
-} from '../errors/category.error'
+import * as categoryService from "../services/categories.service"
+import { filtersettings } from "../helpers"
+import { NameExistsError, IDCategoryNotFoundError } from "../errors/category.error"
 import {
   ICategoryGetCustomRequest,
   ICategoryCommonRequest,
   ICategoryFilters,
-  ICategory
-} from '../interfaces'
+  ICategory,
+} from "../interfaces"
 
-export const categoryCreateController = async (req: ICategoryCommonRequest, res: Response): Promise<void> => {
+export const categoryCreateController = async (
+  req: ICategoryCommonRequest,
+  res: Response,
+): Promise<void> => {
   try {
     const body = matchedData<ICategory>(req, {
-      locations: ['body'], includeOptionals: true
+      locations: ["body"],
+      includeOptionals: true,
     })
     // Service create category
     const category = await categoryService.categoryCreate(body)
@@ -29,15 +30,19 @@ export const categoryCreateController = async (req: ICategoryCommonRequest, res:
       return
     }
     // Default error message
-    res.status(500).json({ error: 'Internal server error' })
+    res.status(500).json({ error: "Internal server error" })
   }
 }
 
-export const categoryUpdateController = async (req: ICategoryCommonRequest, res: Response): Promise<void> => {
+export const categoryUpdateController = async (
+  req: ICategoryCommonRequest,
+  res: Response,
+): Promise<void> => {
   try {
     const idCategory = Number(req.params.idCategory)
     const body = matchedData<ICategory>(req, {
-      locations: ['body'], includeOptionals: true
+      locations: ["body"],
+      includeOptionals: true,
     })
     // Service update category
     const category = await categoryService.categoryUpdate(body, idCategory)
@@ -54,11 +59,14 @@ export const categoryUpdateController = async (req: ICategoryCommonRequest, res:
       return
     }
     // Default error message
-    res.status(500).json({ error: 'Internal server error' })
+    res.status(500).json({ error: "Internal server error" })
   }
 }
 
-export const categoryUpdateStatusController = async (req: Request, res: Response): Promise<void> => {
+export const categoryUpdateStatusController = async (
+  req: Request,
+  res: Response,
+): Promise<void> => {
   try {
     const idCategory = Number(req.params.idCategory)
     const status = Boolean(req.params.status)
@@ -73,11 +81,14 @@ export const categoryUpdateStatusController = async (req: Request, res: Response
     }
 
     // Default error message
-    res.status(500).json({ error: 'Internal server error' })
+    res.status(500).json({ error: "Internal server error" })
   }
 }
 
-export const categoryGetAllController = async (req: ICategoryGetCustomRequest, res: Response): Promise<void> => {
+export const categoryGetAllController = async (
+  req: ICategoryGetCustomRequest,
+  res: Response,
+): Promise<void> => {
   try {
     const query = req.query
     // Filter params settings
@@ -87,18 +98,21 @@ export const categoryGetAllController = async (req: ICategoryGetCustomRequest, r
       name: query.name,
       status: query.status,
       description: query.description,
-      uuid: query.uuid
+      uuid: query.uuid,
     }
 
     const categories = await categoryService.categoryGetAll(params, settings)
     res.json(categories)
   } catch (error) {
     // Default error message
-    res.status(500).json({ error: 'Internal server error' })
+    res.status(500).json({ error: "Internal server error" })
   }
 }
 
-export const categoryGetByIdController = async (req: Request, res: Response): Promise<void> => {
+export const categoryGetByIdController = async (
+  req: Request,
+  res: Response,
+): Promise<void> => {
   try {
     // Get category id param
     const idCategory: number = Number(req.params.idCategory)
@@ -108,6 +122,6 @@ export const categoryGetByIdController = async (req: Request, res: Response): Pr
     res.json(category)
   } catch (error) {
     // Default error message
-    res.status(500).json({ error: 'Internal server error' })
+    res.status(500).json({ error: "Internal server error" })
   }
 }

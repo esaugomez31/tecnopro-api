@@ -1,25 +1,29 @@
-import { matchedData } from 'express-validator'
-import { Request, Response } from 'express'
+import { matchedData } from "express-validator"
+import { Request, Response } from "express"
 
-import { filtersettings } from '../helpers'
-import * as customerService from '../services/customers.service'
+import { filtersettings } from "../helpers"
+import * as customerService from "../services/customers.service"
 import {
   IDMunicipalityNotFoundError,
   IDCountryNotFoundError,
   IDDepartmentNotFoundError,
-  IDCustNotFoundError
-} from '../errors/customer.error'
+  IDCustNotFoundError,
+} from "../errors/customer.error"
 import {
   ICustomerGetCustomRequest,
   ICustomerCommonRequest,
   ICustomerFilters,
-  ICustomer
-} from '../interfaces'
+  ICustomer,
+} from "../interfaces"
 
-export const customerCreateController = async (req: ICustomerCommonRequest, res: Response): Promise<void> => {
+export const customerCreateController = async (
+  req: ICustomerCommonRequest,
+  res: Response,
+): Promise<void> => {
   try {
     const body = matchedData<ICustomer>(req, {
-      locations: ['body'], includeOptionals: true
+      locations: ["body"],
+      includeOptionals: true,
     })
 
     // Create Customer
@@ -37,15 +41,19 @@ export const customerCreateController = async (req: ICustomerCommonRequest, res:
     }
 
     // Default error message
-    res.status(500).json({ error: 'Internal server error' })
+    res.status(500).json({ error: "Internal server error" })
   }
 }
 
-export const customerUpdateController = async (req: ICustomerCommonRequest, res: Response): Promise<void> => {
+export const customerUpdateController = async (
+  req: ICustomerCommonRequest,
+  res: Response,
+): Promise<void> => {
   try {
     const idCustomer = Number(req.params.idCustomer)
     const body = matchedData<ICustomer>(req, {
-      locations: ['body'], includeOptionals: true
+      locations: ["body"],
+      includeOptionals: true,
     })
 
     // Update Customer
@@ -64,11 +72,14 @@ export const customerUpdateController = async (req: ICustomerCommonRequest, res:
     }
 
     // Default error message
-    res.status(500).json({ error: 'Internal server error' })
+    res.status(500).json({ error: "Internal server error" })
   }
 }
 
-export const customerUpdateStatusController = async (req: Request, res: Response): Promise<void> => {
+export const customerUpdateStatusController = async (
+  req: Request,
+  res: Response,
+): Promise<void> => {
   try {
     const idCustomer = Number(req.params.idCustomer)
     const status = Boolean(req.params.status)
@@ -83,14 +94,17 @@ export const customerUpdateStatusController = async (req: Request, res: Response
     }
 
     // Default error message
-    res.status(500).json({ error: 'Internal server error' })
+    res.status(500).json({ error: "Internal server error" })
   }
 }
 
-export const customerGetAllController = async (req: ICustomerGetCustomRequest, res: Response): Promise<void> => {
+export const customerGetAllController = async (
+  req: ICustomerGetCustomRequest,
+  res: Response,
+): Promise<void> => {
   try {
     const query = matchedData<ICustomerFilters>(req, {
-      locations: ['query']
+      locations: ["query"],
     })
     // Filter params settings
     const settings = filtersettings(req.query)
@@ -101,11 +115,14 @@ export const customerGetAllController = async (req: ICustomerGetCustomRequest, r
     res.json(customers)
   } catch (error) {
     // Default error message
-    res.status(500).json({ error: 'Internal server error' })
+    res.status(500).json({ error: "Internal server error" })
   }
 }
 
-export const customerGetByIdController = async (req: Request, res: Response): Promise<void> => {
+export const customerGetByIdController = async (
+  req: Request,
+  res: Response,
+): Promise<void> => {
   try {
     // Get customer id param
     const idCustomer: number = Number(req.params.idCustomer)
@@ -115,6 +132,6 @@ export const customerGetByIdController = async (req: Request, res: Response): Pr
     res.json(customer)
   } catch (error) {
     // Default error message
-    res.status(500).json({ error: 'Internal server error' })
+    res.status(500).json({ error: "Internal server error" })
   }
 }

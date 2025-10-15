@@ -1,13 +1,10 @@
-import { Request } from 'express'
+import { Request } from "express"
 
-import {
-  IPermission,
-  SystemPageEnum
-} from '.'
+import { IPermission, SystemPageEnum } from "."
 
 export enum PermissionPermEnum {
-  VIEWLIST = 'view_list',
-  UPDATE = 'update'
+  VIEWLIST = "view_list",
+  UPDATE = "update",
 }
 export interface IRolePermission {
   idRolePermission: number

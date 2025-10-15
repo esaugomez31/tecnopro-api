@@ -1,14 +1,14 @@
 export enum SystemPageEnum {
-  BRANCHES = 'branches',
-  PRODUCTS = 'products',
-  CATEGORIES = 'categories',
-  BRANDS = 'brands',
-  SALES = 'sales',
-  SALES_HISTORY = 'sales_history',
-  CUSTOMERS = 'customers',
-  USERS = 'users',
-  ROLES = 'roles',
-  PERMISSIONS = 'permissions'
+  BRANCHES = "branches",
+  PRODUCTS = "products",
+  CATEGORIES = "categories",
+  BRANDS = "brands",
+  SALES = "sales",
+  SALES_HISTORY = "sales_history",
+  CUSTOMERS = "customers",
+  USERS = "users",
+  ROLES = "roles",
+  PERMISSIONS = "permissions",
 }
 
 export interface IPermission {

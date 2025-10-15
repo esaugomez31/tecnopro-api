@@ -1,53 +1,57 @@
-import { body, query, param } from 'express-validator'
+import { body, query, param } from "express-validator"
 
-import { handleValidationErrors, stringToBoolean } from '../../helpers'
-import { validateFilterParams } from './filter.validation'
+import { handleValidationErrors, stringToBoolean } from "../../helpers"
 
-const validSortFields = ['idCategory', 'name', 'description']
+import { validateFilterParams } from "./filter.validation"
+
+const validSortFields = ["idCategory", "name", "description"]
 
 const categoryCommonValidations = (optional = false): any => [
-  body('name')
+  body("name")
     .optional(optional)
-    .isString().withMessage('name must be a string')
-    .isLength({ min: 1, max: 50 }).withMessage('name must be between 1 and 50 characters long'),
+    .isString()
+    .withMessage("name must be a string")
+    .isLength({ min: 1, max: 50 })
+    .withMessage("name must be between 1 and 50 characters long"),
 
-  body('description')
+  body("description")
     .optional({ checkFalsy: true })
-    .isString().withMessage('description must be a string')
-    .isLength({ max: 250 }).withMessage('description must have a maximum of 250 characters')
+    .isString()
+    .withMessage("description must be a string")
+    .isLength({ max: 250 })
+    .withMessage("description must have a maximum of 250 characters"),
 ]
 
 export const validateCategoryCreation = (): any => {
-  return [
-    ...categoryCommonValidations(),
-
-    handleValidationErrors
-  ]
+  return [...categoryCommonValidations(), handleValidationErrors]
 }
 
 export const validateCategoryUpdate = (): any => {
   return [
-    param('idCategory')
-      .isInt().withMessage('idCategory must be an integer')
+    param("idCategory")
+      .isInt()
+      .withMessage("idCategory must be an integer")
       .customSanitizer(Number),
 
     ...categoryCommonValidations(true),
 
-    handleValidationErrors
+    handleValidationErrors,
   ]
 }
 
 export const validateCategoryUpdateStatus = (): any => {
   return [
-    param('idCategory')
-      .isInt().withMessage('idCategory must be an integer')
+    param("idCategory")
+      .isInt()
+      .withMessage("idCategory must be an integer")
       .customSanitizer(Number),
 
-    param('status')
-      .isBoolean().withMessage('status must be a boolean')
+    param("status")
+      .isBoolean()
+      .withMessage("status must be a boolean")
       .customSanitizer(stringToBoolean),
 
-    handleValidationErrors
+    handleValidationErrors,
   ]
 }
 
@@ -55,36 +59,41 @@ export const validateGetCategories = (): any => {
   return [
     ...validateFilterParams(validSortFields),
 
-    query('name')
+    query("name")
       .optional()
-      .isString().withMessage('name must be a string')
-      .customSanitizer(value => value as string | undefined),
+      .isString()
+      .withMessage("name must be a string")
+      .customSanitizer((value) => value as string | undefined),
 
-    query('status')
+    query("status")
       .optional()
-      .isBoolean().withMessage('status must be a boolean')
+      .isBoolean()
+      .withMessage("status must be a boolean")
       .customSanitizer(stringToBoolean),
 
-    query('description')
+    query("description")
       .optional()
-      .isString().withMessage('description must be a string')
-      .customSanitizer(value => value as string | undefined),
+      .isString()
+      .withMessage("description must be a string")
+      .customSanitizer((value) => value as string | undefined),
 
-    query('uuid')
+    query("uuid")
       .optional()
-      .isString().withMessage('uuid must be a string')
-      .customSanitizer(value => value as string | undefined),
+      .isString()
+      .withMessage("uuid must be a string")
+      .customSanitizer((value) => value as string | undefined),
 
-    handleValidationErrors
+    handleValidationErrors,
   ]
 }
 
 export const validateGetCategoryById = (): any => {
   return [
-    param('idCategory')
-      .isInt().withMessage('idCategory must be an integer')
+    param("idCategory")
+      .isInt()
+      .withMessage("idCategory must be an integer")
       .customSanitizer(Number),
 
-    handleValidationErrors
+    handleValidationErrors,
   ]
 }
