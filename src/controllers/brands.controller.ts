@@ -1,5 +1,6 @@
 import { Request, Response } from 'express'
 import { matchedData } from 'express-validator'
+
 import * as brandService from '../services/brands.service'
 import { filtersettings } from '../helpers'
 import {

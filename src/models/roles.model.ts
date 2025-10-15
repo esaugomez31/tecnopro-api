@@ -9,6 +9,7 @@ import {
   OneToMany,
   JoinTable
 } from 'typeorm'
+
 import { PermissionModel, UserModel } from '.'
 
 @Entity('roles')

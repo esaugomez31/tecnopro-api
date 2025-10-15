@@ -1,4 +1,10 @@
 import { v4 as uuidv4 } from 'uuid'
+
+import {
+  countryGetById,
+  departmentGetById,
+  municipalityGetById
+} from './locations'
 import { logger, applyFilter } from '../helpers'
 import { CustomerModel } from '../models'
 import {
@@ -15,11 +21,6 @@ import {
   IDMunicipalityNotFoundError,
   IDCustNotFoundError
 } from '../errors/customer.error'
-import {
-  countryGetById,
-  departmentGetById,
-  municipalityGetById
-} from './locations'
 
 export const customerCreate = async (customer: ICustomer): Promise<ICustomer | {}> => {
   try {

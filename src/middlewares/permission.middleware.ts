@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction } from 'express'
+
 import { IUserJWT, UserRoleEnum } from '../interfaces/user.interfaces'
 import { getRolePermissionsByPage } from '../services/role.permissions.service'
 import { SystemPageEnum, IPermission } from '../interfaces'

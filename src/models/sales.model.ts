@@ -1,4 +1,15 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, BaseEntity, ManyToOne, OneToMany, JoinColumn } from 'typeorm'
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
+  BaseEntity,
+  ManyToOne,
+  OneToMany,
+  JoinColumn
+} from 'typeorm'
+
 import { UserModel, CustomerModel, BranchModel, SaleDetailModel } from '.'
 
 @Entity('sales')

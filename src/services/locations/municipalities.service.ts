@@ -1,5 +1,6 @@
-import { MunicipalityModel } from '../../models'
+import { countryGetById, departmentGetById } from '.'
 import { logger, applyFilter } from '../../helpers'
+import { MunicipalityModel } from '../../models'
 import {
   IFilterSettings,
   IGetMunicipalityByIdResponse,
@@ -15,7 +16,6 @@ import {
   IDMuniDepartmentNotFoundError,
   NameExistsError
 } from '../../errors/locations/municipality.factory'
-import { countryGetById, departmentGetById } from '.'
 
 export const municipalityCreate = async (municipality: IMunicipality): Promise<IMunicipality> => {
   try {

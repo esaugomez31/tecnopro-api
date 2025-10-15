@@ -1,6 +1,7 @@
-import { DepartmentModel } from '../../models'
-import { logger, applyFilter } from '../../helpers'
+
 import { countryGetById } from './countries.service'
+import { logger, applyFilter } from '../../helpers'
+import { DepartmentModel } from '../../models'
 import {
   IFilterSettings,
   IGetDepartmentByIdResponse,

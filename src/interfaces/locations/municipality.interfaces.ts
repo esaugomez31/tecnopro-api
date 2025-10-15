@@ -1,10 +1,11 @@
 import { FindOperator } from 'typeorm'
 import { Request } from 'express'
 import { ParsedQs } from 'qs'
+
 import {
   IFilterSettings,
   IDepartment
-} from '../'
+} from '../index'
 
 // Main municipality interface
 export interface IMunicipality {

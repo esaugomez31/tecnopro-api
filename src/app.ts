@@ -1,7 +1,8 @@
 import 'reflect-metadata'
-import express from 'express'
 import cors from 'cors'
+import express from 'express'
 import cookieParser from 'cookie-parser'
+
 import routes from './routes'
 import { corsOptions } from './middlewares'
 

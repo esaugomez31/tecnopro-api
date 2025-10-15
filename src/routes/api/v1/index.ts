@@ -1,4 +1,5 @@
 import express from 'express'
+
 import authRoutes from './auth.route'
 import userRoutes from './users.route'
 import roleRoutes from './roles.route'

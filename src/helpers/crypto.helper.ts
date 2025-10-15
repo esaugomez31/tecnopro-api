@@ -1,4 +1,5 @@
 import bcrypt from 'bcrypt'
+
 import envs from '../config/environment.config'
 
 export const hashPassword = (password: string): string => {

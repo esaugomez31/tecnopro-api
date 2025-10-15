@@ -1,5 +1,6 @@
 import { Response } from 'express'
 import jwt from 'jsonwebtoken'
+
 import envs from '../config/environment.config'
 import { IUserJWT } from '../interfaces'
 import { InvalidOrExpiredTokenError } from '../errors/auth.error'

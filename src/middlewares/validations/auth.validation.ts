@@ -1,4 +1,5 @@
 import { body } from 'express-validator'
+
 import { handleValidationErrors } from '../../helpers'
 
 export const validateLogin = (): any => {

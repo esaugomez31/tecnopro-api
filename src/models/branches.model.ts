@@ -8,6 +8,7 @@ import {
   ManyToOne,
   JoinColumn
 } from 'typeorm'
+
 import { CountryModel, DepartmentModel, MunicipalityModel } from '.'
 
 @Entity('branches')

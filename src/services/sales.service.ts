@@ -1,5 +1,11 @@
 import { v4 as uuidv4 } from 'uuid'
 import { Between, MoreThanOrEqual, LessThanOrEqual } from 'typeorm'
+
+import {
+  productsGetByIds,
+  branchGetById,
+  customerGetById
+} from '.'
 import { SaleModel, SaleDetailModel } from '../models'
 import { logger, numberToWords, applyFilter } from '../helpers'
 import {
@@ -25,11 +31,6 @@ import {
   CreateSaleDetailError,
   CreateSaleError
 } from '../errors/sale.error'
-import {
-  productsGetByIds,
-  branchGetById,
-  customerGetById
-} from '.'
 
 export const saleGenerate = async (data: ISaleRequest, idUser: number): Promise<ISale | {}> => {
   try {

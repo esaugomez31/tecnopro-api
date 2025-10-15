@@ -1,4 +1,10 @@
 import { v4 as uuidv4 } from 'uuid'
+
+import {
+  countryGetById,
+  departmentGetById,
+  municipalityGetById
+} from './locations'
 import { BranchModel } from '../models'
 import { logger, applyFilter } from '../helpers'
 import {
@@ -17,11 +23,6 @@ import {
   IDBranchDepartmentNotFoundError,
   IDBranchNotFoundError
 } from '../errors/branch.error'
-import {
-  countryGetById,
-  departmentGetById,
-  municipalityGetById
-} from './locations'
 
 export const branchCreate = async (branch: IBranchCommonBody): Promise<IBranchResponse | {}> => {
   try {

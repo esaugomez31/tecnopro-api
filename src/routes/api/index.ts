@@ -1,4 +1,5 @@
 import express from 'express'
+
 import v1 from './v1'
 
 const routes = express.Router()

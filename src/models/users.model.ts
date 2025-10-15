@@ -8,6 +8,7 @@ import {
   ManyToOne,
   JoinColumn
 } from 'typeorm'
+
 import { RoleModel } from '.'
 import { UserRoleEnum } from '../interfaces'
 

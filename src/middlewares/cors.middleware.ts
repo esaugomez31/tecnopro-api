@@ -1,4 +1,5 @@
 import { CorsOptions } from 'cors'
+
 import envs from '../config/environment.config'
 
 export const corsOptions = (): CorsOptions => {

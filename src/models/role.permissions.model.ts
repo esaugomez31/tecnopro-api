@@ -1,4 +1,14 @@
-import { Entity, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, ManyToOne, JoinColumn, Column, BaseEntity } from 'typeorm'
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
+  ManyToOne,
+  JoinColumn,
+  Column,
+  BaseEntity
+} from 'typeorm'
+
 import { PermissionModel } from './permissions.model'
 
 @Entity('role_permissions')

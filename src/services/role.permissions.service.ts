@@ -1,7 +1,6 @@
-
+import { roleGetById } from '.'
 import { RolePermissionModel } from '../models'
 import { getLocalDateTimeNow, logger } from '../helpers'
-import { roleGetById } from './'
 import {
   IDRoleNotFoundError
 } from '../errors/role.error'

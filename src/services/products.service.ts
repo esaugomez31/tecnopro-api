@@ -1,5 +1,12 @@
 import { v4 as uuidv4 } from 'uuid'
 import { In } from 'typeorm'
+
+import {
+  branchGetById,
+  brandGetById,
+  categoryGetById,
+  userGetById
+} from '.'
 import {
   logger,
   hasPermission,
@@ -30,12 +37,6 @@ import {
   IDProdBrandNotFoundError,
   IDProdUserNotFoundError
 } from '../errors/product.error'
-import {
-  branchGetById,
-  brandGetById,
-  categoryGetById,
-  userGetById
-} from '.'
 
 export const productCreate = async (product: IProduct): Promise<IProduct | {}> => {
   try {

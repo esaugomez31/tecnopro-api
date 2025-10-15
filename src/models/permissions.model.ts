@@ -6,6 +6,7 @@ import {
   UpdateDateColumn,
   BaseEntity, ManyToMany
 } from 'typeorm'
+
 import { RoleModel } from '.'
 import { SystemPageEnum } from '../interfaces'
 

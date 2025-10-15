@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction } from 'express'
+
 import { logger, verifyAccessToken } from '../helpers'
 import {
   InvalidOrExpiredTokenError,

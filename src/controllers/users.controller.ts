@@ -1,5 +1,6 @@
 import { Request, Response } from 'express'
 import { matchedData } from 'express-validator'
+
 import * as userService from '../services/users.service'
 import { IDRoleNotFoundError } from '../errors/role.error'
 import {

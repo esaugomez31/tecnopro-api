@@ -1,5 +1,16 @@
-import { Entity, BaseEntity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, OneToMany, JoinColumn, ManyToOne } from 'typeorm'
-import { MunicipalityModel, CountryModel } from '..'
+import {
+  Entity,
+  BaseEntity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+  UpdateDateColumn,
+  OneToMany,
+  JoinColumn,
+  ManyToOne
+} from 'typeorm'
+
+import { MunicipalityModel, CountryModel } from '../index'
 
 @Entity('departments')
 export class DepartmentModel extends BaseEntity {
