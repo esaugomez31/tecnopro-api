@@ -48,33 +48,38 @@ const hundreds = [
   "NOVECIENTOS",
 ]
 
-const numberToWordsHelper = (num: number): string => {
-  if (num === 0) return "CERO"
-  let word = ""
+const numberToWordsHelper = (inputNumber: number): string => {
+  if (inputNumber === 0) return "CERO"
 
-  if (num >= 1000000) {
-    word += numberToWordsHelper(Math.floor(num / 1000000)) + " MILLONES "
-    num %= 1000000
+  const MILLION = 1_000_000
+  const THOUSAND = 1_000
+
+  let words = ""
+  let remaining = inputNumber
+
+  if (remaining >= MILLION) {
+    words += numberToWordsHelper(Math.floor(remaining / MILLION)) + " MILLONES "
+    remaining %= MILLION
   }
-  if (num >= 1000) {
-    word += numberToWordsHelper(Math.floor(num / 1000)) + " MIL "
-    num %= 1000
+  if (remaining >= THOUSAND) {
+    words += numberToWordsHelper(Math.floor(remaining / THOUSAND)) + " MIL "
+    remaining %= THOUSAND
   }
-  if (num >= 100) {
-    word += hundreds[Math.floor(num / 100)]
-    num %= 100
-    if (num > 0) word += " "
+  if (remaining >= 100) {
+    words += hundreds[Math.floor(remaining / 100)]
+    remaining %= 100
+    if (remaining > 0) words += " "
   }
-  if (num >= 20) {
-    word += tens[Math.floor(num / 10)]
-    num %= 10
-    if (num > 0) word += " Y " // Use 'Y' only between tens and ones
+  if (remaining >= 20) {
+    words += tens[Math.floor(remaining / 10)]
+    remaining %= 10
+    if (remaining > 0) words += " Y "
   }
-  if (num > 0) {
-    word += units[num]
+  if (remaining > 0) {
+    words += units[remaining]
   }
 
-  return word.trim()
+  return words.trim()
 }
 
 const formatDollars = (num: number): string => {
