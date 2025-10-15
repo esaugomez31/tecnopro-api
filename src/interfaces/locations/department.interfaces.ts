@@ -1,6 +1,6 @@
 import { FindOperator } from "typeorm"
 import { Request } from "express"
-import { ParsedQs } from "qs"
+import type { ParsedQs } from "qs"
 
 import { IFilterSettings, ICountry, IMunicipality } from "../index"
 
