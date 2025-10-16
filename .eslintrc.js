@@ -7,25 +7,25 @@ module.exports = {
       parser: "@typescript-eslint/parser",
       parserOptions: {
         project: "./tsconfig.json",
-        sourceType: "module"
+        sourceType: "module",
       },
       extends: [
         "eslint:recommended",
         "plugin:@typescript-eslint/recommended",
         "plugin:import/recommended",
         "plugin:import/typescript",
-        "plugin:prettier/recommended"
+        "plugin:prettier/recommended",
       ],
       rules: {
         "@typescript-eslint/no-extra-semi": "off",
         "@typescript-eslint/no-unused-vars": [
           "error",
           {
-            "argsIgnorePattern": "^_",
-            "varsIgnorePattern": "^_",
-            "caughtErrors": "all",
-            "caughtErrorsIgnorePattern": "^_"
-          }
+            argsIgnorePattern: "^_",
+            varsIgnorePattern: "^_",
+            caughtErrors: "all",
+            caughtErrorsIgnorePattern: "^_",
+          },
         ],
         "@typescript-eslint/prefer-for-of": "error",
         "@typescript-eslint/unified-signatures": "error",
@@ -40,7 +40,7 @@ module.exports = {
         "prefer-arrow-callback": "error",
         "no-duplicate-imports": "error",
         "no-empty-function": "error",
-        "no-empty": ["error", { "allowEmptyCatch": true }],
+        "no-empty": ["error", { allowEmptyCatch: true }],
         "no-new-wrappers": "error",
         "no-param-reassign": "error",
         "no-return-await": "error",
@@ -49,14 +49,22 @@ module.exports = {
         "no-void": "error",
         "no-async-promise-executor": "off",
         "prettier/prettier": "error",
-        "max-len": ["error", { "code": 90, "ignoreComments": true, "ignoreStrings": true, "ignoreTemplateLiterals": true }]
-      }
-    }
+        "max-len": [
+          "error",
+          {
+            code: 90,
+            ignoreComments: true,
+            ignoreStrings: true,
+            ignoreTemplateLiterals: true,
+          },
+        ],
+      },
+    },
   ],
   settings: {
     "import/resolver": {
       node: { paths: ["."] },
-      typescript: true
-    }
-  }
+      typescript: true,
+    },
+  },
 }
