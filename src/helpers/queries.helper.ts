@@ -1,12 +1,13 @@
 import { Like } from "typeorm"
 
 export const applyFilter = (
-  filters: any,
+  filters: object,
   field: string,
-  value: any,
+  value: unknown,
   useLike: boolean = false,
 ): void => {
   if (value !== undefined) {
-    filters[field] = useLike ? Like(`%${value as string}%`) : value
+    const dict = filters as Record<string, unknown>
+    dict[field] = useLike ? Like(`%${String(value)}%`) : value
   }
 }

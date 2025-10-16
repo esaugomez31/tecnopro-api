@@ -7,4 +7,5 @@ export const hasPermission = (
   return permissions.some((permission) => permission.permissionName === permissionName)
 }
 
-export const isValidValue = (value: any): boolean => value !== undefined && value !== null
+export const isValidValue = <T>(value: T | null | undefined): value is T =>
+  value !== undefined && value !== null
