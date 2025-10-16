@@ -1,12 +1,13 @@
-import { body, query, param } from "express-validator"
+import { body, query, param, type ValidationChain } from "express-validator"
 
 import { handleValidationErrors, stringToBoolean } from "../../helpers"
 
 import { validateFilterParams } from "./filter.validation"
+import { ValidationList } from "./types"
 
 const validSortFields = ["idUser", "username", "name", "email", "idRole"]
 
-const userCommonValidations = (optional = false): any => [
+const userCommonValidations = (optional = false): ValidationChain[] => [
   body("name")
     .optional(optional)
     .isString()
@@ -78,11 +79,11 @@ const userCommonValidations = (optional = false): any => [
     .withMessage("idRole must be a integer between 1 and 99999999999"),
 ]
 
-export const validateUserSignup = (): any => {
+export const validateUserSignup = (): ValidationList => {
   return [...userCommonValidations(), handleValidationErrors]
 }
 
-export const validateUserUpdate = (): any => {
+export const validateUserUpdate = (): ValidationList => {
   return [
     param("idUser")
       .isInt()
@@ -95,7 +96,7 @@ export const validateUserUpdate = (): any => {
   ]
 }
 
-export const validateUserUpdateStatus = (): any => {
+export const validateUserUpdateStatus = (): ValidationList => {
   return [
     param("idUser")
       .isInt()
@@ -111,7 +112,7 @@ export const validateUserUpdateStatus = (): any => {
   ]
 }
 
-export const validateGetUsers = (): any => {
+export const validateGetUsers = (): ValidationList => {
   return [
     ...validateFilterParams(validSortFields),
 
@@ -155,7 +156,7 @@ export const validateGetUsers = (): any => {
   ]
 }
 
-export const validateGetUserById = (): any => {
+export const validateGetUserById = (): ValidationList => {
   return [
     param("idUser")
       .isInt()

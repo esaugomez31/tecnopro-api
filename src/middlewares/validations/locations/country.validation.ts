@@ -1,12 +1,13 @@
-import { body, query, param } from "express-validator"
+import { body, query, param, type ValidationChain } from "express-validator"
 
 import { handleValidationErrors, stringToBoolean } from "../../../helpers"
 import { validateFilterParams, validateIncludeParams } from "../filter.validation"
+import { ValidationList } from "../types"
 
 const validSortFields = ["idCountry", "name", "code", "zipCode"]
 const validIncludeFields = ["departments", "municipalities"]
 
-const countryCommonValidations = (optional = false): any => [
+const countryCommonValidations = (optional = false): ValidationChain[] => [
   body("name")
     .optional(optional)
     .isString()
@@ -36,11 +37,11 @@ const countryCommonValidations = (optional = false): any => [
     .withMessage("timeZone must be between 1 and 50 characters long"),
 ]
 
-export const validateCountryCreation = (): any => {
+export const validateCountryCreation = (): ValidationList => {
   return [...countryCommonValidations(), handleValidationErrors]
 }
 
-export const validateCountryUpdate = (): any => {
+export const validateCountryUpdate = (): ValidationList => {
   return [
     param("idCountry")
       .isInt()
@@ -53,7 +54,7 @@ export const validateCountryUpdate = (): any => {
   ]
 }
 
-export const validateCountryUpdateStatus = (): any => {
+export const validateCountryUpdateStatus = (): ValidationList => {
   return [
     param("idCountry")
       .isInt()
@@ -69,7 +70,7 @@ export const validateCountryUpdateStatus = (): any => {
   ]
 }
 
-export const validateGetCountries = (): any => {
+export const validateGetCountries = (): ValidationList => {
   return [
     ...validateFilterParams(validSortFields),
 
@@ -103,7 +104,7 @@ export const validateGetCountries = (): any => {
   ]
 }
 
-export const validateGetCountryById = (): any => {
+export const validateGetCountryById = (): ValidationList => {
   return [
     param("idCountry")
       .isInt()

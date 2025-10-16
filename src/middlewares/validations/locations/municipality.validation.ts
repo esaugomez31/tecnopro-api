@@ -1,7 +1,8 @@
-import { body, query, param } from "express-validator"
+import { body, query, param, type ValidationChain } from "express-validator"
 
 import { handleValidationErrors, stringToBoolean } from "../../../helpers"
 import { validateFilterParams } from "../filter.validation"
+import { ValidationList } from "../types"
 
 const validSortFields = [
   "idMunicipality",
@@ -12,7 +13,7 @@ const validSortFields = [
   "idDepartment",
 ]
 
-const municipalityCommonValidations = (optional = false): any => [
+const municipalityCommonValidations = (optional = false): ValidationChain[] => [
   body("name")
     .optional(optional)
     .isString()
@@ -45,11 +46,11 @@ const municipalityCommonValidations = (optional = false): any => [
     .withMessage("idDepartment must be a integer between 1 and 99999999999"),
 ]
 
-export const validateMunicipalityCreation = (): any => {
+export const validateMunicipalityCreation = (): ValidationList => {
   return [...municipalityCommonValidations(), handleValidationErrors]
 }
 
-export const validateMunicipalityUpdate = (): any => {
+export const validateMunicipalityUpdate = (): ValidationList => {
   return [
     param("idMunicipality")
       .isInt()
@@ -62,7 +63,7 @@ export const validateMunicipalityUpdate = (): any => {
   ]
 }
 
-export const validateMunicipalityUpdateStatus = (): any => {
+export const validateMunicipalityUpdateStatus = (): ValidationList => {
   return [
     param("idMunicipality")
       .isInt()
@@ -78,7 +79,7 @@ export const validateMunicipalityUpdateStatus = (): any => {
   ]
 }
 
-export const validateGetMunicipalities = (): any => {
+export const validateGetMunicipalities = (): ValidationList => {
   return [
     ...validateFilterParams(validSortFields),
 
@@ -122,7 +123,7 @@ export const validateGetMunicipalities = (): any => {
   ]
 }
 
-export const validateGetMunicipalityById = (): any => {
+export const validateGetMunicipalityById = (): ValidationList => {
   return [
     param("idMunicipality")
       .isInt()

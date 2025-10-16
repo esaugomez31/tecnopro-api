@@ -1,6 +1,8 @@
-import { query } from "express-validator"
+import { query, type ValidationChain } from "express-validator"
 
-export const validateFilterParams = (validSortFields: string[]): any => {
+import { ValidationList } from "./types"
+
+export const validateFilterParams = (validSortFields: string[]): ValidationChain[] => {
   return [
     query("page")
       .isInt({ min: 1 })
@@ -28,7 +30,7 @@ export const validateFilterParams = (validSortFields: string[]): any => {
   ]
 }
 
-export const validateIncludeParams = (includeFields: string[]): any => {
+export const validateIncludeParams = (includeFields: string[]): ValidationList => {
   return [
     query("include")
       .optional()

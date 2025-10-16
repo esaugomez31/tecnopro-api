@@ -1,12 +1,13 @@
-import { body, query, param } from "express-validator"
+import { body, query, param, type ValidationChain } from "express-validator"
 
 import { handleValidationErrors, stringToBoolean } from "../../helpers"
 
 import { validateFilterParams } from "./filter.validation"
+import { ValidationList } from "./types"
 
 const validSortFields = ["idCategory", "name", "description"]
 
-const categoryCommonValidations = (optional = false): any => [
+const categoryCommonValidations = (optional = false): ValidationChain[] => [
   body("name")
     .optional(optional)
     .isString()
@@ -22,11 +23,11 @@ const categoryCommonValidations = (optional = false): any => [
     .withMessage("description must have a maximum of 250 characters"),
 ]
 
-export const validateCategoryCreation = (): any => {
+export const validateCategoryCreation = (): ValidationList => {
   return [...categoryCommonValidations(), handleValidationErrors]
 }
 
-export const validateCategoryUpdate = (): any => {
+export const validateCategoryUpdate = (): ValidationList => {
   return [
     param("idCategory")
       .isInt()
@@ -39,7 +40,7 @@ export const validateCategoryUpdate = (): any => {
   ]
 }
 
-export const validateCategoryUpdateStatus = (): any => {
+export const validateCategoryUpdateStatus = (): ValidationList => {
   return [
     param("idCategory")
       .isInt()
@@ -55,7 +56,7 @@ export const validateCategoryUpdateStatus = (): any => {
   ]
 }
 
-export const validateGetCategories = (): any => {
+export const validateGetCategories = (): ValidationList => {
   return [
     ...validateFilterParams(validSortFields),
 
@@ -87,7 +88,7 @@ export const validateGetCategories = (): any => {
   ]
 }
 
-export const validateGetCategoryById = (): any => {
+export const validateGetCategoryById = (): ValidationList => {
   return [
     param("idCategory")
       .isInt()

@@ -1,15 +1,17 @@
-import { body, param } from "express-validator"
+import { body, param, type ValidationChain } from "express-validator"
 
 import { handleValidationErrors } from "../../helpers"
 
-const roleCommonValidations = (): any => [
+import { ValidationList } from "./types"
+
+const roleCommonValidations = (): ValidationChain[] => [
   body("permissions").isArray().withMessage("permissions must be an array"),
   body("permissions.*.idPermission")
     .isInt()
     .withMessage("idPermission must be an integer"),
 ]
 
-export const validateRolePremissionUpdate = (): any => {
+export const validateRolePremissionUpdate = (): ValidationList => {
   return [
     param("idRole")
       .isInt()
@@ -22,7 +24,7 @@ export const validateRolePremissionUpdate = (): any => {
   ]
 }
 
-export const validateGetRolePermissionById = (): any => {
+export const validateGetRolePermissionById = (): ValidationList => {
   return [
     param("idRole")
       .isInt()
