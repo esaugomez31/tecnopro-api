@@ -1,12 +1,13 @@
-import { body, query, param } from "express-validator"
+import { body, query, param, type ValidationChain } from "express-validator"
 
 import { handleValidationErrors, stringToBoolean } from "../../../helpers"
 import { validateFilterParams, validateIncludeParams } from "../filter.validation"
+import { ValidationList } from "../types"
 
 const validSortFields = ["idDepartment", "name", "dteCode", "zipCode", "idCountry"]
 const validIncludeFields = ["municipalities"]
 
-const departmentCommonValidations = (optional = false): any => [
+const departmentCommonValidations = (optional = false): ValidationChain[] => [
   body("name")
     .optional(optional)
     .isString()
@@ -36,11 +37,11 @@ const departmentCommonValidations = (optional = false): any => [
     .withMessage("idCountry is required"),
 ]
 
-export const validateDepartmentCreation = (): any => {
+export const validateDepartmentCreation = (): ValidationList => {
   return [...departmentCommonValidations(), handleValidationErrors]
 }
 
-export const validateDepartmentUpdate = (): any => {
+export const validateDepartmentUpdate = (): ValidationList => {
   return [
     param("idDepartment")
       .isInt()
@@ -53,7 +54,7 @@ export const validateDepartmentUpdate = (): any => {
   ]
 }
 
-export const validateDepartmentUpdateStatus = (): any => {
+export const validateDepartmentUpdateStatus = (): ValidationList => {
   return [
     param("idDepartment")
       .isInt()
@@ -69,7 +70,7 @@ export const validateDepartmentUpdateStatus = (): any => {
   ]
 }
 
-export const validateGetDepartments = (): any => {
+export const validateGetDepartments = (): ValidationList => {
   return [
     ...validateFilterParams(validSortFields),
 
@@ -109,7 +110,7 @@ export const validateGetDepartments = (): any => {
   ]
 }
 
-export const validateGetDepartmentById = (): any => {
+export const validateGetDepartmentById = (): ValidationList => {
   return [
     param("idDepartment")
       .isInt()

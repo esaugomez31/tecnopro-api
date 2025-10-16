@@ -1,12 +1,13 @@
-import { body, query, param } from "express-validator"
+import { body, query, param, type ValidationChain } from "express-validator"
 
 import { handleValidationErrors, stringToBoolean } from "../../helpers"
 
 import { validateFilterParams } from "./filter.validation"
+import { ValidationList } from "./types"
 
 const validSortFields = ["idBrand", "name", "description"]
 
-const brandCommonValidations = (optional = false): any => [
+const brandCommonValidations = (optional = false): ValidationChain[] => [
   body("name")
     .optional(optional)
     .isString()
@@ -22,11 +23,11 @@ const brandCommonValidations = (optional = false): any => [
     .withMessage("description must have a maximum of 250 characters"),
 ]
 
-export const validateBrandCreation = (): any => {
+export const validateBrandCreation = (): ValidationList => {
   return [...brandCommonValidations(), handleValidationErrors]
 }
 
-export const validateBrandUpdate = (): any => {
+export const validateBrandUpdate = (): ValidationList => {
   return [
     param("idBrand")
       .isInt()
@@ -39,7 +40,7 @@ export const validateBrandUpdate = (): any => {
   ]
 }
 
-export const validateBrandUpdateStatus = (): any => {
+export const validateBrandUpdateStatus = (): ValidationList => {
   return [
     param("idBrand")
       .isInt()
@@ -55,7 +56,7 @@ export const validateBrandUpdateStatus = (): any => {
   ]
 }
 
-export const validateGetBrands = (): any => {
+export const validateGetBrands = (): ValidationList => {
   return [
     ...validateFilterParams(validSortFields),
 
@@ -87,7 +88,7 @@ export const validateGetBrands = (): any => {
   ]
 }
 
-export const validateGetBrandById = (): any => {
+export const validateGetBrandById = (): ValidationList => {
   return [
     param("idBrand")
       .isInt()

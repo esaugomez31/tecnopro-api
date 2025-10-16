@@ -1,14 +1,14 @@
 import { IFilterSettings } from "../interfaces/filter.interfaces"
 
-export const filtersettings = (params: any): IFilterSettings => {
-  const page = params.page
-  const limit = params.limit
-  const orderBy = params.orderBy
-  const orderDirection = params.orderDirection
-  const include = params.include?.split(",")
+export const filtersettings = (params: Record<string, unknown>): IFilterSettings => {
+  const page = params.page as number
+  const limit = params.limit as number
+  const orderBy = params.orderBy as string | undefined
+  const orderDirection = params.orderDirection as "ASC" | "DESC" | undefined
+  const include = (params.include as string | undefined)?.split(",")
 
   // Sorting settings
-  const order: { [key: string]: "ASC" | "DESC" } = {}
+  const order: Record<string, "ASC" | "DESC"> = {}
   if (orderBy !== undefined) {
     order[orderBy] = orderDirection === "ASC" ? "ASC" : "DESC"
   }

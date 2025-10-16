@@ -1,8 +1,9 @@
-import { body, query, param } from "express-validator"
+import { body, query, param, type ValidationChain } from "express-validator"
 
 import { handleValidationErrors, stringToBoolean } from "../../helpers"
 
 import { validateFilterParams } from "./filter.validation"
+import { ValidationList } from "./types"
 
 const validSortFields = [
   "idProduct",
@@ -15,7 +16,7 @@ const validSortFields = [
 ]
 const purchasedBy = ["store", "user"]
 
-const productCommonValidations = (optional = false): any => [
+const productCommonValidations = (optional = false): ValidationChain[] => [
   body("name")
     .optional(optional)
     .isString()
@@ -161,11 +162,11 @@ const productCommonValidations = (optional = false): any => [
     .customSanitizer(Number),
 ]
 
-export const validateProductCreation = (): any => {
+export const validateProductCreation = (): ValidationList => {
   return [...productCommonValidations(), handleValidationErrors]
 }
 
-export const validateProductUpdate = (): any => {
+export const validateProductUpdate = (): ValidationList => {
   return [
     param("idProduct")
       .isInt()
@@ -178,7 +179,7 @@ export const validateProductUpdate = (): any => {
   ]
 }
 
-export const validateProductUpdateStatus = (): any => {
+export const validateProductUpdateStatus = (): ValidationList => {
   return [
     param("idProduct")
       .isInt()
@@ -194,7 +195,7 @@ export const validateProductUpdateStatus = (): any => {
   ]
 }
 
-export const validateGetProducts = (): any => {
+export const validateGetProducts = (): ValidationList => {
   return [
     ...validateFilterParams(validSortFields),
 
@@ -268,7 +269,7 @@ export const validateGetProducts = (): any => {
   ]
 }
 
-export const validateGetProductById = (): any => {
+export const validateGetProductById = (): ValidationList => {
   return [
     param("idProduct")
       .isInt()

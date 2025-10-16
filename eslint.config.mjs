@@ -9,7 +9,7 @@ const __dirname = dirname(__filename)
 
 const compat = new FlatCompat({
   baseDirectory: __dirname,
-  recommendedConfig: js.configs.recommended
+  recommendedConfig: js.configs.recommended,
 })
 
 export default [
@@ -25,21 +25,21 @@ export default [
       ".eslintrc.*",
       "eslint.config.*",
       "prettier.config.*",
-      "package-lock.json"
-    ]
+      "package-lock.json",
+    ],
   },
   {
-    files: ["src/**/*.ts"]
+    files: ["src/**/*.ts"],
   },
   ...compat.config({
-    extends: ["./.eslintrc.js"]
+    extends: ["./.eslintrc.js"],
   }),
   {
     files: ["eslint.config.*", ".eslintrc.*", "prettier.config.*"],
     rules: {
       "@typescript-eslint/no-var-requires": "off",
       "import/no-commonjs": "off",
-      "no-undef": "off"
-    }
-  }
+      "no-undef": "off",
+    },
+  },
 ]

@@ -1,8 +1,9 @@
-import { body, query, param } from "express-validator"
+import { body, query, param, type ValidationChain } from "express-validator"
 
 import { handleValidationErrors, stringToBoolean } from "../../helpers"
 
 import { validateFilterParams } from "./filter.validation"
+import { ValidationList } from "./types"
 
 const validSortFields = [
   "idBranch",
@@ -17,7 +18,7 @@ const validSortFields = [
 const validDteEnvironment = ["00", "01"]
 const validDteEstablishment = ["01", "02", "03", "04"]
 
-const branchCommonValidations = (optional = false): any => [
+const branchCommonValidations = (optional = false): ValidationChain[] => [
   body("name")
     .optional(optional)
     .isString()
@@ -180,11 +181,11 @@ const branchCommonValidations = (optional = false): any => [
   // ########################################### DTE END ###########################################
 ]
 
-export const validateBranchCreation = (): any => {
+export const validateBranchCreation = (): ValidationList => {
   return [...branchCommonValidations(), handleValidationErrors]
 }
 
-export const validateBranchUpdate = (): any => {
+export const validateBranchUpdate = (): ValidationList => {
   return [
     param("idBranch")
       .isInt()
@@ -197,7 +198,7 @@ export const validateBranchUpdate = (): any => {
   ]
 }
 
-export const validateBranchUpdateStatus = (): any => {
+export const validateBranchUpdateStatus = (): ValidationList => {
   return [
     param("idBranch")
       .isInt()
@@ -213,7 +214,7 @@ export const validateBranchUpdateStatus = (): any => {
   ]
 }
 
-export const validateGetBranches = (): any => {
+export const validateGetBranches = (): ValidationList => {
   return [
     ...validateFilterParams(validSortFields),
 
@@ -275,7 +276,7 @@ export const validateGetBranches = (): any => {
   ]
 }
 
-export const validateGetBranchById = (): any => {
+export const validateGetBranchById = (): ValidationList => {
   return [
     param("idBranch")
       .isInt()

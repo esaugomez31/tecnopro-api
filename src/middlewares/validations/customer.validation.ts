@@ -1,8 +1,9 @@
-import { body, query, param } from "express-validator"
+import { body, query, param, type ValidationChain } from "express-validator"
 
 import { handleValidationErrors, stringToBoolean } from "../../helpers"
 
 import { validateFilterParams } from "./filter.validation"
+import { ValidationList } from "./types"
 
 const validSortFields = [
   "idCustomer",
@@ -14,7 +15,7 @@ const validSortFields = [
   "idMunicipality",
 ]
 
-const customerCommonValidations = (optional = false): any => [
+const customerCommonValidations = (optional = false): ValidationChain[] => [
   body("name")
     .optional(optional)
     .isString()
@@ -105,11 +106,11 @@ const customerCommonValidations = (optional = false): any => [
     .withMessage("idMunicipality must be a integer between 1 and 99999999999"),
 ]
 
-export const validateCustomerCreation = (): any => {
+export const validateCustomerCreation = (): ValidationList => {
   return [...customerCommonValidations(), handleValidationErrors]
 }
 
-export const validateCustomerUpdate = (): any => {
+export const validateCustomerUpdate = (): ValidationList => {
   return [
     param("idCustomer")
       .isInt()
@@ -122,7 +123,7 @@ export const validateCustomerUpdate = (): any => {
   ]
 }
 
-export const validateCustomerUpdateStatus = (): any => {
+export const validateCustomerUpdateStatus = (): ValidationList => {
   return [
     param("idCustomer")
       .isInt()
@@ -138,7 +139,7 @@ export const validateCustomerUpdateStatus = (): any => {
   ]
 }
 
-export const validateGetCustomers = (): any => {
+export const validateGetCustomers = (): ValidationList => {
   return [
     ...validateFilterParams(validSortFields),
 
@@ -224,7 +225,7 @@ export const validateGetCustomers = (): any => {
   ]
 }
 
-export const validateGetCustomerById = (): any => {
+export const validateGetCustomerById = (): ValidationList => {
   return [
     param("idCustomer")
       .isInt()

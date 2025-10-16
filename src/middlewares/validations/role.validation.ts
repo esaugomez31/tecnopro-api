@@ -1,12 +1,13 @@
-import { body, query, param } from "express-validator"
+import { body, query, param, type ValidationChain } from "express-validator"
 
 import { handleValidationErrors, stringToBoolean } from "../../helpers"
 
 import { validateFilterParams } from "./filter.validation"
+import { ValidationList } from "./types"
 
 const validSortFields = ["idRole", "name"]
 
-const roleCommonValidations = (optional = false): any => [
+const roleCommonValidations = (optional = false): ValidationChain[] => [
   body("name")
     .optional(optional)
     .isString()
@@ -22,11 +23,11 @@ const roleCommonValidations = (optional = false): any => [
     .withMessage("description must have a maximum of 250 characters"),
 ]
 
-export const validateRoleCreation = (): any => {
+export const validateRoleCreation = (): ValidationList => {
   return [...roleCommonValidations(), handleValidationErrors]
 }
 
-export const validateRoleUpdate = (): any => {
+export const validateRoleUpdate = (): ValidationList => {
   return [
     param("idRole")
       .isInt()
@@ -39,7 +40,7 @@ export const validateRoleUpdate = (): any => {
   ]
 }
 
-export const validateRoleUpdateStatus = (): any => {
+export const validateRoleUpdateStatus = (): ValidationList => {
   return [
     param("idRole")
       .isInt()
@@ -55,7 +56,7 @@ export const validateRoleUpdateStatus = (): any => {
   ]
 }
 
-export const validateGetRoles = (): any => {
+export const validateGetRoles = (): ValidationList => {
   return [
     ...validateFilterParams(validSortFields),
 
@@ -75,7 +76,7 @@ export const validateGetRoles = (): any => {
   ]
 }
 
-export const validateGetRoleById = (): any => {
+export const validateGetRoleById = (): ValidationList => {
   return [
     param("idRole")
       .isInt()

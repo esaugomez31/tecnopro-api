@@ -2,7 +2,9 @@ import { body } from "express-validator"
 
 import { handleValidationErrors } from "../../helpers"
 
-export const validateLogin = (): any => {
+import { ValidationList } from "./types"
+
+export const validateLogin = (): ValidationList => {
   return [
     body("usernameOrEmail")
       .isString()

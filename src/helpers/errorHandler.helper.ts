@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express"
-import { validationResult } from "express-validator"
+import { validationResult, type ValidationError } from "express-validator"
 
 export const handleValidationErrors = (
   req: Request,
@@ -9,11 +9,12 @@ export const handleValidationErrors = (
   const errors = validationResult(req)
   // const errors = validationResult(req).array({ onlyFirstError: true })
   if (!errors.isEmpty()) {
-    const formattedErrors = errors.array().map((error: any) => ({
+    const formattedErrors = errors.array().map((error: ValidationError) => ({
       error: error.msg,
-      field: error.path,
-      location: error.location,
-      value: error.value,
+      field: "path" in error ? (error as { path: string }).path : undefined,
+      location:
+        "location" in error ? (error as { location: string }).location : undefined,
+      value: "value" in error ? (error as { value: unknown }).value : undefined,
     }))
 
     res.status(400).json({ errors: formattedErrors })
