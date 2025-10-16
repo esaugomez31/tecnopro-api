@@ -1,5 +1,5 @@
 import { v4 as uuidv4 } from "uuid"
-import { Between, MoreThanOrEqual, LessThanOrEqual } from "typeorm"
+import { Between, MoreThanOrEqual, LessThanOrEqual, FindOptionsSelect } from "typeorm"
 
 import { SaleModel, SaleDetailModel } from "../models"
 import { logger, numberToWords, applyFilter } from "../helpers"
@@ -266,7 +266,7 @@ export const saleGetById = async (
   }
 }
 
-const getSelectIncludes = (): any => {
+const getSelectIncludes = (): FindOptionsSelect<SaleModel> => {
   return {
     branch: {
       name: true,
