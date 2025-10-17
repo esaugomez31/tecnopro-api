@@ -18,10 +18,10 @@ export class RoleModel extends BaseEntity {
   idRole?: number
 
   @Column({ type: "varchar", length: 25 })
-  name: string
+  name!: string
 
   @Column({ type: "text", nullable: true })
-  description: string
+  description: string | null = null
 
   @CreateDateColumn({
     name: "created_at",
@@ -39,7 +39,7 @@ export class RoleModel extends BaseEntity {
   updatedAt?: Date
 
   @Column({ type: "tinyint", default: 1 })
-  status: boolean
+  status: boolean = true
 
   @ManyToMany(() => PermissionModel, (permission) => permission.roles)
   @JoinTable({
@@ -47,8 +47,8 @@ export class RoleModel extends BaseEntity {
     joinColumn: { name: "id_role", referencedColumnName: "idRole" },
     inverseJoinColumn: { name: "id_permission", referencedColumnName: "idPermission" },
   })
-  permissions: PermissionModel[]
+  permissions: PermissionModel[] = []
 
   @OneToMany(() => UserModel, (user) => user.role)
-  users: UserModel[]
+  users: UserModel[] = []
 }
