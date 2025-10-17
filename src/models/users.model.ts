@@ -19,45 +19,50 @@ export class UserModel extends BaseEntity {
   idUser?: number
 
   @Column({ type: "varchar", length: 36, nullable: true })
-  uuid: string
+  uuid: string | null = null
 
   @Column({ type: "varchar", length: 40 })
-  name: string
+  name!: string
 
   @Column({ type: "varchar", length: 20 })
-  username: string
+  username!: string
 
-  @Column({ type: "varchar", length: 70 })
-  password: string
+  @Column({ type: "varchar", length: 255 })
+  password!: string
 
   @Column({ type: "varchar", length: 17, nullable: true, name: "phone_number" })
-  phoneNumber: string
+  phoneNumber: string | null = null
 
   @Column({ type: "varchar", length: 15, nullable: true, name: "whatsapp_number" })
-  whatsappNumber: string
+  whatsappNumber: string | null = null
 
   @Column({ type: "varchar", length: 100, nullable: true })
-  email: string
+  email: string | null = null
 
   @Column({
     type: "enum",
-    enum: UserRoleEnum,
+    enum: UserRoleEnum, // 'admin' | 'sub_admin' | 'user'
     default: UserRoleEnum.USER,
     nullable: true,
   })
   type?: UserRoleEnum
 
   @Column({ type: "tinyint", default: 0 })
-  notifications: boolean
+  notifications: boolean = false
 
   @Column({ type: "datetime", nullable: true, name: "last_login" })
-  lastLogin: Date
+  lastLogin: Date | null = null
 
-  @Column({ type: "varchar", default: "America/El_Salvador", name: "time_zone" })
-  timeZone?: string
+  @Column({
+    type: "varchar",
+    length: 50,
+    default: "America/El_Salvador",
+    name: "time_zone",
+  })
+  timeZone: string = "America/El_Salvador"
 
-  @Column({ name: "id_role", nullable: true })
-  idRole?: number
+  @Column({ name: "id_role", type: "int", nullable: true })
+  idRole: number | null = null
 
   @CreateDateColumn({
     name: "created_at",
@@ -75,9 +80,9 @@ export class UserModel extends BaseEntity {
   updatedAt?: Date
 
   @Column({ type: "tinyint", default: 1 })
-  status: boolean
+  status: boolean = true
 
   @ManyToOne(() => RoleModel, (role) => role.users)
   @JoinColumn({ name: "id_role" })
-  role: RoleModel
+  role?: RoleModel
 }
