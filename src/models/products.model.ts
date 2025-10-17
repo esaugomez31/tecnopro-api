@@ -17,37 +17,37 @@ export class ProductModel extends BaseEntity {
   idProduct?: number
 
   @Column({ type: "varchar", length: 36, nullable: true })
-  uuid: string
+  uuid: string | null = null
 
   @Column({ type: "varchar", length: 50 })
-  name: string
+  name!: string
 
   @Column({ type: "varchar", length: 100, nullable: true })
-  description: string
+  description: string | null = null
 
   @Column({ type: "varchar", length: 50, nullable: true })
-  location: string
+  location: string | null = null
 
   @Column({ type: "varchar", length: 20, nullable: true })
-  code: string
+  code: string | null = null
 
   @Column({ type: "varchar", length: 30, nullable: true })
-  barcode: string
+  barcode: string | null = null
 
-  @Column({ type: "tinyint", default: 0, name: "barcode_generated" })
-  barcodeGenerated: number
+  @Column({ type: "tinyint", name: "barcode_generated", default: 0 })
+  barcodeGenerated: boolean = false
 
   @Column({ type: "decimal", precision: 11, scale: 4 })
-  price: number
+  price!: number
 
   @Column({
     type: "decimal",
     precision: 11,
     scale: 4,
-    default: 0.0,
     name: "purchase_price",
+    default: 0.0,
   })
-  purchasePrice?: number
+  purchasePrice: number = 0
 
   @Column({
     type: "enum",
@@ -55,10 +55,10 @@ export class ProductModel extends BaseEntity {
     default: "store",
     name: "purchased_by",
   })
-  purchasedBy?: "store" | "user"
+  purchasedBy: "store" | "user" = "store"
 
-  @Column({ type: "int", default: 59, name: "dte_unit_measure" })
-  dteUnitMeasure: number
+  @Column({ type: "int", name: "dte_unit_measure", default: 59 })
+  dteUnitMeasure: number = 59
 
   @Column({
     type: "decimal",
@@ -67,7 +67,7 @@ export class ProductModel extends BaseEntity {
     default: 0.0,
     name: "user_commission_percentage",
   })
-  userCommissionPercent?: number
+  userCommissionPercent: number = 0
 
   @Column({
     type: "decimal",
@@ -76,28 +76,28 @@ export class ProductModel extends BaseEntity {
     default: 100.0,
     name: "branch_commission_percentage",
   })
-  branchCommissionPercent?: number
+  branchCommissionPercent: number = 100
 
-  @Column({ type: "decimal", precision: 11, scale: 4, default: 0.0, name: "min_price" })
-  minPrice: number
+  @Column({ type: "decimal", precision: 11, scale: 4, name: "min_price", default: 0.0 })
+  minPrice: number = 0
 
   @Column({ type: "decimal", precision: 11, scale: 4 })
-  stock: number
+  stock!: number
 
   @Column({ type: "varchar", length: 100, nullable: true, name: "image_url" })
-  imageUrl: string
+  imageUrl: string | null = null
 
-  @Column({ name: "id_branch", nullable: false })
-  idBranch: number
+  @Column({ type: "int", name: "id_branch" })
+  idBranch!: number
 
-  @Column({ name: "id_brand", nullable: true })
-  idBrand?: number
+  @Column({ type: "int", name: "id_brand", nullable: true })
+  idBrand: number | null = null
 
-  @Column({ name: "id_category", nullable: true })
-  idCategory?: number
+  @Column({ type: "int", name: "id_category", nullable: true })
+  idCategory: number | null = null
 
-  @Column({ name: "id_user", nullable: true })
-  idUser?: number
+  @Column({ type: "int", name: "id_user", nullable: true })
+  idUser: number | null = null
 
   @ManyToOne(() => BranchModel)
   @JoinColumn({ name: "id_branch" })
@@ -131,5 +131,5 @@ export class ProductModel extends BaseEntity {
   updatedAt?: Date
 
   @Column({ type: "tinyint", default: 1 })
-  status?: boolean
+  status: boolean = true
 }
