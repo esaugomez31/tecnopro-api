@@ -12,20 +12,20 @@ import { DepartmentModel } from "../index"
 
 @Entity("countries")
 export class CountryModel extends BaseEntity {
-  @PrimaryGeneratedColumn({ name: "id_country" })
+  @PrimaryGeneratedColumn({ type: "int", name: "id_country" })
   idCountry?: number
 
-  @Column({ length: 50 })
-  name: string
+  @Column({ type: "varchar", length: 50 })
+  name!: string
 
-  @Column({ length: 3, nullable: true })
-  code?: string
+  @Column({ type: "varchar", length: 3, nullable: true })
+  code: string | null = null
 
-  @Column({ length: 10, nullable: true, name: "zip_code" })
-  zipCode?: string
+  @Column({ type: "varchar", length: 10, nullable: true, name: "zip_code" })
+  zipCode: string | null = null
 
-  @Column({ length: 50, nullable: true, name: "time_zone" })
-  timeZone?: string
+  @Column({ type: "varchar", length: 50, nullable: true, name: "time_zone" })
+  timeZone: string | null = null
 
   @CreateDateColumn({
     name: "created_at",
@@ -43,8 +43,8 @@ export class CountryModel extends BaseEntity {
   updatedAt?: Date
 
   @Column({ type: "tinyint", default: 1 })
-  status?: boolean
+  status: boolean = true
 
   @OneToMany(() => DepartmentModel, (department) => department.country)
-  departments?: DepartmentModel[]
+  departments: DepartmentModel[] = []
 }
