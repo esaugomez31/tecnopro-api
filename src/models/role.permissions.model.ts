@@ -11,16 +11,18 @@ import {
 
 import { PermissionModel } from "./permissions.model"
 
+import { RoleModel } from "."
+
 @Entity("role_permissions")
 export class RolePermissionModel extends BaseEntity {
-  @PrimaryGeneratedColumn({ name: "id_role_permission" })
-  idRolePermission: number
+  @PrimaryGeneratedColumn({ type: "int", name: "id_role_permission" })
+  idRolePermission?: number
 
-  @Column({ name: "id_role", nullable: true })
-  idRole: number
+  @Column({ type: "int", name: "id_role", nullable: true })
+  idRole: number | null = null
 
-  @Column({ name: "id_permission", nullable: true })
-  idPermission: number
+  @Column({ type: "int", name: "id_permission", nullable: true })
+  idPermission: number | null = null
 
   @CreateDateColumn({
     name: "created_at",
@@ -37,9 +39,11 @@ export class RolePermissionModel extends BaseEntity {
   })
   updatedAt?: Date
 
-  @ManyToOne(() => PermissionModel, (permission) => permission.idPermission, {
-    onDelete: "CASCADE",
-  })
+  @ManyToOne(() => RoleModel, { onDelete: "CASCADE" })
+  @JoinColumn({ name: "id_role" })
+  role?: RoleModel
+
+  @ManyToOne(() => PermissionModel, { onDelete: "CASCADE" })
   @JoinColumn({ name: "id_permission" })
-  permissionDetail: PermissionModel
+  permission?: PermissionModel
 }
