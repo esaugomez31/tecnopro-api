@@ -9,17 +9,17 @@ import {
 
 @Entity("categories")
 export class CategoryModel extends BaseEntity {
-  @PrimaryGeneratedColumn({ name: "id_category" })
+  @PrimaryGeneratedColumn({ type: "int", name: "id_category" })
   idCategory?: number
 
   @Column({ type: "varchar", length: 36, nullable: true })
-  uuid: string
+  uuid: string | null = null
 
-  @Column({ type: "varchar", length: 50, nullable: true })
-  name: string
+  @Column({ type: "varchar", length: 50 })
+  name!: string
 
   @Column({ type: "text", nullable: true })
-  description: string
+  description: string | null = null
 
   @CreateDateColumn({
     name: "created_at",
@@ -37,5 +37,5 @@ export class CategoryModel extends BaseEntity {
   updatedAt?: Date
 
   @Column({ type: "tinyint", default: 1 })
-  status?: boolean
+  status: boolean = true
 }
