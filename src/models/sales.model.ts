@@ -18,22 +18,22 @@ export class SaleModel extends BaseEntity {
   idSale?: number
 
   @Column({ type: "varchar", length: 36, nullable: true })
-  uuid?: string
+  uuid: string | null = null
 
   @Column({ type: "varchar", length: 25, nullable: true, name: "invoice_type" })
-  invoiceType: string
+  invoiceType: string | null = null
 
   @Column({ type: "decimal", precision: 11, scale: 2, nullable: true })
-  paid: number
+  paid: number | null = null
 
   @Column({ type: "decimal", precision: 11, scale: 2 })
-  total: number
+  total!: number
 
   @Column({ type: "decimal", precision: 11, scale: 2, nullable: true })
-  vat: number
+  vat: number | null = null
 
   @Column({ type: "decimal", precision: 11, scale: 2 })
-  subtotal: number
+  subtotal!: number
 
   @Column({
     type: "decimal",
@@ -42,7 +42,7 @@ export class SaleModel extends BaseEntity {
     default: 0.0,
     name: "total_profit",
   })
-  totalProfit: number
+  totalProfit: number = 0
 
   @Column({
     type: "decimal",
@@ -51,7 +51,7 @@ export class SaleModel extends BaseEntity {
     default: 0.0,
     name: "gross_profit",
   })
-  grossProfit: number
+  grossProfit: number = 0
 
   @Column({
     type: "decimal",
@@ -60,7 +60,7 @@ export class SaleModel extends BaseEntity {
     default: 0.0,
     name: "users_commission",
   })
-  usersCommission: number
+  usersCommission: number = 0
 
   @Column({
     type: "decimal",
@@ -69,31 +69,31 @@ export class SaleModel extends BaseEntity {
     default: 0.0,
     name: "shipping_cost",
   })
-  shippingCost?: number
+  shippingCost: number = 0
 
   @Column({ type: "varchar", length: 255, nullable: true, name: "customer_notes" })
-  customerNotes?: string
+  customerNotes: string | null = null
 
   @Column({ type: "varchar", length: 200, nullable: true, name: "total_text" })
-  totalText?: string
+  totalText: string | null = null
 
   @Column({ type: "tinyint", default: 0, name: "refunded" })
-  refunded: boolean
+  refunded: boolean = false
 
   @Column({ type: "tinyint", default: 0, name: "contingency_status" })
-  contingencyStatus: boolean
+  contingencyStatus: boolean = false
 
   @Column({ type: "varchar", length: 20, nullable: true, name: "dte_status" })
-  dteStatus?: string
+  dteStatus: string | null = null
 
   @Column({ type: "varchar", length: 31, nullable: true, name: "dte_control_number" })
-  dteControlNumber?: string
+  dteControlNumber: string | null = null
 
   @Column({ type: "datetime", nullable: true, name: "dte_request_sent_at" })
-  dteRequestSentAt?: Date
+  dteRequestSentAt: Date | null = null
 
   @Column({ type: "text", nullable: true, name: "dte_observations" })
-  dteObservations?: string
+  dteObservations: string | null = null
 
   @Column({
     name: "dte_operation_condition",
@@ -101,19 +101,19 @@ export class SaleModel extends BaseEntity {
     enum: ["1", "2", "3"],
     default: "1",
   })
-  dteOperationCondition?: "1" | "2" | "3"
+  dteOperationCondition: "1" | "2" | "3" = "1"
 
   @Column({ type: "varchar", length: 100, nullable: true, name: "dte_seal" })
-  dteSeal?: string
+  dteSeal: string | null = null
 
   @Column({ type: "int", name: "id_user" })
-  idUser: number
+  idUser!: number
 
   @Column({ type: "int", name: "id_customer", nullable: true })
-  idCustomer?: number
+  idCustomer: number | null = null
 
   @Column({ type: "int", name: "id_branch", nullable: true })
-  idBranch: number
+  idBranch: number | null = null
 
   @CreateDateColumn({
     name: "created_at",
@@ -131,10 +131,9 @@ export class SaleModel extends BaseEntity {
   updatedAt?: Date
 
   @Column({ type: "tinyint", default: 1 })
-  status?: boolean
+  status: boolean = true
 
-  // Relations
-  @ManyToOne(() => UserModel, (user) => user.idUser)
+  @ManyToOne(() => UserModel)
   @JoinColumn({ name: "id_user" })
   user?: UserModel
 
@@ -147,5 +146,5 @@ export class SaleModel extends BaseEntity {
   branch?: BranchModel
 
   @OneToMany(() => SaleDetailModel, (saleDetail) => saleDetail.sale)
-  saleDetails?: SaleDetailModel[]
+  saleDetails: SaleDetailModel[] = []
 }

@@ -9,17 +9,17 @@ import {
 
 @Entity("brands")
 export class BrandModel extends BaseEntity {
-  @PrimaryGeneratedColumn({ name: "id_brand" })
+  @PrimaryGeneratedColumn({ type: "int", name: "id_brand" })
   idBrand?: number
 
   @Column({ type: "varchar", length: 36, nullable: true })
-  uuid: string
+  uuid: string | null = null
 
-  @Column({ type: "varchar", length: 50, nullable: true })
-  name: string
+  @Column({ type: "varchar", length: 50 })
+  name!: string
 
   @Column({ type: "text", nullable: true })
-  description: string
+  description: string | null = null
 
   @CreateDateColumn({
     name: "created_at",
@@ -37,5 +37,5 @@ export class BrandModel extends BaseEntity {
   updatedAt?: Date
 
   @Column({ type: "tinyint", default: 1 })
-  status?: boolean
+  status: boolean = true
 }

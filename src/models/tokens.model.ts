@@ -5,21 +5,25 @@ import {
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
+  ManyToOne,
+  JoinColumn,
 } from "typeorm"
+
+import { UserModel } from "."
 
 @Entity("tokens")
 export class TokenModel extends BaseEntity {
-  @PrimaryGeneratedColumn({ name: "id_token" })
+  @PrimaryGeneratedColumn({ type: "int", name: "id_token" })
   idToken?: number
 
-  @Column({ type: "text" })
-  token: string
+  @Column({ type: "text", nullable: true })
+  token: string | null = null
 
   @Column({ type: "int", name: "id_user" })
-  idUser: number
+  idUser!: number
 
   @Column({ type: "datetime", name: "expired_at", nullable: true, default: null })
-  expiredAt: Date
+  expiredAt: Date | null = null
 
   @CreateDateColumn({
     name: "created_at",
@@ -37,5 +41,9 @@ export class TokenModel extends BaseEntity {
   updatedAt?: Date
 
   @Column({ type: "tinyint", default: 1 })
-  status?: boolean
+  status: boolean = true
+
+  @ManyToOne(() => UserModel, { onDelete: "CASCADE", onUpdate: "CASCADE" })
+  @JoinColumn({ name: "id_user" })
+  user?: UserModel
 }

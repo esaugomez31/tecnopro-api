@@ -18,10 +18,13 @@ export class PermissionModel extends BaseEntity {
   idPermission?: number
 
   @Column({ type: "enum", enum: SystemPageEnum, name: "system_page" })
-  systemPage: SystemPageEnum
+  systemPage!: SystemPageEnum
 
-  @Column({ type: "varchar", length: 25, name: "permission_name" })
-  permissionName: string
+  @Column({ type: "varchar", length: 25, name: "permission_name", nullable: true })
+  permissionName: string | null = null
+
+  @Column({ type: "int", name: "field_order", default: 1 })
+  fieldOrder: number = 1
 
   @CreateDateColumn({
     name: "created_at",
@@ -39,8 +42,8 @@ export class PermissionModel extends BaseEntity {
   updatedAt?: Date
 
   @Column({ type: "tinyint", default: 1 })
-  status: boolean
+  status: boolean = true
 
   @ManyToMany(() => RoleModel, (role) => role.permissions)
-  roles: RoleModel[]
+  roles: RoleModel[] = []
 }
