@@ -17,22 +17,22 @@ export class SaleDetailModel extends BaseEntity {
   idSaleDetail?: number
 
   @Column({ type: "decimal", precision: 11, scale: 4, name: "purchase_price" })
-  purchasePrice: number
+  purchasePrice!: number
 
   @Column({ type: "decimal", precision: 11, scale: 4 })
-  price: number
+  price!: number
 
   @Column({ type: "decimal", precision: 11, scale: 4 })
-  quantity: number
+  quantity!: number
 
   @Column({ type: "decimal", precision: 11, scale: 4, name: "affected_sale" })
-  affectedSale: number
+  affectedSale!: number
 
   @Column({ type: "decimal", precision: 11, scale: 4, default: 0.0 })
-  discount: number
+  discount: number = 0
 
-  @Column({ type: "decimal", precision: 11, scale: 2, nullable: true })
-  vat: number
+  @Column({ type: "decimal", precision: 11, scale: 4, nullable: true })
+  vat: number | null = null
 
   @Column({
     type: "decimal",
@@ -41,7 +41,7 @@ export class SaleDetailModel extends BaseEntity {
     default: 0.0,
     name: "user_commission",
   })
-  userCommission: number
+  userCommission: number = 0
 
   @Column({
     type: "decimal",
@@ -50,13 +50,13 @@ export class SaleDetailModel extends BaseEntity {
     default: 0.0,
     name: "branch_commission",
   })
-  branchCommission: number
+  branchCommission: number = 0
 
   @Column({ type: "int", name: "id_product", nullable: true })
-  idProduct: number
+  idProduct: number | null = null
 
   @Column({ type: "int", name: "id_sale" })
-  idSale: number
+  idSale!: number
 
   @CreateDateColumn({
     name: "created_at",
