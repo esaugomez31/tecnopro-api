@@ -7,12 +7,12 @@ export enum PermissionPermEnum {
   UPDATE = "update",
 }
 export interface IRolePermission {
-  idRolePermission: number
-  idRole: number
-  idPermission: number
+  idRolePermission?: number
+  idRole: number | null
+  idPermission: number | null
   createdAt?: Date
   updatedAt?: Date
-  permissionDetail: IPermission
+  permission?: IPermission
 }
 
 export interface IPermissionObject {
@@ -28,10 +28,10 @@ export interface IRolePermissionCommonRequest extends Request {
 
 export interface IRolePermissionJoin {
   idRolePermission: number
-  idRole: number
-  idPermission: number
+  idRole: number | null
+  idPermission: number | null
   systemPage: SystemPageEnum
-  permissionName: string
+  permissionName: string | null
   createdAt?: Date
 }
 
