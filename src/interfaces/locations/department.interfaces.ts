@@ -8,8 +8,8 @@ import { IFilterSettings, ICountry, IMunicipality } from "../index"
 export interface IDepartment {
   idDepartment?: number
   name: string
-  zipCode?: string
-  dteCode?: string
+  zipCode?: string | null
+  dteCode?: string | null
   idCountry: number
   country?: ICountry
   municipalities?: IMunicipality[]
@@ -29,9 +29,10 @@ export interface IDepartmentFilters {
 
 // Filter options to department in typeorm
 export interface IDepartmentQueryParams
-  extends Omit<IDepartmentFilters, "name" | "zipCode"> {
+  extends Omit<IDepartmentFilters, "name" | "zipCode" | "dteCode"> {
   name?: FindOperator<string> | string
   zipCode?: FindOperator<string> | string
+  dteCode?: FindOperator<string> | string
 }
 
 // Multi Departments response interface
