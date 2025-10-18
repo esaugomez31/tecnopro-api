@@ -14,19 +14,19 @@ export enum CustomerPermEnum {
 // Main customer interface
 export interface ICustomer {
   idCustomer?: number
-  uuid: string
-  name: string
-  tradeName: string
-  dui: string
-  nit: string
-  nrc: string
-  phoneNumbers: string
-  whatsappNumber: string
-  email: string
-  address: string
-  idCountry?: number
-  idDepartment?: number
-  idMunicipality?: number
+  uuid?: string | null
+  name?: string | null
+  tradeName?: string | null
+  dui?: string | null
+  nit?: string | null
+  nrc?: string | null
+  phoneNumbers?: string | null
+  whatsappNumber?: string | null
+  email?: string | null
+  address?: string | null
+  idCountry?: number | null
+  idDepartment?: number | null
+  idMunicipality?: number | null
   createdAt?: Date
   updatedAt?: Date
   status?: boolean
