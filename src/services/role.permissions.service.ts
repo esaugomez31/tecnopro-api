@@ -51,17 +51,17 @@ export const rolePermissionGetById = async (
 ): Promise<IGetRolePermissionByIdResponse> => {
   try {
     const rolePermissions = await RolePermissionModel.find({
-      relations: ["permissionDetail"],
+      relations: ["permission"],
       where: { idRole },
     })
 
     const formattedResult: IRolePermissionJoin[] = rolePermissions.map(
       (rolePermission: IRolePermission) => ({
-        idRolePermission: rolePermission.idRolePermission,
+        idRolePermission: rolePermission.idRolePermission as number,
         idRole: rolePermission.idRole,
         idPermission: rolePermission.idPermission,
-        systemPage: rolePermission.permissionDetail.systemPage,
-        permissionName: rolePermission.permissionDetail.permissionName,
+        systemPage: rolePermission.permission!.systemPage,
+        permissionName: rolePermission.permission?.permissionName ?? null,
         createdAt: rolePermission.createdAt,
       }),
     )
@@ -77,15 +77,13 @@ export const getRolePermissionsByPage = async (
   systemPage: SystemPageEnum,
 ): Promise<IPermission[]> => {
   const rolePermissions = await RolePermissionModel.find({
-    where: { idRole, permissionDetail: { systemPage } },
-    relations: ["permissionDetail"],
+    where: { idRole, permission: { systemPage } },
+    relations: ["permission"],
   })
 
   const permissions: IPermission[] = rolePermissions
-    .map((rolePermission) => {
-      return rolePermission.permissionDetail
-    })
-    .filter(Boolean)
+    .map((rolePermission) => rolePermission.permission!)
+    .filter(Boolean) as IPermission[]
 
   return permissions
 }

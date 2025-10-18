@@ -247,33 +247,33 @@ const existIdValidation = async (idProduct: number): Promise<void> => {
 
 const existValuesValidations = async (
   idBranch?: number,
-  idCategory?: number,
-  idBrand?: number,
-  idUser?: number,
+  idCategory?: number | null,
+  idBrand?: number | null,
+  idUser?: number | null,
 ): Promise<void> => {
   const ids = [idBranch, idCategory, idBrand, idUser]
-  if (!ids.some((id) => id !== undefined)) return
+  if (!ids.some((id) => id != null)) return
 
   const [existBranch, existCategory, existBrand, existUser] = await Promise.all([
     idBranch !== undefined ? branchGetById(idBranch) : null,
-    idCategory !== undefined ? categoryGetById(idCategory) : null,
-    idBrand !== undefined ? brandGetById(idBrand) : null,
-    idUser !== undefined ? userGetById(idUser) : null,
+    idCategory != null ? categoryGetById(idCategory) : null,
+    idBrand != null ? brandGetById(idBrand) : null,
+    idUser != null ? userGetById(idUser) : null,
   ])
 
   if (idBranch !== undefined && existBranch?.data === null) {
     throw new IDProdBranchNotFoundError()
   }
 
-  if (idCategory !== undefined && existCategory?.data === null) {
+  if (idCategory != null && existCategory?.data === null) {
     throw new IDProdCategoryNotFoundError()
   }
 
-  if (idBrand !== undefined && existBrand?.data === null) {
+  if (idBrand != null && existBrand?.data === null) {
     throw new IDProdBrandNotFoundError()
   }
 
-  if (idUser !== undefined && existUser?.data === null) {
+  if (idUser != null && existUser?.data === null) {
     throw new IDProdUserNotFoundError()
   }
 }

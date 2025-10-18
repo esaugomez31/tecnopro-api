@@ -158,13 +158,15 @@ const getFilters = (params: IDepartmentFilters): IDepartmentQueryParams => {
 
 const existValuesValidations = async (
   name?: string,
-  dteCode?: string,
+  dteCode?: string | null,
   idCountry?: number,
   idDepartment?: number,
 ): Promise<void> => {
-  if (name === undefined && dteCode === undefined && idCountry === undefined) return
+  if (name == null && dteCode == null && idCountry === undefined) return
 
-  const filters: IDepartmentQueryParams[] = [{ name }, { dteCode }]
+  const filters: IDepartmentQueryParams[] = []
+  if (name != null) filters.push({ name })
+  if (dteCode != null) filters.push({ dteCode })
 
   const [existDepartment, existCountry] = await Promise.all([
     DepartmentModel.findOne({
@@ -179,11 +181,9 @@ const existValuesValidations = async (
   }
 
   if (existDepartment !== null) {
-    // Searching for name matches
     if (existDepartment.name === name && existDepartment.idDepartment !== idDepartment) {
       throw new NameExistsError()
     }
-    // Searching for code matches
     if (
       existDepartment.dteCode === dteCode &&
       existDepartment.idDepartment !== idDepartment

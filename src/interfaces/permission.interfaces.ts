@@ -14,8 +14,8 @@ export enum SystemPageEnum {
 export interface IPermission {
   idPermission?: number
   systemPage: SystemPageEnum
-  permissionName: string
+  permissionName?: string | null
   createdAt?: Date
   updatedAt?: Date
-  status: boolean
+  status?: boolean
 }

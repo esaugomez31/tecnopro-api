@@ -45,5 +45,5 @@ export class PermissionModel extends BaseEntity {
   status: boolean = true
 
   @ManyToMany(() => RoleModel, (role) => role.permissions)
-  roles: RoleModel[] = []
+  roles?: RoleModel[]
 }

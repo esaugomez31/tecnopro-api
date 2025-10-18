@@ -170,28 +170,28 @@ const getFilters = (params: ICustomerFilters): ICustomerQueryParams => {
 }
 
 const existValuesValidations = async (
-  idCountry?: number,
-  idDepartment?: number,
-  idMunicipality?: number,
+  idCountry?: number | null,
+  idDepartment?: number | null,
+  idMunicipality?: number | null,
 ): Promise<void> => {
   const ids = [idCountry, idDepartment, idMunicipality]
-  if (!ids.some((id) => id !== undefined)) return
+  if (!ids.some((id) => id != null)) return
 
   const [existCountry, existDepartment, existMunicipality] = await Promise.all([
-    idCountry !== undefined ? countryGetById(idCountry) : null,
-    idDepartment !== undefined ? departmentGetById(idDepartment) : null,
-    idMunicipality !== undefined ? municipalityGetById(idMunicipality) : null,
+    idCountry != null ? countryGetById(idCountry) : null,
+    idDepartment != null ? departmentGetById(idDepartment) : null,
+    idMunicipality != null ? municipalityGetById(idMunicipality) : null,
   ])
 
-  if (idCountry !== undefined && existCountry?.data === null) {
+  if (idCountry != null && existCountry?.data === null) {
     throw new IDCountryNotFoundError()
   }
 
-  if (idDepartment !== undefined && existDepartment?.data === null) {
+  if (idDepartment != null && existDepartment?.data === null) {
     throw new IDDepartmentNotFoundError()
   }
 
-  if (idMunicipality !== undefined && existMunicipality?.data === null) {
+  if (idMunicipality != null && existMunicipality?.data === null) {
     throw new IDMunicipalityNotFoundError()
   }
 }

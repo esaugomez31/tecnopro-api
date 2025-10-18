@@ -8,9 +8,9 @@ import { IFilterSettings } from "../filter.interfaces"
 export interface ICountry {
   idCountry?: number
   name: string
-  code?: string
-  zipCode?: string
-  timeZone?: string
+  code?: string | null
+  zipCode?: string | null
+  timeZone?: string | null
   createdAt?: Date
   updatedAt?: Date
   status?: boolean

@@ -46,5 +46,5 @@ export class CountryModel extends BaseEntity {
   status: boolean = true
 
   @OneToMany(() => DepartmentModel, (department) => department.country)
-  departments: DepartmentModel[] = []
+  departments?: DepartmentModel[]
 }

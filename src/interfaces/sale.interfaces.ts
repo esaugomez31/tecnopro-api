@@ -14,29 +14,29 @@ export enum SalePermEnum {
 // Main sale inteface
 export interface ISale {
   idSale?: number
-  uuid?: string
-  invoiceType: string
-  paid: number
+  uuid?: string | null
+  invoiceType?: string | null
+  paid?: number | null
   total: number
-  vat?: number
+  vat?: number | null
   subtotal: number
   totalProfit: number
   grossProfit: number
   usersCommission: number
   shippingCost?: number
-  customerNotes?: string
-  totalText?: string
+  customerNotes?: string | null
+  totalText?: string | null
   refunded: boolean
   contingencyStatus: boolean
-  dteStatus?: string
-  dteControlNumber?: string
-  dteRequestSentAt?: Date
-  dteObservations?: string
+  dteStatus?: string | null
+  dteControlNumber?: string | null
+  dteRequestSentAt?: Date | null
+  dteObservations?: string | null
   dteOperationCondition?: "1" | "2" | "3"
-  dteSeal?: string
+  dteSeal?: string | null
   idUser: number
-  idCustomer?: number
-  idBranch: number
+  idCustomer?: number | null
+  idBranch?: number | null
   createdAt?: Date
   updatedAt?: Date
   status?: boolean

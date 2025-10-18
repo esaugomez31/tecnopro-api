@@ -8,13 +8,13 @@ import { IFilterSettings, IDepartment } from "../index"
 export interface IMunicipality {
   idMunicipality?: number
   name: string
-  zipCode?: string
-  dteCode?: string
-  idCountry?: number
+  zipCode?: string | null
+  dteCode?: string | null
+  idCountry?: number | null
   idDepartment: number
   department?: IDepartment
-  createdAt: Date
-  updatedAt: Date
+  createdAt?: Date
+  updatedAt?: Date
   status?: boolean
 }
 

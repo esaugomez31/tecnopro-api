@@ -47,8 +47,8 @@ export class RoleModel extends BaseEntity {
     joinColumn: { name: "id_role", referencedColumnName: "idRole" },
     inverseJoinColumn: { name: "id_permission", referencedColumnName: "idPermission" },
   })
-  permissions: PermissionModel[] = []
+  permissions?: PermissionModel[]
 
   @OneToMany(() => UserModel, (user) => user.role)
-  users: UserModel[] = []
+  users?: UserModel[]
 }

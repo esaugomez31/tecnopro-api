@@ -15,10 +15,10 @@ export enum RolePermEnum {
 export interface IRole {
   idRole?: number
   name: string
-  description?: string
+  description: string | null
   createdAt?: Date
   updatedAt?: Date
-  status: boolean
+  status?: boolean
 }
 
 // Allow filter params from API

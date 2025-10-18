@@ -1,8 +1,8 @@
 export interface IToken {
   idToken?: number
-  token: string
+  token?: string | null
   idUser: number
-  expiredAt: Date
+  expiredAt?: Date | null
   createdAt?: Date
   updatedAt?: Date
   status?: boolean

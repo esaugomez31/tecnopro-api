@@ -19,13 +19,13 @@ export enum ProductPermEnum {
 // Main product interface
 export interface IProduct {
   idProduct?: number
-  uuid?: string
+  uuid?: string | null
   name: string
-  description?: string
-  location?: string
-  code?: string
-  barcode?: string
-  barcodeGenerated: number
+  description?: string | null
+  location?: string | null
+  code?: string | null
+  barcode?: string | null
+  barcodeGenerated: boolean
   price: number
   purchasePrice?: number
   purchasedBy?: "store" | "user"
@@ -34,11 +34,11 @@ export interface IProduct {
   branchCommissionPercent?: number
   minPrice: number
   stock: number
-  imageUrl?: string
+  imageUrl?: string | null
   idBranch: number
-  idBrand?: number
-  idCategory?: number
-  idUser?: number
+  idBrand?: number | null
+  idCategory?: number | null
+  idUser?: number | null
   branch?: IBranch
   brand?: IBrand
   category?: ICategory

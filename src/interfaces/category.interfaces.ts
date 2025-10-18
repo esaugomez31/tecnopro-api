@@ -14,9 +14,9 @@ export enum CategoryPermEnum {
 // Main category interface
 export interface ICategory {
   idCategory?: number
-  uuid: string
+  uuid?: string | null
   name: string
-  description: string
+  description?: string | null
   createdAt?: Date
   updatedAt?: Date
   status?: boolean
