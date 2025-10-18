@@ -200,32 +200,32 @@ const getFilters = (params: IUserFilters): IUserQueryParams => {
 }
 
 export const userRequitedValidations = async (
-  username?: string,
-  email?: string,
-  idRole?: number,
+  username?: string | null,
+  email?: string | null,
+  idRole?: number | null,
   idUser?: number,
 ): Promise<void> => {
-  if (username === undefined && email === undefined && idRole === undefined) return
+  if (username == null && email == null && idRole == null) return
 
   const userFilters: IUserQueryParams[] = []
 
-  if (username !== undefined) {
+  if (username != null) {
     userFilters.push({ username })
   }
 
-  if (email !== undefined) {
+  if (email != null) {
     userFilters.push({ email })
   }
 
   const [existUser, existRole] = await Promise.all([
-    username !== undefined || email !== undefined
+    username != null || email != null
       ? UserModel.findOne({
           select: ["idUser", "email", "username"],
           where: userFilters,
         })
       : Promise.resolve(null),
 
-    idRole !== undefined ? roleGetById(idRole) : Promise.resolve(null),
+    idRole != null ? roleGetById(idRole) : Promise.resolve(null),
   ])
 
   // Conditions for user and email
@@ -241,7 +241,7 @@ export const userRequitedValidations = async (
   }
 
   // Conditions for roles
-  if (idRole !== undefined && existRole?.data === null) {
+  if (idRole != null && existRole?.data === null) {
     throw new IDRoleNotFoundError()
   }
 }

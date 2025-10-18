@@ -20,18 +20,18 @@ export enum UserPermEnum {
 // Main user interface
 export interface IUser {
   idUser?: number
-  uuid: string
+  uuid: string | null
   name: string
   username: string
   password: string
-  phoneNumber: string
-  whatsappNumber: string
-  email: string
+  phoneNumber: string | null
+  whatsappNumber: string | null
+  email: string | null
   type?: UserRoleEnum
   notifications: boolean
-  lastLogin: Date
-  timeZone?: string
-  idRole?: number
+  lastLogin: Date | null
+  timeZone: string
+  idRole: number | null
   createdAt?: Date
   updatedAt?: Date
   status: boolean
