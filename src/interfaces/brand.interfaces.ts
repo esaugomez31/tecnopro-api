@@ -14,9 +14,9 @@ export enum BrandPermEnum {
 // Main brand interface
 export interface IBrand {
   idBrand?: number
-  uuid: string
+  uuid?: string | null
   name: string
-  description: string
+  description?: string | null
   createdAt?: Date
   updatedAt?: Date
   status?: boolean
