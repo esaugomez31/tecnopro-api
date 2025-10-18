@@ -13,12 +13,12 @@ export enum BranchPermEnum {
 // Main branch model
 export interface IBranch {
   idBranch?: number
-  uuid: string
+  uuid?: string | null
   name: string
-  description?: string
-  phoneNumber?: string
-  email?: string
-  address?: string
+  description?: string | null
+  phoneNumber?: string | null
+  email?: string | null
+  address?: string | null
   vatEnabled?: boolean
   idCountry: number
   idDepartment: number
@@ -27,18 +27,18 @@ export interface IBranch {
   department?: IDepartment
   municipality?: IMunicipality
   dteActive?: boolean
-  dteEnvironment?: "01" | "00" // 01: PRODUCTION, 00: TEST
-  dteApiJwt?: string
-  dteApiJwtDate?: Date
-  dteSenderNit?: string
-  dteSenderNrc?: string
-  dteSenderEmail?: string
-  dteSenderPhone?: string
-  dteActivityCode?: string
-  dteActivityDesc?: string
-  dteSenderName?: string
-  dteSenderTradeName?: string
-  dteEstablishment?: "01" | "02" | "03" | "04" // 01: SUCURSAL, 02: CASA MATRIZ, 03: BODEGA, 04: PATIO
+  dteEnvironment?: "01" | "00"
+  dteApiJwt?: string | null
+  dteApiJwtDate?: Date | null
+  dteSenderNit?: string | null
+  dteSenderNrc?: string | null
+  dteSenderEmail?: string | null
+  dteSenderPhone?: string | null
+  dteActivityCode?: string | null
+  dteActivityDesc?: string | null
+  dteSenderName?: string | null
+  dteSenderTradeName?: string | null
+  dteEstablishment?: "01" | "02" | "04" | "07"
   createdAt?: Date
   updatedAt?: Date
   status?: boolean
@@ -47,10 +47,10 @@ export interface IBranch {
 export interface IBranchResponse {
   idBranch?: number
   name?: string
-  description?: string
-  phoneNumber?: string
-  email?: string
-  address?: string
+  description?: string | null
+  phoneNumber?: string | null
+  email?: string | null
+  address?: string | null
   idCountry?: number
   idDepartment?: number
   idMunicipality?: number
@@ -58,14 +58,14 @@ export interface IBranchResponse {
   dte: {
     dteActive?: boolean
     dteEnvironment?: string
-    dteSenderNit?: string
-    dteSenderNrc?: string
-    dteSenderEmail?: string
-    dteSenderPhone?: string
-    dteActivityCode?: string
-    dteActivityDesc?: string
-    dteSenderName?: string
-    dteSenderTradeName?: string
+    dteSenderNit?: string | null
+    dteSenderNrc?: string | null
+    dteSenderEmail?: string | null
+    dteSenderPhone?: string | null
+    dteActivityCode?: string | null
+    dteActivityDesc?: string | null
+    dteSenderName?: string | null
+    dteSenderTradeName?: string | null
     dteEstablishment?: string
   }
 }
