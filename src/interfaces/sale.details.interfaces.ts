@@ -7,10 +7,10 @@ export interface ISaleDetail {
   quantity: number
   affectedSale: number
   discount: number
-  vat?: number
+  vat?: number | null
   userCommission: number
   branchCommission: number
-  idProduct: number
+  idProduct?: number | null
   idSale: number
   createdAt?: Date
   updatedAt?: Date
