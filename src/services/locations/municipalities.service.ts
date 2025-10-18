@@ -147,26 +147,28 @@ const getFilters = (params: IMunicipalityFilters): IMunicipalityQueryParams => {
 
 const existValuesValidations = async (
   name?: string,
-  dteCode?: string,
-  idCountry?: number,
+  dteCode?: string | null,
+  idCountry?: number | null,
   idDepartment?: number,
   idMunicipality?: number,
 ): Promise<void> => {
   const params = [name, dteCode, idCountry, idDepartment]
-  if (!params.some((p) => p !== undefined)) return
+  if (!params.some((p) => p != null)) return
 
-  const filters: IMunicipalityQueryParams[] = [{ name }, { dteCode }]
+  const filters: IMunicipalityQueryParams[] = []
+  if (name != null) filters.push({ name })
+  if (dteCode != null) filters.push({ dteCode })
 
   const [existMunicipality, existCountry, existDepartment] = await Promise.all([
     MunicipalityModel.findOne({
       select: ["idMunicipality", "name", "dteCode"],
       where: filters,
     }),
-    idCountry !== undefined ? countryGetById(idCountry) : null,
+    idCountry !== undefined && idCountry !== null ? countryGetById(idCountry) : null,
     idDepartment !== undefined ? departmentGetById(idDepartment) : null,
   ])
 
-  if (idCountry !== undefined && existCountry?.data === null) {
+  if (idCountry !== undefined && idCountry !== null && existCountry?.data === null) {
     throw new IDMuniCountryNotFoundError()
   }
 
