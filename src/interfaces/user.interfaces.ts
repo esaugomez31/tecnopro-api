@@ -41,7 +41,7 @@ export interface IUser {
 export interface IUserJWT {
   idUser: number
   uuid: string | null
-  idRole?: number
+  idRole?: number | null
   type: UserRoleEnum
 }
 
