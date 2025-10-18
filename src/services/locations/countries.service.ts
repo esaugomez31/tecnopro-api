@@ -148,12 +148,20 @@ const getFilters = (params: ICountryFilters): ICountryQueryParams => {
 
 const existValuesValidations = async (
   name?: string,
-  code?: string,
+  code?: string | null,
   idCountry?: number,
 ): Promise<void> => {
-  if (name === undefined && code === undefined) return
+  if (name == null && code == null) return
 
-  const filters: ICountryQueryParams[] = [{ name }, { code }]
+  const filters: ICountryQueryParams[] = []
+
+  if (name != null) {
+    filters.push({ name })
+  }
+
+  if (code != null) {
+    filters.push({ code })
+  }
 
   const existCountry = await CountryModel.findOne({
     select: ["idCountry", "name", "code"],
