@@ -146,5 +146,5 @@ export class SaleModel extends BaseEntity {
   branch?: BranchModel
 
   @OneToMany(() => SaleDetailModel, (saleDetail) => saleDetail.sale)
-  saleDetails: SaleDetailModel[] = []
+  saleDetails?: SaleDetailModel[]
 }

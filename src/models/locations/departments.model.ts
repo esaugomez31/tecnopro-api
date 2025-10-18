@@ -37,7 +37,7 @@ export class DepartmentModel extends BaseEntity {
   country?: CountryModel
 
   @OneToMany(() => MunicipalityModel, (municipality) => municipality.department)
-  municipalities: MunicipalityModel[] = []
+  municipalities?: MunicipalityModel[]
 
   @CreateDateColumn({
     name: "created_at",
